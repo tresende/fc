@@ -1,5 +1,6 @@
-docker stop $(docker ps -a -q)
-docker rm $(docker ps -a -q)
-docker rmi $(docker images -q)
-docker network rm consul
-docker volume prune
+podman stop $(podman ps -a -q)
+podman rm $(podman ps -a -q)
+podman rmi $(podman images -q)
+#podman network rm consul
+podman network rm laranet
+podman volume prune

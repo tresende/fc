@@ -2,7 +2,9 @@ version: "3"
 
 services:
   laravel:
-    image: tresende/laravel:prod
+    build:
+      context: ./laravel
+      dockerfile: Dockerfile.prod
     container_name: laravel
     networks:
       - laranet
@@ -10,7 +12,9 @@ services:
   nginx:
     depends_on:
       - laravel
-    image: tresende/nginx:prod
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.prod
     container_name: nginx
     networks:
       - laranet
