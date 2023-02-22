@@ -1,26 +1,22 @@
 version: "3"
 
 services:
-  laravel:
-    build:
-      context: ./laravel
-      dockerfile: Dockerfile.prod
-    container_name: laravel
+  db:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: db
+    restart: always
+    tty: true
+    user: mysql
+    volumes:
+      - ./mysql:/var/lib/mysql:rw
+    environment:
+      - MYSQL_DATABASE=nodedb
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_USER=root
     networks:
-      - laranet
-
-  nginx:
-    depends_on:
-      - laravel
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile.prod
-    container_name: nginx
-    networks:
-      - laranet
-    ports:
-      - "8080:80"
+      - node-network
 
 networks:
-  laranet:
+  node-network:
     driver: bridge
