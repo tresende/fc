@@ -3,5 +3,3 @@ CREATE TABLE people (
     name varchar(255) NOT NULL,
     PRIMARY KEY (id)
 );
-
-insert into people (name) values('Thiago');
