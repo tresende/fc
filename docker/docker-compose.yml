@@ -1,15 +1,25 @@
 version: "3"
 
 services:
+  app:
+    build:
+      context: node
+    container_name: app
+    networks:
+      - node-network
+    tty: true
+    ports:
+      - 3000:3000
+    volumes:
+      - ./node:/usr/src/app
   db:
     image: mysql:5.7
     command: --innodb-use-native-aio=0
     container_name: db
     restart: always
     tty: true
-    user: mysql
-    volumes:
-      - ./mysql:/var/lib/mysql:rw
+    # volumes:
+    #   - ./mysql:/var/lib/mysql:rw
     environment:
       - MYSQL_DATABASE=nodedb
       - MYSQL_ROOT_PASSWORD=root
