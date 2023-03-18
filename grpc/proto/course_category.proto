@@ -25,4 +25,5 @@ message CategoryGetRequest {
 
 service CategoryService {
     rpc CreateCategory(CreateCategoryRequest) returns (Category) {}
+    rpc listCategories(blank) returns (CategoryList) {}
 }

@@ -17,13 +17,14 @@ import (
 func main() {
 	db, err := sql.Open("sqlite3", "./db.sqlite")
 	if err != nil {
+		print(err)
 		panic(err)
 	}
 	defer db.Close()
+	print("Starting...")
 
 	categoryDb := database.NewCategory(db)
 	categoryService := service.NewCategoryService(*categoryDb)
-	print("Starting...")
 
 	grpcServer := grpc.NewServer()
 	pb.RegisterCategoryServiceServer(grpcServer, categoryService)
