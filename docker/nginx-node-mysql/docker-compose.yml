@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  nginx:
+    build:
+      context: nginx
+    container_name: nginx
+    tty: true
+    depends_on:
+      - app
+    ports:
+      - 8080:8080
+    networks:
+      - nginx-node-mysql-network
+  app:
+    build:
+      context: node
+    container_name: app
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 120s docker-entrypoint.sh
+    command: npm start
+    tty: true
+    depends_on:
+      - db
+    networks:
+      - nginx-node-mysql-network
+  db:
+    build:
+      context: mysql
+    command: --innodb-use-native-aio=0
+    container_name: db
+    restart: always
+    tty: true
+    networks:
+      - nginx-node-mysql-network
+
+networks:
+  nginx-node-mysql-network:
+    driver: bridge
