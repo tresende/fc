@@ -50,6 +50,12 @@ autobind:
 # modelgen, the others will be allowed when binding to fields. Configure them to
 # your liking
 models:
+  Course:
+    model: 
+      - github.com/tresende/fc/graph/model.Course
+  Category:
+    model: 
+      - github.com/tresende/fc/graph/model.Category
   ID:
     model:
       - github.com/99designs/gqlgen/graphql.ID
