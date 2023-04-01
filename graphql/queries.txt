@@ -17,3 +17,14 @@ query queryCourses {
 }
 
 //4eb1db16-e55f-4246-9dc0-76086b34c8e0
+
+query queryCourse {
+  courses {
+    id
+    name
+    category {
+      id
+      name
+    }
+  }
+}
