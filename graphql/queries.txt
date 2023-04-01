@@ -1,0 +1,19 @@
+create table categories(id string, name string, description string);
+create table courses(id string, name string, description string, categoryId string);
+
+
+mutation createCategory {
+  createCategory(input: {name: "SQL Server", description: "SQL Server"}) {
+    id
+    name
+  }
+}
+
+query queryCourses {
+  courses {
+    id
+    name
+  }
+}
+
+//4eb1db16-e55f-4246-9dc0-76086b34c8e0
