@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "tsx ./src/entity/customer.ts",
+    "start": "tsx ./src/main.ts",
     "test": "npm run tsc -- --noEmit && jest",
     "tsc": "tsc"
   },
