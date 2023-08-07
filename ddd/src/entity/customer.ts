@@ -21,16 +21,20 @@ export class Customer {
     }
   }
 
-  changeName(name: string) {
-    this._name = name
+  isActivated(): boolean {
+    return this._active
   }
 
-  get Address(): Address {
-    return this._address
+  get name() {
+    return this._name
   }
 
   changeAddress(address: Address) {
     this._address = address
+  }
+
+  changeName(name: string) {
+    this._name = name
   }
 
   isActive(): boolean {
@@ -44,7 +48,7 @@ export class Customer {
     this._active = true
   }
 
-  desactivate() {
+  deactivate() {
     this._active = false
   }
 }
