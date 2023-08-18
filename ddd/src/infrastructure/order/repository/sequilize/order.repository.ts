@@ -1,6 +1,6 @@
-import Order from "../../../../domain/checkout/entity/order";
-import OrderItemModel from "./order-item.model";
-import OrderModel from "./order.model";
+import Order from '../../../../domain/checkout/entity/order'
+import OrderItemModel from './order-item.model'
+import OrderModel from './order.model'
 
 export default class OrderRepository {
   async create(entity: Order): Promise<void> {
@@ -14,12 +14,12 @@ export default class OrderRepository {
           name: item.name,
           price: item.price,
           product_id: item.productId,
-          quantity: item.quantity,
-        })),
+          quantity: item.quantity
+        }))
       },
       {
-        include: [{ model: OrderItemModel }],
+        include: [{ model: OrderItemModel }]
       }
-    );
+    )
   }
 }
