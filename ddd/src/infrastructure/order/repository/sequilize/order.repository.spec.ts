@@ -1,4 +1,3 @@
-import { Sequelize } from 'sequelize-typescript'
 import Order from '../../../../domain/checkout/entity/order'
 import OrderItem from '../../../../domain/checkout/entity/order_item'
 import Customer from '../../../../domain/customer/entity/customer'
@@ -8,9 +7,11 @@ import CustomerModel from '../../../customer/repository/sequelize/customer.model
 import CustomerRepository from '../../../customer/repository/sequelize/customer.repository'
 import ProductModel from '../../../product/repository/sequelize/product.model'
 import ProductRepository from '../../../product/repository/sequelize/product.repository'
-import OrderItemModel from './order-item.model'
 import OrderModel from './order.model'
 import OrderRepository from './order.repository'
+import OrderItemModel from './order-item.model'
+
+import { Sequelize } from 'sequelize-typescript'
 
 describe('Order repository test', () => {
   let sequelize: Sequelize
