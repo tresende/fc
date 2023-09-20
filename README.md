@@ -1,1 +1,3 @@
 # fc
+
+test gpg
