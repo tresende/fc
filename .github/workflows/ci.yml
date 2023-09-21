@@ -1,4 +1,4 @@
-# disabled
+# disabled!
 name: ci-golang-workflow
 on: 
   push:
