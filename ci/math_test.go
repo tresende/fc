@@ -1,9 +1,12 @@
 package main
 
-func addTest(t *testing.T) int {
-	total := add(1, 2)
+import "testing"
 
-	if total != 3 {
+func TestSoma(t *testing.T) {
+
+	total := soma(15, 15)
+
+	if total != 30 {
 		t.Errorf("Incorrect sum, got: %d, want: %d.", total, 3)
 	}
 }
