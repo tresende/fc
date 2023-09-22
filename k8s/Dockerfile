@@ -1,5 +1,5 @@
 FROM golang:1.15
-COPY . .
+COPY ./k8s .
 RUN go build -o server .
 CMD ["./server"]
 # podman build -t tresende/hello-go .
