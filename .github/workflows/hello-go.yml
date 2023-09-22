@@ -1,10 +1,10 @@
-name: ci-golang-workflow
+name: ci-hello-go-workflow
 on: 
   push:
     branches:
       - main
 jobs:
-  check-application:
+  push-image:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
