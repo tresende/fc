@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: "goserver"
+        appVersion: "2"
     spec:
       containers:
         - name: goserver
