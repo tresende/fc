@@ -16,13 +16,14 @@ func main() {
 	http.HandleFunc("/secret", Secret)
 	http.HandleFunc("/configmap", ConfigMap)
 	http.HandleFunc("/", Hello)
-	http.ListenAndServe(":8000", nil)
+	// http.ListenAndServe(":8000", nil) // temp
+	http.ListenAndServe(":8080", nil)
 }
 
 func Hello(w http.ResponseWriter, r *http.Request) {
 	name := os.Getenv("NAME")
 	age := os.Getenv("AGE")
-	fmt.Fprintf(w, "Hello, I'm %s. I'm %s.", name, age)
+	fmt.Fprintf(w, "Hello v4, I'm %s. I'm %s.", name, age)
 }
 
 func Secret(w http.ResponseWriter, r *http.Request) {
