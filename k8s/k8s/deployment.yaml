@@ -13,8 +13,8 @@ spec:
     metadata:
       labels:
         app: "goserver"
-        appVersion: "3"
+        appVersion: "v5"
     spec:
       containers:
         - name: goserver
-          image: "tresende/hello-go"
+          image: "tresende/hello-go:latest"

@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
         - name: goserver
-          image: "tresende/hello-go"
+          image: "tresende/hello-go:latest"
