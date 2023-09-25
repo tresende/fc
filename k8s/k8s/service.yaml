@@ -7,7 +7,8 @@ spec:
     app: goserver
   type: ClusterIP
   ports:
-  - port: 8000 # porta da aplicação
+  - port: 80 # porta da aplicação
     protocol: TCP
     name: http-goserver
-    # targetPort: 8000 # porta que vai ser acessivel via request
+    # targetPort: 8000 
+    # kubectl port-forward svc/goserver 8000:8000
