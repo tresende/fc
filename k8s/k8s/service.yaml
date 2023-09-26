@@ -11,7 +11,8 @@ spec:
     protocol: TCP
     name: http-goserver
     targetPort: 8080 # container port
-## kubectl apply -f k8s/k8s/deployment.yaml && kubectl port-forward svc/goserver 8080:9001
+##  kubectl port-forward svc/goserver 9001:9001
+## http://localhost:9001/
 
   # type: NodePort
   # ports:
@@ -22,7 +23,7 @@ spec:
   #   targetPort: 8080 # container port
 
 
-## kubectl apply -f k8s/k8s/deployment.yaml && kubectl port-forward svc/goserver 30001:8080
+##  kubectl port-forward svc/goserver 30001:8080
 
 
   # type: LoadBalancer

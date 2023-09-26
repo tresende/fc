@@ -13,8 +13,32 @@ spec:
     metadata:
       labels:
         app: "goserver"
-        appVersion: "v7"
+        appVersion: "v11"
     spec:
       containers:
         - name: goserver
-          image: "tresende/hello-go:latest"
+          image: "docker.io/tresende/hello-go:latest"
+          envFrom:
+            - configMapRef:
+                name: goserver-env
+            - secretRef:
+                name: goserver-secret
+          resources:
+            limits:
+              cpu: "1"
+              memory: "512Mi"
+            requests:
+              cpu: "0.5"
+              memory: "256Mi"
+          volumeMounts:
+            - mountPath: "/go/myfamily"
+              name: config
+              readOnly: true
+
+      volumes:
+        - name: config
+          configMap:
+            name: configmap-family
+            items:
+            - key: members
+              path: "family.txt"             
