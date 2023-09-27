@@ -8,14 +8,15 @@ spec:
   selector:
     matchLabels:
       app: goserver    
-  replicas: 2
+  replicas: 1
+  # replicas: 2
   template:
     metadata:
       labels:
         app: "goserver"
         appVersion: "v11"
     spec:
-      containers:
+      containers: 
         - name: goserver
           image: "docker.io/tresende/hello-go:latest"
           envFrom:
@@ -34,6 +35,38 @@ spec:
             - mountPath: "/go/myfamily"
               name: config
               readOnly: true
+
+          startupProbe:
+          #funciona como o readinessProbe, mas é usado para verificar se o pod está pronto para receber tráfego
+            httpGet:
+              path: /healthz
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 10
+
+
+          readinessProbe: # verificando se a aplicação está pronta para receber tráfego
+          # não deixa as requests  chegarem no pod quando o readinessProbe falha
+          # 0/1
+            httpGet:
+              path: /healthz
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 3
+            # initialDelaySeconds: 10
+            # timeoutSeconds: 5
+
+          livenessProbe: # verificando se a aplicação está rodando
+          # reinicia o pod quando o livenessProbe falha
+            httpGet:
+              path: /healthz
+              port: 8080
+            # initialDelaySeconds: 20
+            periodSeconds: 5
+            timeoutSeconds: 1
+            failureThreshold: 1
+            successThreshold: 1
+
 
       volumes:
         - name: config
