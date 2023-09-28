@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name:  traffic-generator
+  labels:
+    app: traffic-generator
+spec:
+  containers:
+  - name: fortio
+    image: istio/fortio
+    args: ["load", "-qps", "800", "-t", "120s", "-c", "70", "http://goserver-service:9001/healthz"]
+
+

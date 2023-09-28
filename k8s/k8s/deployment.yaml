@@ -5,16 +5,17 @@ metadata:
   labels:
     app: goserver
 spec:
+  revisionHistoryLimit: 0 # Default to 10 if not specified
   selector:
     matchLabels:
       app: goserver    
-  replicas: 1
-  # replicas: 2
+  # replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
         app: "goserver"
-        appVersion: "v11"
+        appVersion: "v12"
     spec:
       containers: 
         - name: goserver
@@ -25,12 +26,12 @@ spec:
             - secretRef:
                 name: goserver-secret
           resources:
-            limits:
-              cpu: "1"
-              memory: "512Mi"
-            requests:
-              cpu: "0.5"
-              memory: "256Mi"
+            limits: # máximo de recursos que o pod pode usar
+              cpu: "500m"
+              memory: "25Mi"
+            requests: # minimo de recursos que o pod precisa para rodar
+              cpu: "100m"
+              memory: "20Mi"
           volumeMounts:
             - mountPath: "/go/myfamily"
               name: config
