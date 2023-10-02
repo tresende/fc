@@ -21,17 +21,15 @@ spec:
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: "root"
-        # ports:
-        # - containerPort: 80
-        #   name: web
-        # volumeMounts:
-        # - name: www
-        #   mountPath: /usr/share/nginx/html
-  # volumeClaimTemplates:
-  # - metadata:
-  #     name: www
-  #   spec:
-  #     accessModes: [ "ReadWriteOnce" ]
-  #     resources:
-  #       requests:
-  #         storage: 1Gi
+        volumeMounts:
+        - name: mysql-volume
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-volume
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 5Gi
+
