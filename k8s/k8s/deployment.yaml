@@ -15,7 +15,7 @@ spec:
     metadata:
       labels:
         app: "goserver"
-        appVersion: "v12"
+        appVersion: "v13"
     spec:
       containers: 
         - name: goserver
@@ -36,6 +36,8 @@ spec:
             - mountPath: "/go/myfamily"
               name: config
               readOnly: true
+            - mountPath: "/go/pvc"
+              name: goserver-volume       
 
           startupProbe:
           #funciona como o readinessProbe, mas é usado para verificar se o pod está pronto para receber tráfego
@@ -70,6 +72,9 @@ spec:
 
 
       volumes:
+        - name: goserver-volume
+          persistentVolumeClaim:
+            claimName: goserver-pvc
         - name: config
           configMap:
             name: configmap-family
