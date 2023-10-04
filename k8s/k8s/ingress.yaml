@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-host
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: "localhost"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: goserver-service
+            port: 
+              number: 9001
+
+
+# ❯ kubectl port-forward svc/ingress-nginx-controller --namespace=ingress-nginx 9001:80              
