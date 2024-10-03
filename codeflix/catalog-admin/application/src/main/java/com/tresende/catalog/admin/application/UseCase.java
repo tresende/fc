@@ -1,9 +1,9 @@
 package com.tresende.catalog.admin.application;
 
-import com.tresende.catalog.admin.domain.Cagerory;
+import com.tresende.catalog.admin.domain.category.Category;
 
 public class UseCase {
-    public Cagerory execute() {
-        return new Cagerory();
+    public Category execute() {
+        return Category.newCategory("a", "b", "false");
     }
 }
