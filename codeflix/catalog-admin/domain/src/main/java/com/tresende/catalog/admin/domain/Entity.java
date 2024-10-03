@@ -1,5 +1,7 @@
 package com.tresende.catalog.admin.domain;
 
+import com.tresende.catalog.admin.domain.validation.ValidationHandler;
+
 import java.util.Objects;
 
 public abstract class Entity<ID extends Identifier> {
@@ -26,4 +28,6 @@ public abstract class Entity<ID extends Identifier> {
     public int hashCode() {
         return Objects.hashCode(getId());
     }
+
+    public abstract void validate(ValidationHandler handler);
 }
