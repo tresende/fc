@@ -10,7 +10,14 @@ public interface ValidationHandler {
     ValidationHandler validate(Validation aValidation);
 
     default boolean hasError() {
-        return getErrors() != null && getErrors().isEmpty();
+        return getErrors() != null && !getErrors().isEmpty();
+    }
+
+    default Error firstError() {
+        if (getErrors() == null || getErrors().isEmpty()) {
+            return null;
+        }
+        return getErrors().getFirst();
     }
 
     List<Error> getErrors();
