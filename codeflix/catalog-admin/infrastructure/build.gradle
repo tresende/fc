@@ -1,8 +1,18 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.flywaydb:flyway-mysql:9.11.0'
+    }
+}
+
 plugins {
     id 'java'
     id 'application'
     id "org.springframework.boot" version "3.3.4"
     id "io.spring.dependency-management" version "1.1.6"
+    id 'org.flywaydb.flyway' version '9.11.0'
 }
 
 group = 'com.tresende.catalog.admin.infrastructure'
@@ -25,8 +35,19 @@ dependencies {
     }
     implementation('org.springframework.boot:spring-boot-starter-undertow')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
+    implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    testRuntimeOnly("com.h2database:h2")
+    testImplementation('org.flywaydb:flyway-core')
+    testImplementation('org.flywaydb:flyway-mysql')
 }
 
 test {
     useJUnitPlatform()
+}
+
+flyway {
+    url = System.getenv('FLYWAY_DB') ?: 'jdbc:mysql://localhost:3306/adm_videos'
+    user = System.getenv('FLYWAY_USER') ?: 'root'
+    password = System.getenv('FLYWAY_PASS') ?: '123456'
 }
