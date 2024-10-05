@@ -1,5 +1,8 @@
 plugins {
     id 'java'
+    id 'application'
+    id "org.springframework.boot" version "3.3.4"
+    id "io.spring.dependency-management" version "1.1.6"
 }
 
 group = 'com.tresende.catalog.admin.infrastructure'
@@ -9,11 +12,19 @@ repositories {
     mavenCentral()
 }
 
+bootJar {
+    setArchiveBaseName('application')
+    destinationDirectory.set(file("${rootProject.buildDir}/libs"))
+}
+
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
     implementation(project(":domain"))
     implementation(project(":application"))
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude module: 'spring-boot-starter-tomcat'
+    }
+    implementation('org.springframework.boot:spring-boot-starter-undertow')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 
 test {
