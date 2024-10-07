@@ -1,7 +1,7 @@
 package com.tresende.catalog.admin.infrastructure.category.persistence;
 
+import com.tresende.catalog.admin.MySQLGatewayTest;
 import com.tresende.catalog.admin.domain.category.Category;
-import com.tresende.catalog.admin.infrastructure.MySQLGatewayTest;
 import org.hibernate.PropertyValueException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

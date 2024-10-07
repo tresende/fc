@@ -12,4 +12,22 @@ public class Main {
 
         SpringApplication.run(WebServerConfig.class);
     }
+
+//    @Bean
+//    @DependsOnDatabaseInitialization
+//    ApplicationRunner runner(
+//            CreateCategoryUseCase createCategoryUseCase,
+//            UpdateCategoryUseCase updateCategoryUseCase,
+//            DeleteCategoryUseCase deleteCategoryUseCase,
+//            ListCategoryUseCase listCategoryUseCase,
+//            GetCategoryByUseCase getCategoryByUseCase
+//    ) {
+//        return args -> {
+//            System.out.println(createCategoryUseCase);
+//            System.out.println(updateCategoryUseCase);
+//            System.out.println(deleteCategoryUseCase);
+//            System.out.println(listCategoryUseCase);
+//            System.out.println(getCategoryByUseCase);
+//        };
+//    }
 }

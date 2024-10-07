@@ -40,6 +40,7 @@ dependencies {
     testRuntimeOnly("com.h2database:h2")
     testImplementation('org.flywaydb:flyway-core')
     testImplementation('org.flywaydb:flyway-mysql')
+    implementation 'io.vavr:vavr:0.10.4'
 }
 
 test {
