@@ -4,6 +4,7 @@ import com.tresende.catalog.admin.domain.AggregateRoot;
 import com.tresende.catalog.admin.domain.validation.ValidationHandler;
 
 import java.time.Instant;
+import java.util.Objects;
 
 public class Category extends AggregateRoot<CategoryID> implements Cloneable {
     private final Instant createdAt;
@@ -26,8 +27,8 @@ public class Category extends AggregateRoot<CategoryID> implements Cloneable {
         name = aName;
         description = aDescription;
         active = isActive;
-        createdAt = aCreatedAt;
-        updatedAt = anUpdatedAt;
+        createdAt = Objects.requireNonNull(aCreatedAt, "'createdAt' should not be null");
+        updatedAt = Objects.requireNonNull(anUpdatedAt, "'updatedAt' should not be null");
         deletedAt = aDeletedAt;
     }
 

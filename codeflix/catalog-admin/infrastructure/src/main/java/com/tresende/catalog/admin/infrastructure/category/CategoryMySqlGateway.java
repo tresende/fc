@@ -5,6 +5,7 @@ import com.tresende.catalog.admin.domain.category.Category;
 import com.tresende.catalog.admin.domain.category.CategoryGateway;
 import com.tresende.catalog.admin.domain.category.CategoryID;
 import com.tresende.catalog.admin.domain.category.CategorySearchQuery;
+import com.tresende.catalog.admin.infrastructure.category.persistence.CategoryJpaEntity;
 import com.tresende.catalog.admin.infrastructure.category.persistence.CategoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,12 @@ public class CategoryMySqlGateway implements CategoryGateway {
 
     @Override
     public Category create(Category aCategory) {
-        return null;
+        return save(aCategory);
+    }
+
+    @Override
+    public Category update(Category aCategory) {
+        return save(aCategory);
     }
 
     @Override
@@ -35,12 +41,12 @@ public class CategoryMySqlGateway implements CategoryGateway {
     }
 
     @Override
-    public Category update(Category aCategory) {
+    public Pagination<Category> findAll(CategorySearchQuery aQuery) {
         return null;
     }
 
-    @Override
-    public Pagination<Category> findAll(CategorySearchQuery aQuery) {
-        return null;
+    private Category save(Category aCategory) {
+        final var categoryJpaEntity = CategoryJpaEntity.from(aCategory);
+        return repository.save(categoryJpaEntity).toAggregate();
     }
 }

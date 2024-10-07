@@ -10,7 +10,7 @@ public class CategoryID extends Identifier {
     private String value;
 
     private CategoryID(final String value) {
-        this.value = Objects.requireNonNull(value);
+        this.value = Objects.requireNonNull(value, "'id' should not be null");
     }
 
     public static CategoryID unique() {
