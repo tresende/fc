@@ -25,7 +25,7 @@ class GetCategoryByIdUseCaseIT {
     CategoryRepository categoryRepository;
 
     @Autowired
-    GetCategoryByUseCase useCase;
+    GetCategoryByIdUseCase useCase;
 
     @SpyBean
     private CategoryGateway categoryGateway;
@@ -71,7 +71,7 @@ class GetCategoryByIdUseCaseIT {
 
         doThrow(new IllegalStateException(expectedErrorMessage))
                 .when(categoryGateway).findById(eq(expectedId));
-        
+
         final var aCommand =
                 Assertions.assertThrows(IllegalStateException.class, () -> useCase.execute(expectedId.getValue()));
 

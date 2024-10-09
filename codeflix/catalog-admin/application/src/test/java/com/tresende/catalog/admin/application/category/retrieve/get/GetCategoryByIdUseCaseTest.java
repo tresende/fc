@@ -26,7 +26,7 @@ public class GetCategoryByIdUseCaseTest {
     CategoryGateway categoryGateway;
 
     @InjectMocks
-    private DefaultGetCategoryByUseCase useCase;
+    private DefaultGetCategoryByIdUseCase useCase;
 
     @BeforeEach
     void cleanUp() {

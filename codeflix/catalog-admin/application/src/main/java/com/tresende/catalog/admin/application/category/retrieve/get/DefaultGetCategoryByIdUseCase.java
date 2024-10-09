@@ -9,11 +9,11 @@ import com.tresende.catalog.admin.domain.exceptions.NotFoundException;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public class DefaultGetCategoryByUseCase extends GetCategoryByUseCase {
+public class DefaultGetCategoryByIdUseCase extends GetCategoryByIdUseCase {
 
     private final CategoryGateway categoryGateway;
 
-    public DefaultGetCategoryByUseCase(CategoryGateway categoryGateway) {
+    public DefaultGetCategoryByIdUseCase(CategoryGateway categoryGateway) {
         this.categoryGateway = Objects.requireNonNull(categoryGateway);
     }
 

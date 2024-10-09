@@ -4,8 +4,8 @@ import com.tresende.catalog.admin.application.category.create.CreateCategoryUseC
 import com.tresende.catalog.admin.application.category.create.DefaultCreateCategoryUseCase;
 import com.tresende.catalog.admin.application.category.delete.DefaultDeleteCategoryUseCase;
 import com.tresende.catalog.admin.application.category.delete.DeleteCategoryUseCase;
-import com.tresende.catalog.admin.application.category.retrieve.get.DefaultGetCategoryByUseCase;
-import com.tresende.catalog.admin.application.category.retrieve.get.GetCategoryByUseCase;
+import com.tresende.catalog.admin.application.category.retrieve.get.DefaultGetCategoryByIdUseCase;
+import com.tresende.catalog.admin.application.category.retrieve.get.GetCategoryByIdUseCase;
 import com.tresende.catalog.admin.application.category.retrieve.list.DefaultListCategoryUseCase;
 import com.tresende.catalog.admin.application.category.retrieve.list.ListCategoryUseCase;
 import com.tresende.catalog.admin.application.category.update.DefaultUpdateCategoryUseCase;
@@ -44,7 +44,7 @@ public class CategoryUseCaseConfig {
     }
 
     @Bean
-    public GetCategoryByUseCase getCategoryByUseCase() {
-        return new DefaultGetCategoryByUseCase(categoryGateway);
+    public GetCategoryByIdUseCase getCategoryByUseCase() {
+        return new DefaultGetCategoryByIdUseCase(categoryGateway);
     }
 }
