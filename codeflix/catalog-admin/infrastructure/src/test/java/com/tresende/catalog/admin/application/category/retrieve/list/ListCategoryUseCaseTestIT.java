@@ -22,6 +22,7 @@ class ListCategoryUseCaseTestIT {
     @Autowired
     private ListCategoryUseCase useCase;
 
+
     @BeforeEach
     void mockUp() {
         final var list = Stream.of(
