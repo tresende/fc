@@ -1,6 +1,6 @@
-package com.tresende.catalog.admin.domain.category;
+package com.tresende.catalog.admin.domain.pagination;
 
-public record CategorySearchQuery(
+public record SearchQuery(
         int page,
         int perPage,
         String terms,

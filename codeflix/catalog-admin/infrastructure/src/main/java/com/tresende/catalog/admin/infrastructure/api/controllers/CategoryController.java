@@ -10,8 +10,8 @@ import com.tresende.catalog.admin.application.category.retrieve.list.ListCategor
 import com.tresende.catalog.admin.application.category.update.UpdateCategoryCommand;
 import com.tresende.catalog.admin.application.category.update.UpdateCategoryOutput;
 import com.tresende.catalog.admin.application.category.update.UpdateCategoryUseCase;
-import com.tresende.catalog.admin.domain.Pagination;
-import com.tresende.catalog.admin.domain.category.CategorySearchQuery;
+import com.tresende.catalog.admin.domain.pagination.Pagination;
+import com.tresende.catalog.admin.domain.pagination.SearchQuery;
 import com.tresende.catalog.admin.domain.validation.handler.Notification;
 import com.tresende.catalog.admin.infrastructure.api.CategoryAPI;
 import com.tresende.catalog.admin.infrastructure.category.models.CategoryListResponse;
@@ -68,7 +68,7 @@ class CategoryController implements CategoryAPI {
 
     @Override
     public Pagination<CategoryListResponse> listCategories(String search, int page, int perPage, String sort, String direction) {
-        final var aQuery = new CategorySearchQuery(page, perPage, search, sort, direction);
+        final var aQuery = new SearchQuery(page, perPage, search, sort, direction);
         return this.listCategoryUseCase.execute(aQuery).map(CategoryApiPresenter::present);
     }
 

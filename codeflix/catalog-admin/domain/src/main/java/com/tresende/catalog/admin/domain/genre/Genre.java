@@ -2,7 +2,10 @@ package com.tresende.catalog.admin.domain.genre;
 
 import com.tresende.catalog.admin.domain.AggregateRoot;
 import com.tresende.catalog.admin.domain.category.CategoryID;
+import com.tresende.catalog.admin.domain.exceptions.NotificationException;
+import com.tresende.catalog.admin.domain.utils.InstantUtils;
 import com.tresende.catalog.admin.domain.validation.ValidationHandler;
+import com.tresende.catalog.admin.domain.validation.handler.Notification;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -38,14 +41,15 @@ public class Genre extends AggregateRoot<GenreID> {
         createdAt = Objects.requireNonNull(aCreatedAt, "'createdAt' should not be null");
         updatedAt = Objects.requireNonNull(anUpdatedAt, "'updatedAt' should not be null");
         deletedAt = aDeletedAt;
+        selfValidate();
     }
 
-    public static Genre newGenre(String name, boolean aIsActive) {
+    public static Genre newGenre(final String name, final boolean isActive) {
         final var id = GenreID.unique();
-        final var now = Instant.now();
-        final var deletedAt = aIsActive ? null : now;
+        final var now = InstantUtils.now();
+        final var deletedAt = isActive ? null : now;
         final var emptyList = new ArrayList<CategoryID>();
-        return new Genre(id, name, aIsActive, emptyList, now, now, deletedAt);
+        return new Genre(id, name, isActive, emptyList, now, now, deletedAt);
     }
 
     public static Genre with(final Genre aGenre) {
@@ -53,7 +57,7 @@ public class Genre extends AggregateRoot<GenreID> {
                 aGenre.id,
                 aGenre.name,
                 aGenre.isActive,
-                new ArrayList<>(aGenre.categories),
+                new ArrayList<>(aGenre.categories != null ? aGenre.categories : Collections.emptyList()),
                 aGenre.createdAt,
                 aGenre.updatedAt,
                 aGenre.deletedAt
@@ -107,5 +111,74 @@ public class Genre extends AggregateRoot<GenreID> {
 
     public Instant getDeletedAt() {
         return deletedAt;
+    }
+
+    public void activate() {
+        isActive = true;
+        updatedAt = InstantUtils.now();
+        deletedAt = null;
+    }
+
+    public void deactivate() {
+        isActive = false;
+        if (getDeletedAt() == null) {
+            deletedAt = InstantUtils.now();
+        }
+        updatedAt = InstantUtils.now();
+    }
+
+    public void update(final String aName, final boolean isActive) {
+        this.name = aName;
+        this.isActive = isActive;
+        if (isActive) {
+            activate();
+        } else {
+            deactivate();
+        }
+        selfValidate();
+    }
+
+    public void update(final String aName, final boolean isActive, final List<CategoryID> categories) {
+
+        this.categories = new ArrayList<>(categories != null ? categories : Collections.emptyList());
+        update(aName, isActive);
+    }
+
+    private void selfValidate() {
+        final var notification = Notification.create();
+        validate(notification);
+
+        if (notification.hasError()) {
+            throw new NotificationException("", notification);
+        }
+    }
+
+    public Genre addCategory(final CategoryID aCategory) {
+        if (aCategory == null) {
+            return this;
+        }
+
+        categories.add(aCategory);
+        updatedAt = InstantUtils.now();
+
+        return this;
+    }
+
+
+    public Genre removeCategory(final CategoryID aCategory) {
+        if (aCategory == null) {
+            return this;
+        }
+
+        categories.remove(aCategory);
+        updatedAt = InstantUtils.now();
+
+        return this;
+    }
+
+    public Genre addCategories(final List<CategoryID> categories) {
+        if (categories == null) return this;
+        categories.forEach(this::addCategory);
+        return this;
     }
 }

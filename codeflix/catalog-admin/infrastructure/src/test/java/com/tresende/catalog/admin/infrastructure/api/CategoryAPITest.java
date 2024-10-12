@@ -12,11 +12,11 @@ import com.tresende.catalog.admin.application.category.retrieve.list.CategoryLis
 import com.tresende.catalog.admin.application.category.retrieve.list.ListCategoryUseCase;
 import com.tresende.catalog.admin.application.category.update.UpdateCategoryOutput;
 import com.tresende.catalog.admin.application.category.update.UpdateCategoryUseCase;
-import com.tresende.catalog.admin.domain.Pagination;
 import com.tresende.catalog.admin.domain.category.Category;
 import com.tresende.catalog.admin.domain.category.CategoryID;
 import com.tresende.catalog.admin.domain.exceptions.DomainException;
 import com.tresende.catalog.admin.domain.exceptions.NotFoundException;
+import com.tresende.catalog.admin.domain.pagination.Pagination;
 import com.tresende.catalog.admin.domain.validation.Error;
 import com.tresende.catalog.admin.domain.validation.handler.Notification;
 import com.tresende.catalog.admin.infrastructure.category.models.CreateCategoryRequest;

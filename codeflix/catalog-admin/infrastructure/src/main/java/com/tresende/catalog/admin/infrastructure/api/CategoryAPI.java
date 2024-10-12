@@ -1,6 +1,6 @@
 package com.tresende.catalog.admin.infrastructure.api;
 
-import com.tresende.catalog.admin.domain.Pagination;
+import com.tresende.catalog.admin.domain.pagination.Pagination;
 import com.tresende.catalog.admin.infrastructure.category.models.CategoryListResponse;
 import com.tresende.catalog.admin.infrastructure.category.models.CategoryResponse;
 import com.tresende.catalog.admin.infrastructure.category.models.CreateCategoryRequest;

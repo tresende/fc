@@ -1,10 +1,10 @@
 package com.tresende.catalog.admin.infrastructure.category;
 
-import com.tresende.catalog.admin.domain.Pagination;
 import com.tresende.catalog.admin.domain.category.Category;
 import com.tresende.catalog.admin.domain.category.CategoryGateway;
 import com.tresende.catalog.admin.domain.category.CategoryID;
-import com.tresende.catalog.admin.domain.category.CategorySearchQuery;
+import com.tresende.catalog.admin.domain.pagination.Pagination;
+import com.tresende.catalog.admin.domain.pagination.SearchQuery;
 import com.tresende.catalog.admin.infrastructure.category.persistence.CategoryJpaEntity;
 import com.tresende.catalog.admin.infrastructure.category.persistence.CategoryRepository;
 import com.tresende.catalog.admin.infrastructure.utils.SpecificationUtils;
@@ -49,7 +49,7 @@ public class CategoryMySqlGateway implements CategoryGateway {
     }
 
     @Override
-    public Pagination<Category> findAll(CategorySearchQuery aQuery) {
+    public Pagination<Category> findAll(SearchQuery aQuery) {
         final var page = PageRequest.of(
                 aQuery.page(),
                 aQuery.perPage(),

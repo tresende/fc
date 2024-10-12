@@ -33,7 +33,7 @@ class GenreValidator extends Validator {
             return;
         }
         if (name.length() < NAME_MIN_LENGTH || name.length() > NAME_MAX_LENGTH) {
-            this.validationHandler().append(new Error("'name' must be between 3 and 255 characters"));
+            this.validationHandler().append(new Error("'name' must be between 1 and 255 characters"));
         }
     }
 }

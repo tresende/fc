@@ -2,7 +2,7 @@ package com.tresende.catalog.admin.application.category.retrieve.list;
 
 import com.tresende.catalog.admin.IntegrationTest;
 import com.tresende.catalog.admin.domain.category.Category;
-import com.tresende.catalog.admin.domain.category.CategorySearchQuery;
+import com.tresende.catalog.admin.domain.pagination.SearchQuery;
 import com.tresende.catalog.admin.infrastructure.category.persistence.CategoryJpaEntity;
 import com.tresende.catalog.admin.infrastructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
@@ -47,7 +47,7 @@ class ListCategoryUseCaseTestIT {
         final var expectedItemsCount = 0;
         final var expectedTotal = 0;
 
-        final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+        final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
         final var actualResult = useCase.execute(aQuery);
 
         Assertions.assertEquals(expectedItemsCount, actualResult.items().size());
@@ -76,7 +76,7 @@ class ListCategoryUseCaseTestIT {
         final var expectedDirection = "asc";
         final var expectedSort = "name";
 
-        final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+        final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
         final var actualResult = useCase.execute(aQuery);
 
         Assertions.assertEquals(expectedItemsCount, actualResult.items().size());
@@ -104,7 +104,7 @@ class ListCategoryUseCaseTestIT {
     ) {
         final var expectedTerms = "";
 
-        final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+        final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
         final var actualResult = useCase.execute(aQuery);
 
         Assertions.assertEquals(expectedItemsCount, actualResult.items().size());
@@ -132,7 +132,7 @@ class ListCategoryUseCaseTestIT {
         final var expectedSort = "name";
         final var expectedDirection = "asc";
 
-        final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+        final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
         final var actualResult = useCase.execute(aQuery);
 
         Assertions.assertEquals(expectedItemsCount, actualResult.items().size());

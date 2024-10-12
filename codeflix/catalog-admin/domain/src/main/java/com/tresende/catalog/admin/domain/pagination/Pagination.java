@@ -1,4 +1,4 @@
-package com.tresende.catalog.admin.domain;
+package com.tresende.catalog.admin.domain.pagination;
 
 import java.util.List;
 import java.util.function.Function;

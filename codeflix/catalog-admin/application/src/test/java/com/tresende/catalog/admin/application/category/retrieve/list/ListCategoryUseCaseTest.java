@@ -1,9 +1,9 @@
 package com.tresende.catalog.admin.application.category.retrieve.list;
 
-import com.tresende.catalog.admin.domain.Pagination;
 import com.tresende.catalog.admin.domain.category.Category;
 import com.tresende.catalog.admin.domain.category.CategoryGateway;
-import com.tresende.catalog.admin.domain.category.CategorySearchQuery;
+import com.tresende.catalog.admin.domain.pagination.Pagination;
+import com.tresende.catalog.admin.domain.pagination.SearchQuery;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ public class ListCategoryUseCaseTest {
         final var expectedSort = "createdAt";
         final var expectedDirection = "asc";
 
-        final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+        final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
 
         final var expectedPagination = new Pagination<>(
                 expectedPage,
@@ -76,7 +76,7 @@ public class ListCategoryUseCaseTest {
         final var expectedSort = "createdAt";
         final var expectedDirection = "asc";
 
-        final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+        final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
         final var expectedItemsCount = 0;
 
         final var expectedPagination = new Pagination<>(
@@ -106,7 +106,7 @@ public class ListCategoryUseCaseTest {
         final var expectedTerms = "";
         final var expectedSort = "createdAt";
         final var expectedDirection = "asc";
-        final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+        final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
         final var expectedErrorMessage = "Gateway Error";
 
 

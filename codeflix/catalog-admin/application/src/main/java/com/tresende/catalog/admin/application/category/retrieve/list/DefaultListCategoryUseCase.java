@@ -1,8 +1,8 @@
 package com.tresende.catalog.admin.application.category.retrieve.list;
 
-import com.tresende.catalog.admin.domain.Pagination;
 import com.tresende.catalog.admin.domain.category.CategoryGateway;
-import com.tresende.catalog.admin.domain.category.CategorySearchQuery;
+import com.tresende.catalog.admin.domain.pagination.Pagination;
+import com.tresende.catalog.admin.domain.pagination.SearchQuery;
 
 import java.util.Objects;
 
@@ -14,7 +14,7 @@ public class DefaultListCategoryUseCase extends ListCategoryUseCase {
     }
 
     @Override
-    public Pagination<CategoryListOutput> execute(CategorySearchQuery aQuery) {
+    public Pagination<CategoryListOutput> execute(SearchQuery aQuery) {
         return categoryGateway.findAll(aQuery).map(CategoryListOutput::from);
     }
 }
