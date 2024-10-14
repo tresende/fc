@@ -28,6 +28,18 @@ public class Notification implements ValidationHandler {
     }
 
     @Override
+    public <T> T validate(final Validation<T> aValidation) {
+        try {
+            return aValidation.validate();
+        } catch (final DomainException ex) {
+            this.errors.addAll(ex.getErrors());
+        } catch (final Throwable t) {
+            this.errors.add(new Error(t.getMessage()));
+        }
+        return null;
+    }
+
+    @Override
     public Notification append(Error anError) {
         this.errors.add(anError);
         return this;
@@ -36,19 +48,6 @@ public class Notification implements ValidationHandler {
     @Override
     public Notification append(ValidationHandler aHandler) {
         this.errors.addAll(aHandler.getErrors());
-        return this;
-    }
-
-    @Override
-    public Notification validate(Validation aValidation) {
-        try {
-            aValidation.validate();
-        } catch (final DomainException ex) {
-            this.errors.addAll(ex.getErrors());
-        } catch (final Throwable ex) {
-            this.errors.add(new Error(ex.getMessage()));
-        }
-
         return this;
     }
 
