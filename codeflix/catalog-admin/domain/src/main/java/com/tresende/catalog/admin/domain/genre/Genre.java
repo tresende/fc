@@ -127,7 +127,7 @@ public class Genre extends AggregateRoot<GenreID> {
         updatedAt = InstantUtils.now();
     }
 
-    public void update(final String aName, final boolean isActive) {
+    public Genre update(final String aName, final boolean isActive) {
         this.name = aName;
         this.isActive = isActive;
         if (isActive) {
@@ -136,12 +136,13 @@ public class Genre extends AggregateRoot<GenreID> {
             deactivate();
         }
         selfValidate();
+        return this;
     }
 
-    public void update(final String aName, final boolean isActive, final List<CategoryID> categories) {
+    public Genre update(final String aName, final boolean isActive, final List<CategoryID> categories) {
 
         this.categories = new ArrayList<>(categories != null ? categories : Collections.emptyList());
-        update(aName, isActive);
+        return update(aName, isActive);
     }
 
     private void selfValidate() {
