@@ -1,25 +1,22 @@
 package com.tresende.catalog.admin.application.category.retrieve.list;
 
+import com.tresende.catalog.admin.application.UseCaseTest;
 import com.tresende.catalog.admin.domain.category.Category;
 import com.tresende.catalog.admin.domain.category.CategoryGateway;
 import com.tresende.catalog.admin.domain.pagination.Pagination;
 import com.tresende.catalog.admin.domain.pagination.SearchQuery;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.eq;
 
-@ExtendWith(MockitoExtension.class)
-public class ListCategoryUseCaseTest {
+public class ListCategoryUseCaseTest extends UseCaseTest {
 
     @Mock
     CategoryGateway categoryGateway;
@@ -27,9 +24,9 @@ public class ListCategoryUseCaseTest {
     @InjectMocks
     private DefaultListCategoryUseCase useCase;
 
-    @BeforeEach
-    void cleanUp() {
-        Mockito.reset(categoryGateway);
+    @Override
+    public List<Object> getMocks() {
+        return List.of(categoryGateway);
     }
 
     @Test

@@ -1,22 +1,20 @@
 package com.tresende.catalog.admin.application.category.create;
 
+import com.tresende.catalog.admin.application.UseCaseTest;
 import com.tresende.catalog.admin.domain.category.CategoryGateway;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Objects;
 
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-class CreateCategoryUseCaseTest {
+class CreateCategoryUseCaseTest extends UseCaseTest {
 
     @Mock
     CategoryGateway categoryGateway;
@@ -24,9 +22,10 @@ class CreateCategoryUseCaseTest {
     @InjectMocks
     private DefaultCreateCategoryUseCase useCase;
 
-    @BeforeEach
-    void cleanUp() {
-        Mockito.reset(categoryGateway);
+
+    @Override
+    public List<Object> getMocks() {
+        return List.of(categoryGateway);
     }
 
     @Test
@@ -122,4 +121,5 @@ class CreateCategoryUseCaseTest {
                 ));
         Assertions.assertEquals(expectedErrorMessage, notification.firstError().message());
     }
+
 }

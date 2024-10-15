@@ -8,6 +8,7 @@ import com.tresende.catalog.admin.domain.exceptions.NotFoundException;
 import com.tresende.catalog.admin.domain.exceptions.NotificationException;
 import com.tresende.catalog.admin.domain.genre.Genre;
 import com.tresende.catalog.admin.domain.genre.GenreGateway;
+import com.tresende.catalog.admin.domain.genre.GenreID;
 import com.tresende.catalog.admin.domain.validation.Error;
 import com.tresende.catalog.admin.domain.validation.ValidationHandler;
 import com.tresende.catalog.admin.domain.validation.handler.Notification;
@@ -18,31 +19,33 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class DefaultUpdateGenreUseCase extends UpateGenreUseCase {
+public class DefaultUpdateGenreUseCase extends UpdateGenreUseCase {
 
-    private final GenreGateway genreGateway;
     private final CategoryGateway categoryGateway;
+    private final GenreGateway genreGateway;
 
     public DefaultUpdateGenreUseCase(
-            final GenreGateway genreGateway,
-            final CategoryGateway categoryGateway
+            final CategoryGateway categoryGateway,
+            final GenreGateway genreGateway
     ) {
-        this.genreGateway = Objects.requireNonNull(genreGateway);
         this.categoryGateway = Objects.requireNonNull(categoryGateway);
+        this.genreGateway = Objects.requireNonNull(genreGateway);
     }
 
     @Override
     public UpdateGenreOutput execute(final UpdateGenreCommand aCommand) {
-        final var anId = aCommand.id();
+        final var anId = GenreID.from(aCommand.id());
         final var aName = aCommand.name();
         final var isActive = aCommand.isActive();
         final var categories = toCategoryId(aCommand.categories());
 
-        final var aGenre = genreGateway.findById(anId).orElseThrow(this.notFound(anId));
+        final var aGenre = this.genreGateway.findById(anId)
+                .orElseThrow(notFound(anId));
 
         final var notification = Notification.create();
         notification.append(validateCategories(categories));
         notification.validate(() -> aGenre.update(aName, isActive, categories));
+
         if (notification.hasError()) {
             throw new NotificationException(
                     "Could not update Aggregate Genre %s".formatted(aCommand.id()), notification
@@ -52,9 +55,9 @@ public class DefaultUpdateGenreUseCase extends UpateGenreUseCase {
         return UpdateGenreOutput.from(this.genreGateway.update(aGenre));
     }
 
-    private ValidationHandler validateCategories(final List<CategoryID> ids) {
+    private ValidationHandler validateCategories(List<CategoryID> ids) {
         final var notification = Notification.create();
-        if (ids.isEmpty()) {
+        if (ids == null || ids.isEmpty()) {
             return notification;
         }
 
@@ -74,14 +77,13 @@ public class DefaultUpdateGenreUseCase extends UpateGenreUseCase {
         return notification;
     }
 
-
-    private List<CategoryID> toCategoryId(
-            final List<String> categories
-    ) {
-        return categories.stream().map(CategoryID::from).toList();
-    }
-
     private Supplier<DomainException> notFound(final Identifier anId) {
         return () -> NotFoundException.with(Genre.class, anId);
+    }
+
+    private List<CategoryID> toCategoryId(final List<String> categories) {
+        return categories.stream()
+                .map(CategoryID::from)
+                .toList();
     }
 }
