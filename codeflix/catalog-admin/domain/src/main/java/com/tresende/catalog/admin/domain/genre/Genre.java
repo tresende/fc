@@ -101,6 +101,10 @@ public class Genre extends AggregateRoot<GenreID> {
         return Collections.unmodifiableList(categories);
     }
 
+    public List<String> getCategoriesAsStringList() {
+        return categories.stream().map(CategoryID::getValue).toList();
+    }
+
     public Instant getCreatedAt() {
         return createdAt;
     }

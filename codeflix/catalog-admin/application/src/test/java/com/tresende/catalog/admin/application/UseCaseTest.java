@@ -11,7 +11,7 @@ import static org.mockito.Mockito.reset;
 
 @ExtendWith(MockitoExtension.class)
 public abstract class UseCaseTest implements BeforeEachCallback {
-    public abstract List<Object> getMocks();
+    protected abstract List<Object> getMocks();
 
     @Override
     public void beforeEach(final ExtensionContext extensionContext) {
