@@ -61,6 +61,7 @@ public class Genre extends AggregateRoot<GenreID> {
                 aGenre.createdAt,
                 aGenre.updatedAt,
                 aGenre.deletedAt
+                
         );
     }
 
