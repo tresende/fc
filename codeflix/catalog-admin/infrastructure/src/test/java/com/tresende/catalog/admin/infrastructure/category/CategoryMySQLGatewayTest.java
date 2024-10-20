@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.stream.Stream;
 
 @MySQLGatewayTest
-public class CategoryMySqlGatewayTest {
+public class CategoryMySQLGatewayTest {
 
     @Autowired
-    private CategoryMySqlGateway categoryGateway;
+    private CategoryMySQLGateway categoryGateway;
 
     @Autowired
     private CategoryRepository categoryRepository;

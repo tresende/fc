@@ -18,11 +18,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CategoryMySqlGateway implements CategoryGateway {
+public class CategoryMySQLGateway implements CategoryGateway {
 
     private final CategoryRepository repository;
 
-    public CategoryMySqlGateway(CategoryRepository repository) {
+    public CategoryMySQLGateway(CategoryRepository repository) {
         this.repository = repository;
     }
 

@@ -19,15 +19,13 @@ public class GenreCategoryJpaEntity {
     public GenreCategoryJpaEntity() {
     }
 
-    private GenreCategoryJpaEntity(final CategoryID aCategoryId, final GenreJpaEntity aGenre) {
-        this.id = GenreCategoryID.from(aCategoryId.getValue(), aGenre.getId());
+    private GenreCategoryJpaEntity(final GenreJpaEntity aGenre, final CategoryID aCategoryId) {
+        this.id = GenreCategoryID.from(aGenre.getId(), aCategoryId.getValue());
         this.genre = aGenre;
     }
 
-    public static GenreCategoryJpaEntity from(
-            final CategoryID aCategoryId, final GenreJpaEntity aGenre
-    ) {
-        return new GenreCategoryJpaEntity(aCategoryId, aGenre);
+    public static GenreCategoryJpaEntity from(final GenreJpaEntity aGenre, final CategoryID aCategoryId) {
+        return new GenreCategoryJpaEntity(aGenre, aCategoryId);
     }
 
     @Override
@@ -40,22 +38,24 @@ public class GenreCategoryJpaEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), genre);
+        return Objects.hash(getId());
     }
 
     public GenreCategoryID getId() {
         return id;
     }
 
-    public void setId(final GenreCategoryID id) {
+    public GenreCategoryJpaEntity setId(GenreCategoryID id) {
         this.id = id;
+        return this;
     }
 
     public GenreJpaEntity getGenre() {
         return genre;
     }
 
-    public void setGenre(final GenreJpaEntity genre) {
+    public GenreCategoryJpaEntity setGenre(GenreJpaEntity genre) {
         this.genre = genre;
+        return this;
     }
 }

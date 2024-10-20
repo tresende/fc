@@ -1,14 +1,14 @@
 CREATE TABLE genres
 (
-    id          VARCHAR(36)  NOT NULL PRIMARY KEY,
-    name        VARCHAR(255) NOT NULL,
-    active      BOOLEAN      NOT NULL DEFAULT TRUE,
-    created_at  DATETIME(6)  NOT NULL,
-    updated_at  DATETIME(6)  NOT NULL,
-    deleted_at  DATETIME(6)  NULL
+    id         VARCHAR(36)  NOT NULL PRIMARY KEY,
+    name       VARCHAR(255) NOT NULL,
+    active     BOOLEAN      NOT NULL DEFAULT TRUE,
+    created_at DATETIME(6)  NOT NULL,
+    updated_at DATETIME(6)  NOT NULL,
+    deleted_at DATETIME(6)  NULL
 );
 
-CREATE TABLE genre_categories
+CREATE TABLE genres_categories
 (
     genre_id    VARCHAR(36) NOT NULL,
     category_id VARCHAR(36) NOT NULL,

@@ -6,7 +6,7 @@ import com.tresende.catalog.admin.domain.validation.Validator;
 
 class GenreValidator extends Validator {
 
-    private final static int NAME_MIN_LENGTH = 3;
+    private final static int NAME_MIN_LENGTH = 1;
     private final static int NAME_MAX_LENGTH = 255;
 
     private final Genre genre;

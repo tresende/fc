@@ -3,142 +3,164 @@ package com.tresende.catalog.admin.infrastructure.genre.persistence;
 import com.tresende.catalog.admin.domain.category.CategoryID;
 import com.tresende.catalog.admin.domain.genre.Genre;
 import com.tresende.catalog.admin.domain.genre.GenreID;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.EAGER;
 
-@Entity
+@Entity(name = "Genre")
 @Table(name = "genres")
 public class GenreJpaEntity {
+    @Id
     @Column(name = "id", nullable = false)
     private String id;
+
+
     @Column(name = "name", nullable = false)
     private String name;
+
     @Column(name = "active", nullable = false)
     private boolean active;
+
     @OneToMany(mappedBy = "genre", cascade = ALL, fetch = EAGER, orphanRemoval = true)
     private Set<GenreCategoryJpaEntity> categories;
+
     @Column(name = "created_at", nullable = false, columnDefinition = "DATETIME(6)")
     private Instant createdAt;
+
     @Column(name = "updated_at", nullable = false, columnDefinition = "DATETIME(6)")
     private Instant updatedAt;
+
     @Column(name = "deleted_at", columnDefinition = "DATETIME(6)")
     private Instant deletedAt;
 
     public GenreJpaEntity() {
     }
 
-    public GenreJpaEntity(
+    private GenreJpaEntity(
             final String anId,
             final String aName,
             final boolean isActive,
             final Instant createdAt,
             final Instant updatedAt,
-            final Instant deletedAt) {
+            final Instant deletedAt
+    ) {
         this.id = anId;
         this.name = aName;
         this.active = isActive;
+        this.categories = new HashSet<>();
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
     }
 
     public static GenreJpaEntity from(final Genre aGenre) {
-        final var anId = aGenre.getId().getValue();
-        final var aName = aGenre.getName();
-        final var isActive = aGenre.isActive();
-        final var createdAt = aGenre.getCreatedAt();
-        final var updatedAt = aGenre.getUpdatedAt();
-        final var deletedAt = aGenre.getDeletedAt();
-        final var anEntity = new GenreJpaEntity(anId, aName, isActive, createdAt, updatedAt, deletedAt);
-        aGenre.getCategories().forEach(anEntity::addCategory);
+        final var anEntity = new GenreJpaEntity(
+                aGenre.getId().getValue(),
+                aGenre.getName(),
+                aGenre.isActive(),
+                aGenre.getCreatedAt(),
+                aGenre.getUpdatedAt(),
+                aGenre.getDeletedAt()
+        );
+
+        aGenre.getCategories()
+                .forEach(anEntity::addCategory);
+
         return anEntity;
     }
 
     public Genre toAggregate() {
         return Genre.with(
-                GenreID.from(this.id),
-                this.name,
-                this.active,
-                this.categories.stream()
-                        .map(it -> CategoryID.from(it.getId().getCategoryId()))
-                        .toList(),
-                this.createdAt,
-                this.updatedAt,
-                this.deletedAt
+                GenreID.from(getId()),
+                getName(),
+                isActive(),
+                getCategoryIDs(),
+                getCreatedAt(),
+                getUpdatedAt(),
+                getDeletedAt()
         );
     }
 
     private void addCategory(final CategoryID anId) {
-        final var aCategory = GenreCategoryJpaEntity.from(anId, this);
-        this.categories.add(aCategory);
+        this.categories.add(GenreCategoryJpaEntity.from(this, anId));
     }
 
     private void removeCategory(final CategoryID anId) {
-        final var aCategory = GenreCategoryJpaEntity.from(anId, this);
-        this.categories.add(aCategory);
+        this.categories.remove(GenreCategoryJpaEntity.from(this, anId));
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(final String id) {
+    public GenreJpaEntity setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
+    public GenreJpaEntity setName(String name) {
         this.name = name;
+        return this;
     }
 
     public boolean isActive() {
         return active;
     }
 
-    public void setActive(final boolean active) {
+    public GenreJpaEntity setActive(boolean active) {
         this.active = active;
+        return this;
+    }
+
+    public List<CategoryID> getCategoryIDs() {
+        return getCategories().stream()
+                .map(it -> CategoryID.from(it.getId().getCategoryId()))
+                .toList();
     }
 
     public Set<GenreCategoryJpaEntity> getCategories() {
         return categories;
     }
 
-    public void setCategories(final Set<GenreCategoryJpaEntity> categories) {
+    public GenreJpaEntity setCategories(Set<GenreCategoryJpaEntity> categories) {
         this.categories = categories;
+        return this;
     }
 
     public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(final Instant createdAt) {
+    public GenreJpaEntity setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+        return this;
     }
 
     public Instant getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(final Instant updatedAt) {
+    public GenreJpaEntity setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+        return this;
     }
 
     public Instant getDeletedAt() {
         return deletedAt;
     }
 
-    public void setDeletedAt(final Instant deletedAt) {
+    public GenreJpaEntity setDeletedAt(Instant deletedAt) {
         this.deletedAt = deletedAt;
+        return this;
     }
 }
