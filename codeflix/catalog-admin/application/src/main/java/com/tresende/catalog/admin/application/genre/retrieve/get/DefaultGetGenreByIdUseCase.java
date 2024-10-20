@@ -7,11 +7,11 @@ import com.tresende.catalog.admin.domain.genre.GenreID;
 
 import java.util.Objects;
 
-public class DefaultGetGenderByIdUseCase extends GetGenreByIdUseCase {
+public class DefaultGetGenreByIdUseCase extends GetGenreByIdUseCase {
 
     private final GenreGateway genreGateway;
 
-    public DefaultGetGenderByIdUseCase(final GenreGateway genreGateway) {
+    public DefaultGetGenreByIdUseCase(final GenreGateway genreGateway) {
         this.genreGateway = Objects.requireNonNull(genreGateway);
     }
 

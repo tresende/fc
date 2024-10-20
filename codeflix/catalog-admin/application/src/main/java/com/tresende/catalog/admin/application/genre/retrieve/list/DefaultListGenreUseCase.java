@@ -6,7 +6,7 @@ import com.tresende.catalog.admin.domain.pagination.SearchQuery;
 
 import java.util.Objects;
 
-public class DefaultListGenreUseCase extends ListGenderUseCase {
+public class DefaultListGenreUseCase extends ListGenreUseCase {
 
     private final GenreGateway genreGateway;
 

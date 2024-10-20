@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 public class GetGenreByIdUseCaseTest extends UseCaseTest {
 
     @InjectMocks
-    private DefaultGetGenderByIdUseCase useCase;
+    private DefaultGetGenreByIdUseCase useCase;
 
     @Mock
     private GenreGateway genreGateway;
