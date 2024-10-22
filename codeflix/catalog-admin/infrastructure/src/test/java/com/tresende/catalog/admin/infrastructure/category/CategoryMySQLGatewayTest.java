@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 @MySQLGatewayTest
@@ -52,6 +53,30 @@ public class CategoryMySQLGatewayTest {
         Assertions.assertNotNull(actualEntity.getCreatedAt());
         Assertions.assertNotNull(actualEntity.getUpdatedAt());
         Assertions.assertNull(actualEntity.getDeletedAt());
+    }
+
+    @Test
+    public void givenPrePersistedCategories__whenCallsExistsById__shouldReturnsIds() {
+        final var filmes = Category.newCategory("Filmes", null, true);
+        final var series = Category.newCategory("Series", null, true);
+        final var documentarios = Category.newCategory("Documentarios", null, true);
+
+        Assertions.assertEquals(0, categoryRepository.count());
+
+        categoryRepository.saveAll(Stream.of(filmes, series, documentarios).map(CategoryJpaEntity::from).toList());
+        Assertions.assertEquals(3, categoryRepository.count());
+
+        final var actualResult = categoryGateway.existsByIds(
+                List.of(filmes.getId(), series.getId(), documentarios.getId(), CategoryID.from("123"))
+        );
+
+
+        final var expectedIds = List.of(filmes.getId(), series.getId(), documentarios.getId());
+        Assertions.assertTrue(
+                expectedIds.size() == actualResult.size() &&
+                        expectedIds.containsAll(actualResult)
+        );
+
     }
 
     @Test
