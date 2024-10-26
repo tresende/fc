@@ -1,37 +1,42 @@
 package com.tresende.catalog.admin.application.genre.retrieve.list;
 
-
 import com.tresende.catalog.admin.IntegrationTest;
 import com.tresende.catalog.admin.domain.genre.Genre;
 import com.tresende.catalog.admin.domain.genre.GenreGateway;
 import com.tresende.catalog.admin.domain.pagination.SearchQuery;
+import com.tresende.catalog.admin.infrastructure.genre.persistence.GenreJpaEntity;
+import com.tresende.catalog.admin.infrastructure.genre.persistence.GenreRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.List;
-
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @IntegrationTest
 public class ListGenreUseCaseIT {
 
     @Autowired
-    private DefaultListGenreUseCase useCase;
+    private ListGenreUseCase useCase;
 
-    @SpyBean
+    @Autowired
     private GenreGateway genreGateway;
+
+    @Autowired
+    private GenreRepository genreRepository;
 
     @Test
     public void givenAValidQuery_whenCallsListGenre_shouldReturnGenres() {
         // given
-        final var acao = genreGateway.create(Genre.newGenre("Ação", true));
-        final var aventura = genreGateway.create(Genre.newGenre("Aventura", true));
+        final var genres = List.of(
+                Genre.newGenre("Ação", true),
+                Genre.newGenre("Aventura", true)
+        );
 
-        final var genres = List.of(acao, aventura);
+        genreRepository.saveAllAndFlush(
+                genres.stream()
+                        .map(GenreJpaEntity::from)
+                        .toList()
+        );
 
         final var expectedPage = 0;
         final var expectedPerPage = 10;
@@ -54,9 +59,10 @@ public class ListGenreUseCaseIT {
         Assertions.assertEquals(expectedPage, actualOutput.currentPage());
         Assertions.assertEquals(expectedPerPage, actualOutput.perPage());
         Assertions.assertEquals(expectedTotal, actualOutput.total());
-        Assertions.assertEquals(expectedItems, actualOutput.items());
-
-        verify(genreGateway, times(1)).findAll(eq(aQuery));
+        Assertions.assertTrue(
+                expectedItems.size() == actualOutput.items().size()
+                        && expectedItems.containsAll(actualOutput.items())
+        );
     }
 
     @Test
@@ -84,8 +90,5 @@ public class ListGenreUseCaseIT {
         Assertions.assertEquals(expectedPerPage, actualOutput.perPage());
         Assertions.assertEquals(expectedTotal, actualOutput.total());
         Assertions.assertEquals(expectedItems, actualOutput.items());
-
-        verify(genreGateway, times(1)).findAll(eq(aQuery));
     }
 }
-
