@@ -1,5 +1,6 @@
 package com.tresende.catalog.admin.infrastructure.api;
 
+import com.tresende.catalog.admin.application.genre.create.CreateGenreOutput;
 import com.tresende.catalog.admin.domain.pagination.Pagination;
 import com.tresende.catalog.admin.infrastructure.genre.models.CreateGenreRequest;
 import com.tresende.catalog.admin.infrastructure.genre.models.GenreListResponse;
@@ -27,7 +28,7 @@ public interface GenreAPI {
             @ApiResponse(responseCode = "422", description = "A validation error was thrown"),
             @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
     })
-    ResponseEntity<?> createGenre(@RequestBody CreateGenreRequest input);
+    ResponseEntity<CreateGenreOutput> createGenre(@RequestBody CreateGenreRequest input);
 
     @GetMapping
     @Operation(summary = "List all genres paginated")

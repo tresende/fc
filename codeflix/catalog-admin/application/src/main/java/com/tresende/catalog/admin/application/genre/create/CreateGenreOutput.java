@@ -14,4 +14,8 @@ public record CreateGenreOutput(
     public static CreateGenreOutput from(final GenreID anId) {
         return new CreateGenreOutput(anId.getValue());
     }
+
+    public static CreateGenreOutput from(final String anId) {
+        return new CreateGenreOutput(anId);
+    }
 }
