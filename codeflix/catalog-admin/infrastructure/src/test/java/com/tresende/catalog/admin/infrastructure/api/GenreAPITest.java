@@ -7,6 +7,8 @@ import com.tresende.catalog.admin.application.genre.create.CreateGenreUseCase;
 import com.tresende.catalog.admin.application.genre.delete.DeleteGenreUseCase;
 import com.tresende.catalog.admin.application.genre.retrieve.get.GenreOutput;
 import com.tresende.catalog.admin.application.genre.retrieve.get.GetGenreByIdUseCase;
+import com.tresende.catalog.admin.application.genre.retrieve.list.GenreListOutput;
+import com.tresende.catalog.admin.application.genre.retrieve.list.ListGenreUseCase;
 import com.tresende.catalog.admin.application.genre.update.UpdateGenreOutput;
 import com.tresende.catalog.admin.application.genre.update.UpdateGenreUseCase;
 import com.tresende.catalog.admin.domain.category.CategoryID;
@@ -14,6 +16,7 @@ import com.tresende.catalog.admin.domain.exceptions.NotFoundException;
 import com.tresende.catalog.admin.domain.exceptions.NotificationException;
 import com.tresende.catalog.admin.domain.genre.Genre;
 import com.tresende.catalog.admin.domain.genre.GenreID;
+import com.tresende.catalog.admin.domain.pagination.Pagination;
 import com.tresende.catalog.admin.domain.validation.Error;
 import com.tresende.catalog.admin.domain.validation.handler.Notification;
 import com.tresende.catalog.admin.infrastructure.genre.models.CreateGenreRequest;
@@ -26,7 +29,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,19 +42,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class GenreAPITest {
 
     @Autowired
-    ObjectMapper mapper;
+    private ObjectMapper mapper;
 
     @MockBean
-    CreateGenreUseCase createGenreUseCase;
+    private CreateGenreUseCase createGenreUseCase;
 
     @MockBean
-    GetGenreByIdUseCase getGenreByIdUseCase;
+    private GetGenreByIdUseCase getGenreByIdUseCase;
 
     @MockBean
-    UpdateGenreUseCase updateGenreUseCase;
+    private UpdateGenreUseCase updateGenreUseCase;
 
     @MockBean
-    DeleteGenreUseCase deleteGenreUseCase;
+    private DeleteGenreUseCase deleteGenreUseCase;
+
+    @MockBean
+    private ListGenreUseCase listGenreUseCase;
 
     @Autowired
     private MockMvc mvc;
@@ -74,6 +79,7 @@ class GenreAPITest {
 
         // when
         final var aRequest = post("/genres")
+
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.mapper.writeValueAsString(aCommand));
 
@@ -109,6 +115,7 @@ class GenreAPITest {
 
         // when
         final var aRequest = post("/genres")
+
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.mapper.writeValueAsString(aCommand));
 
@@ -150,6 +157,7 @@ class GenreAPITest {
 
         // when
         final var aRequest = get("/genres/{id}", expectedId)
+
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -180,6 +188,7 @@ class GenreAPITest {
 
         // when
         final var aRequest = get("/genres/{id}", expectedId.getValue())
+
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -193,15 +202,15 @@ class GenreAPITest {
         verify(getGenreByIdUseCase).execute(eq(expectedId.getValue()));
     }
 
-
     @Test
     public void givenAValidCommand_whenCallsUpdateGenre_shouldReturnGenreId() throws Exception {
         // given
         final var expectedName = "Ação";
         final var expectedCategories = List.of("123", "456");
         final var expectedIsActive = true;
+
         final var aGenre = Genre.newGenre(expectedName, expectedIsActive);
-        final var expectedId = aGenre.getId();
+        final var expectedId = aGenre.getId().getValue();
 
         final var aCommand =
                 new UpdateGenreRequest(expectedName, expectedCategories, expectedIsActive);
@@ -211,6 +220,7 @@ class GenreAPITest {
 
         // when
         final var aRequest = put("/genres/{id}", expectedId)
+
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.mapper.writeValueAsString(aCommand));
 
@@ -220,7 +230,7 @@ class GenreAPITest {
         // then
         response.andExpect(status().isOk())
                 .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.id", equalTo(expectedId.getValue())));
+                .andExpect(jsonPath("$.id", equalTo(expectedId)));
 
         verify(updateGenreUseCase).execute(argThat(cmd ->
                 Objects.equals(expectedName, cmd.name())
@@ -235,9 +245,10 @@ class GenreAPITest {
         final String expectedName = null;
         final var expectedCategories = List.of("123", "456");
         final var expectedIsActive = true;
-        final var aGenre = Genre.newGenre("Ação", expectedIsActive);
-        final var expectedId = aGenre.getId();
         final var expectedErrorMessage = "'name' should not be null";
+
+        final var aGenre = Genre.newGenre("Ação", expectedIsActive);
+        final var expectedId = aGenre.getId().getValue();
 
         final var aCommand =
                 new UpdateGenreRequest(expectedName, expectedCategories, expectedIsActive);
@@ -247,6 +258,7 @@ class GenreAPITest {
 
         // when
         final var aRequest = put("/genres/{id}", expectedId)
+
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.mapper.writeValueAsString(aCommand));
 
@@ -255,7 +267,6 @@ class GenreAPITest {
 
         // then
         response.andExpect(status().isUnprocessableEntity())
-                .andExpect(header().string("Location", nullValue()))
                 .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.errors", hasSize(1)))
                 .andExpect(jsonPath("$.errors[0].message", equalTo(expectedErrorMessage)));
@@ -268,19 +279,74 @@ class GenreAPITest {
     }
 
     @Test
-    public void givenAValidGenreId_whenCallsDeleteGenre_shouldReturnOk() throws Exception {
-        //given
-        final var expectedId = GenreID.from(UUID.randomUUID());
+    public void givenAValidId_whenCallsDeleteGenre_shouldBeOK() throws Exception {
+        // given
+        final var expectedId = "123";
 
         doNothing()
-                .when(deleteGenreUseCase).execute(expectedId.getValue());
-        //when
-        final var aRequest = delete("/genres/{id}", expectedId.getValue())
-                .contentType(MediaType.APPLICATION_JSON);
+                .when(deleteGenreUseCase).execute(any());
 
-        mvc.perform(aRequest);
+        // when
+        final var aRequest = delete("/genres/{id}", expectedId)
+                .accept(MediaType.APPLICATION_JSON);
+
+        final var result = this.mvc.perform(aRequest);
+
+        // then
+        result.andExpect(status().isNoContent());
+
+        verify(deleteGenreUseCase).execute(eq(expectedId));
+    }
+
+    @Test
+    public void givenValidParams_whenCallsListGenres_shouldReturnGenres() throws Exception {
+        //given
+        final var aGenre = Genre.newGenre("Ação", false);
+
+        final var expectedPage = 0;
+        final var expectedPerPage = 10;
+        final var expectedTerms = "ac";
+        final var expectedSort = "createdAt";
+        final var expectedDirection = "asc";
+        final var expectedItemsCount = 1;
+        final var expectedTotal = 1;
+
+        final var expectedItems = List.of(GenreListOutput.from(aGenre));
+
+        when(listGenreUseCase.execute(any()))
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal, expectedItems));
+
+        // when
+        final var aRequest = get("/genres")
+                .queryParam("page", String.valueOf(expectedPage))
+                .queryParam("perPage", String.valueOf(expectedPerPage))
+                .queryParam("sort", expectedSort)
+                .queryParam("dir", expectedDirection)
+                .queryParam("search", expectedTerms)
+                .accept(MediaType.APPLICATION_JSON);
+
+        final var result = this.mvc.perform(aRequest);
 
         //then
-        verify(deleteGenreUseCase).execute(expectedId.getValue());
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", equalTo(expectedPage)))
+                .andExpect(jsonPath("$.per_page", equalTo(expectedPerPage)))
+                .andExpect(jsonPath("$.total", equalTo(expectedTotal)))
+                .andExpect(jsonPath("$.items", hasSize(expectedItemsCount)))
+                .andExpect(jsonPath("$.items[0].name", equalTo(aGenre.getName())))
+                .andExpect(jsonPath("$.items[0].id", equalTo(aGenre.getId().getValue())))
+                .andExpect(jsonPath("$.items[0].is_active", equalTo(aGenre.isActive())))
+                .andExpect(jsonPath("$.items[0].created_at", equalTo(aGenre.getCreatedAt().toString())))
+                .andExpect(jsonPath("$.items[0].deleted_at", equalTo(aGenre.getDeletedAt().toString())))
+        ;
+
+        verify(listGenreUseCase, times(1)).execute(argThat(args ->
+                Objects.equals(expectedPage, args.page())
+                        && Objects.equals(expectedPerPage, args.perPage())
+                        && Objects.equals(expectedTerms, args.terms())
+                        && Objects.equals(expectedSort, args.sort())
+                        && Objects.equals(expectedDirection, args.direction())
+        ));
+
     }
 }

@@ -11,8 +11,8 @@ public interface GenreApiPresenter {
         return new GenreResponse(
                 output.id(),
                 output.name(),
-                output.isActive(),
                 output.categories(),
+                output.isActive(),
                 output.createdAt(),
                 output.updatedAt(),
                 output.deletedAt()
