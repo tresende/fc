@@ -1,8 +1,8 @@
 package com.tresende.catalog.admin.e2e.category;
 
 import com.tresende.catalog.admin.E2ETest;
+import com.tresende.catalog.admin.e2e.MockDsl;
 import com.tresende.catalog.admin.infrastructure.category.models.CategoryResponse;
-import com.tresende.catalog.admin.infrastructure.category.models.CreateCategoryRequest;
 import com.tresende.catalog.admin.infrastructure.category.models.UpdateCategoryRequest;
 import com.tresende.catalog.admin.infrastructure.category.persistence.CategoryRepository;
 import com.tresende.catalog.admin.infrastructure.configuration.json.Json;
@@ -18,8 +18,6 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.Objects;
-
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -28,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @E2ETest
 @Testcontainers
-class CategoryE2ETest {
+class CategoryE2ETest implements MockDsl {
 
     @Container
     private static final MySQLContainer MYSQL_CONTAINER =
@@ -39,13 +37,17 @@ class CategoryE2ETest {
 
     @Autowired
     private MockMvc mvc;
-
     @Autowired
     private CategoryRepository categoryRepository;
 
     @DynamicPropertySource
     public static void setDatasourceProperties(final DynamicPropertyRegistry registry) {
         registry.add("mysql.port", () -> MYSQL_CONTAINER.getMappedPort(3306));
+    }
+
+    @Override
+    public MockMvc mvc() {
+        return mvc;
     }
 
     @Test
@@ -57,7 +59,7 @@ class CategoryE2ETest {
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
 
-        final var categoryId = givenACategory(expectedName, expectedDescription, expectedIsActive);
+        final var categoryId = givenACategory(expectedName, expectedDescription, expectedIsActive).getValue();
         final var actualCategory = retrieveACategory(categoryId);
 
         Assertions.assertEquals(expectedName, actualCategory.name());
@@ -153,7 +155,7 @@ class CategoryE2ETest {
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
 
-        final var categoryId = givenACategory(expectedName, expectedDescription, expectedIsActive);
+        final var categoryId = givenACategory(expectedName, expectedDescription, expectedIsActive).getValue();
         final var actualCategory = retrieveACategory(categoryId);
 
         Assertions.assertEquals(expectedName, actualCategory.name());
@@ -184,7 +186,7 @@ class CategoryE2ETest {
         Assertions.assertTrue(MYSQL_CONTAINER.isRunning());
         Assertions.assertEquals(0, categoryRepository.count());
 
-        final var actualId = givenACategory("Movies", null, true);
+        final var actualId = givenACategory("Movies", null, true).getValue();
 
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
@@ -210,7 +212,7 @@ class CategoryE2ETest {
         Assertions.assertTrue(MYSQL_CONTAINER.isRunning());
         Assertions.assertEquals(0, categoryRepository.count());
 
-        final var actualId = givenACategory("Movies", null, true);
+        final var actualId = givenACategory("Movies", null, true).getValue();
 
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
@@ -236,7 +238,7 @@ class CategoryE2ETest {
         Assertions.assertTrue(MYSQL_CONTAINER.isRunning());
         Assertions.assertEquals(0, categoryRepository.count());
 
-        final var actualId = givenACategory("Movies", null, false);
+        final var actualId = givenACategory("Movies", null, false).getValue();
 
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
@@ -262,7 +264,7 @@ class CategoryE2ETest {
         Assertions.assertTrue(MYSQL_CONTAINER.isRunning());
         Assertions.assertEquals(0, categoryRepository.count());
 
-        final var actualId = givenACategory("Filmes", null, true);
+        final var actualId = givenACategory("Filmes", null, true).getValue();
 
         deleteACategory(actualId)
                 .andExpect(status().isNoContent());
@@ -327,22 +329,6 @@ class CategoryE2ETest {
                 .getResponse()
                 .getContentAsString();
         return Json.readValue(json, CategoryResponse.class);
-    }
-
-    private String givenACategory(final String aName, final String aDescription, final boolean isActive) throws Exception {
-        final var aRequestBody = new CreateCategoryRequest(aName, aDescription, isActive);
-
-        final var aRequest = post("/categories")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(Json.writeValueAsString(aRequestBody));
-
-        return Objects.requireNonNull(mvc.perform(aRequest)
-                        .andExpect(status().isCreated())
-                        .andReturn()
-                        .getResponse()
-                        .getHeader("Location"))
-                .replace("/categories/", "");
     }
 
     private ResultActions updateACategory(String anId, UpdateCategoryRequest aRequestBody) throws Exception {
