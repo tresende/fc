@@ -1,24 +1,19 @@
 package com.tresende.catalog.admin.domain.castmember;
 
-import com.tresende.catalog.admin.domain.category.Category;
-import com.tresende.catalog.admin.domain.category.CategoryID;
 import com.tresende.catalog.admin.domain.pagination.Pagination;
 import com.tresende.catalog.admin.domain.pagination.SearchQuery;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface CastMemberGateway {
 
-    Category create(Category aCategory);
+    CastMember create(CastMember aCastMember);
 
-    void deleteById(CategoryID anId);
+    void deleteById(CastMemberID anId);
 
-    Optional<Category> findById(CategoryID anId);
+    Optional<CastMember> findById(CastMemberID anId);
 
-    Category update(Category aCategory);
+    CastMember update(CastMember aCastMember);
 
-    Pagination<Category> findAll(SearchQuery aQuery);
-
-    List<CategoryID> existsByIds(Iterable<CategoryID> ids);
+    Pagination<CastMember> findAll(SearchQuery aQuery);
 }
