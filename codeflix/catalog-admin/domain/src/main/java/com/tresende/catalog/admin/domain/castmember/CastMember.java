@@ -92,10 +92,11 @@ public class CastMember extends AggregateRoot<CastMemberID> implements Cloneable
         }
     }
 
-    public void update(final String aName, final CastMemberType aType) {
+    public CastMember update(final String aName, final CastMemberType aType) {
         this.name = aName;
         this.type = aType;
         this.updatedAt = InstantUtils.now();
         selfValidate();
+        return this;
     }
 }
