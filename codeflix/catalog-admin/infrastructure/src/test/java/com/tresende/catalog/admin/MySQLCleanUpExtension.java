@@ -1,5 +1,6 @@
 package com.tresende.catalog.admin;
 
+import com.tresende.catalog.admin.infrastructure.castmember.persistence.CastMemberRepository;
 import com.tresende.catalog.admin.infrastructure.category.persistence.CategoryRepository;
 import com.tresende.catalog.admin.infrastructure.genre.persistence.GenreRepository;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -16,6 +17,7 @@ public class MySQLCleanUpExtension implements BeforeEachCallback {
     public void beforeEach(ExtensionContext context) throws Exception {
         final var appContext = SpringExtension.getApplicationContext(context);
         cleanUp(List.of(
+                appContext.getBean(CastMemberRepository.class),
                 appContext.getBean(GenreRepository.class),
                 appContext.getBean(CategoryRepository.class)
         ));

@@ -48,6 +48,11 @@ dependencies {
     testImplementation('org.testcontainers:testcontainers:1.20.2')
     testImplementation('org.testcontainers:mysql:1.20.2')
     testImplementation('org.testcontainers:junit-jupiter:1.20.2')
+
+
+    implementation('com.github.javafaker:javafaker:1.0.2') {
+        exclude group: 'org.yaml', module: 'snakeyaml'
+    }
 }
 
 test {
