@@ -5,6 +5,7 @@ import com.tresende.catalog.admin.domain.castmember.CastMemberGateway;
 import com.tresende.catalog.admin.domain.castmember.CastMemberID;
 import com.tresende.catalog.admin.domain.pagination.Pagination;
 import com.tresende.catalog.admin.domain.pagination.SearchQuery;
+import com.tresende.catalog.admin.infrastructure.castmember.persistence.CastMemberJpaEntity;
 import com.tresende.catalog.admin.infrastructure.castmember.persistence.CastMemberRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class CastMemberMySQLGateway implements CastMemberGateway {
 
     @Override
     public CastMember create(final CastMember aCastMember) {
-        return null;
+        return this.save(aCastMember);
     }
 
     @Override
@@ -37,11 +38,15 @@ public class CastMemberMySQLGateway implements CastMemberGateway {
 
     @Override
     public CastMember update(final CastMember aCastMember) {
-        return null;
+        return this.save(aCastMember);
     }
 
     @Override
     public Pagination<CastMember> findAll(final SearchQuery aQuery) {
         return null;
+    }
+
+    private CastMember save(final CastMember aCastMember) {
+        return this.repository.save(CastMemberJpaEntity.from(aCastMember)).toAggregate();
     }
 }

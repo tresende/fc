@@ -47,9 +47,7 @@ public class CastMember extends AggregateRoot<CastMemberID> implements Cloneable
         return new CastMember(anId, aName, aType, aCreatedAt, anUpdatedAt);
     }
 
-    public static CastMember with(
-            final CastMember aMember
-    ) {
+    public static CastMember with(final CastMember aMember) {
         return new CastMember(aMember.id, aMember.name, aMember.type, aMember.createdAt, aMember.updatedAt);
     }
 
