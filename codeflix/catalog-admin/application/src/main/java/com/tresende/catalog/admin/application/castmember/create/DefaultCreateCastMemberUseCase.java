@@ -30,6 +30,6 @@ public final class DefaultCreateCastMemberUseCase extends CreateCastMemberUseCas
             notify(notification);
         }
 
-        return CreateCastMemberOutput.with(castMemberGateway.create(aMember));
+        return CreateCastMemberOutput.from(castMemberGateway.create(aMember));
     }
 }
