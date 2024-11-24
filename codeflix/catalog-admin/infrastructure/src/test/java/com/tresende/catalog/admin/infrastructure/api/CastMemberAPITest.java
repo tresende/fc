@@ -6,10 +6,13 @@ import com.tresende.catalog.admin.Fixture;
 import com.tresende.catalog.admin.application.castmember.create.CreateCastMemberOutput;
 import com.tresende.catalog.admin.application.castmember.create.DefaultCreateCastMemberUseCase;
 import com.tresende.catalog.admin.application.castmember.delete.DefaultDeleteCastMemberUseCase;
+import com.tresende.catalog.admin.application.castmember.retreive.get.CastMemberOutput;
 import com.tresende.catalog.admin.application.castmember.retreive.get.DefaultGetCastMemberByIdUseCase;
 import com.tresende.catalog.admin.application.castmember.retreive.list.DefaultListCastMembersUseCase;
 import com.tresende.catalog.admin.application.castmember.update.DefaultUpdateCastMemberUseCase;
+import com.tresende.catalog.admin.domain.castmember.CastMember;
 import com.tresende.catalog.admin.domain.castmember.CastMemberID;
+import com.tresende.catalog.admin.domain.exceptions.NotFoundException;
 import com.tresende.catalog.admin.domain.exceptions.NotificationException;
 import com.tresende.catalog.admin.domain.validation.Error;
 import com.tresende.catalog.admin.infrastructure.castmember.model.CreateCastMemberRequest;
@@ -24,8 +27,8 @@ import java.util.Objects;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -91,9 +94,10 @@ class CastMemberAPITest {
     @Test
     public void givenAnInvalidName_whenCallsCreateCastMember_shouldReturnNotification() throws Exception {
         // given
-        final var expectedErrorMessage = "An Error";
         final String expectedName = null;
         final var expectedType = Fixture.CastMembers.type();
+
+        final var expectedErrorMessage = "'name' should not be null";
 
         final var aCommand =
                 new CreateCastMemberRequest(expectedName, expectedType);
@@ -114,8 +118,7 @@ class CastMemberAPITest {
                 .andExpect(header().string("Location", nullValue()))
                 .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.errors", hasSize(1)))
-                .andExpect(jsonPath("$.errors[0].message", equalTo(expectedErrorMessage)))
-        ;
+                .andExpect(jsonPath("$.errors[0].message", equalTo(expectedErrorMessage)));
 
         verify(createCastMemberUseCase).execute(argThat(actualCmd ->
                 Objects.equals(expectedName, actualCmd.name())
@@ -123,4 +126,56 @@ class CastMemberAPITest {
         ));
     }
 
+    @Test
+    public void givenAValidId_whenCallsGetById_shouldReturnIt() throws Exception {
+        // given
+        final var expectedName = Fixture.name();
+        final var expectedType = Fixture.CastMembers.type();
+
+        final var aMember = CastMember.newMember(expectedName, expectedType);
+        final var expectedId = aMember.getId().getValue();
+
+        when(getCastMemberByIdUseCase.execute(any()))
+                .thenReturn(CastMemberOutput.from(aMember));
+
+        // when
+        final var aRequest = get("/cast_members/{id}", expectedId)
+                .accept(MediaType.APPLICATION_JSON);
+
+        final var response = this.mvc.perform(aRequest);
+
+        // then
+        response.andExpect(status().isOk())
+                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.id", equalTo(expectedId)))
+                .andExpect(jsonPath("$.name", equalTo(expectedName)))
+                .andExpect(jsonPath("$.type", equalTo(expectedType.name())))
+                .andExpect(jsonPath("$.created_at", equalTo(aMember.getCreatedAt().toString())))
+                .andExpect(jsonPath("$.updated_at", equalTo(aMember.getUpdatedAt().toString())));
+
+        verify(getCastMemberByIdUseCase).execute(eq(expectedId));
+    }
+
+    @Test
+    public void givenAInvalidId_whenCallsGetByIdAndCastMemberDoesntExists_shouldReturnNotFound() throws Exception {
+        // given
+        final var expectedErrorMessage = "CastMember with ID 123 was not found";
+        final var expectedId = CastMemberID.from("123");
+
+        when(getCastMemberByIdUseCase.execute(any()))
+                .thenThrow(NotFoundException.with(CastMember.class, expectedId));
+
+        // when
+        final var aRequest = get("/cast_members/{id}", expectedId.getValue())
+                .accept(MediaType.APPLICATION_JSON);
+
+        final var response = this.mvc.perform(aRequest);
+
+        // then
+        response.andExpect(status().isNotFound())
+                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
+
+        verify(getCastMemberByIdUseCase).execute(eq(expectedId.getValue()));
+    }
 }
