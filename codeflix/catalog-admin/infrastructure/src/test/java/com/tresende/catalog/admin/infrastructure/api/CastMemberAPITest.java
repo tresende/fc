@@ -40,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @ControllerTest(controllers = CastMemberAPI.class)
-class CastMemberAPITest {
+public class CastMemberAPITest {
 
     @Autowired
     private MockMvc mvc;
@@ -316,8 +316,9 @@ class CastMemberAPITest {
 
     @Test
     public void givenValidParams_whenCallListCastMembers_shouldReturnIt() throws Exception {
-        //given
-        final var castMember = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
+        // given
+        final var aMember = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
+
         final var expectedPage = 1;
         final var expectedPerPage = 20;
         final var expectedTerms = "Alg";
@@ -327,12 +328,12 @@ class CastMemberAPITest {
         final var expectedItemsCount = 1;
         final var expectedTotal = 1;
 
-        final var expectedItems = List.of(CastMemberListOutput.from(castMember));
-        //when
+        final var expectedItems = List.of(CastMemberListOutput.from(aMember));
 
         when(listCastMembersUseCase.execute(any()))
                 .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal, expectedItems));
 
+        // when
         final var aRequest = get("/cast_members")
                 .queryParam("page", String.valueOf(expectedPage))
                 .queryParam("perPage", String.valueOf(expectedPerPage))
@@ -341,24 +342,26 @@ class CastMemberAPITest {
                 .queryParam("dir", expectedDirection)
                 .accept(MediaType.APPLICATION_JSON);
 
-        //then
-        final var response = mvc.perform(aRequest);
+        final var response = this.mvc.perform(aRequest);
 
+        // then
         response.andExpect(status().isOk())
-                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.current_page", equalTo(expectedPage)))
                 .andExpect(jsonPath("$.per_page", equalTo(expectedPerPage)))
                 .andExpect(jsonPath("$.total", equalTo(expectedTotal)))
                 .andExpect(jsonPath("$.items", hasSize(expectedItemsCount)))
-                .andExpect(jsonPath("$.items[0].name", equalTo(castMember.getName())))
-                .andExpect(jsonPath("$.items[0].type", equalTo(castMember.getType().name())))
-                .andExpect(jsonPath("$.items[0].created_at", equalTo(castMember.getCreatedAt().toString())));
+                .andExpect(jsonPath("$.items[0].id", equalTo(aMember.getId().getValue())))
+                .andExpect(jsonPath("$.items[0].name", equalTo(aMember.getName())))
+                .andExpect(jsonPath("$.items[0].type", equalTo(aMember.getType().name())))
+                .andExpect(jsonPath("$.items[0].created_at", equalTo(aMember.getCreatedAt().toString())));
 
         verify(listCastMembersUseCase).execute(argThat(aQuery ->
                 Objects.equals(expectedPage, aQuery.page())
+                        && Objects.equals(expectedPerPage, aQuery.perPage())
                         && Objects.equals(expectedTerms, aQuery.terms())
                         && Objects.equals(expectedSort, aQuery.sort())
-                        && Objects.equals(expectedDirection, aQuery.direction())));
+                        && Objects.equals(expectedDirection, aQuery.direction())
+        ));
     }
 
     @Test
@@ -376,31 +379,34 @@ class CastMemberAPITest {
         final var expectedTotal = 1;
 
         final var expectedItems = List.of(CastMemberListOutput.from(aMember));
-        //when
 
         when(listCastMembersUseCase.execute(any()))
                 .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal, expectedItems));
 
+        // when
         final var aRequest = get("/cast_members")
                 .accept(MediaType.APPLICATION_JSON);
 
-        //then
-        final var response = mvc.perform(aRequest);
+        final var response = this.mvc.perform(aRequest);
 
+        // then
         response.andExpect(status().isOk())
-                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.current_page", equalTo(expectedPage)))
                 .andExpect(jsonPath("$.per_page", equalTo(expectedPerPage)))
                 .andExpect(jsonPath("$.total", equalTo(expectedTotal)))
                 .andExpect(jsonPath("$.items", hasSize(expectedItemsCount)))
+                .andExpect(jsonPath("$.items[0].id", equalTo(aMember.getId().getValue())))
                 .andExpect(jsonPath("$.items[0].name", equalTo(aMember.getName())))
                 .andExpect(jsonPath("$.items[0].type", equalTo(aMember.getType().name())))
                 .andExpect(jsonPath("$.items[0].created_at", equalTo(aMember.getCreatedAt().toString())));
 
         verify(listCastMembersUseCase).execute(argThat(aQuery ->
                 Objects.equals(expectedPage, aQuery.page())
+                        && Objects.equals(expectedPerPage, aQuery.perPage())
                         && Objects.equals(expectedTerms, aQuery.terms())
                         && Objects.equals(expectedSort, aQuery.sort())
-                        && Objects.equals(expectedDirection, aQuery.direction())));
+                        && Objects.equals(expectedDirection, aQuery.direction())
+        ));
     }
 }
+

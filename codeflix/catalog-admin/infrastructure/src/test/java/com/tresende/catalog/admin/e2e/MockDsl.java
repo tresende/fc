@@ -1,8 +1,13 @@
 package com.tresende.catalog.admin.e2e;
 
 import com.tresende.catalog.admin.domain.Identifier;
+import com.tresende.catalog.admin.domain.castmember.CastMemberID;
+import com.tresende.catalog.admin.domain.castmember.CastMemberType;
 import com.tresende.catalog.admin.domain.category.CategoryID;
 import com.tresende.catalog.admin.domain.genre.GenreID;
+import com.tresende.catalog.admin.infrastructure.castmember.model.CastMemberResponse;
+import com.tresende.catalog.admin.infrastructure.castmember.model.CreateCastMemberRequest;
+import com.tresende.catalog.admin.infrastructure.castmember.model.UpdateCastMemberRequest;
 import com.tresende.catalog.admin.infrastructure.category.models.CategoryResponse;
 import com.tresende.catalog.admin.infrastructure.category.models.CreateCategoryRequest;
 import com.tresende.catalog.admin.infrastructure.category.models.UpdateCategoryRequest;
@@ -22,8 +27,51 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public interface MockDsl {
-
     MockMvc mvc();
+
+    /**
+     * CastMember
+     */
+
+    default CastMemberID givenACastMember(final String aName, final CastMemberType aType) throws Exception {
+        final var aRequestBody = new CreateCastMemberRequest(aName, aType);
+        final var actualId = this.given("/cast_members", aRequestBody);
+        return CastMemberID.from(actualId);
+    }
+
+    default ResultActions givenACastMemberResult(final String aName, final CastMemberType aType) throws Exception {
+        final var aRequestBody = new CreateCastMemberRequest(aName, aType);
+        return this.givenResult("/cast_members", aRequestBody);
+    }
+
+    default ResultActions listCastMembers(final int page, final int perPage) throws Exception {
+        return listCastMembers(page, perPage, "", "", "");
+    }
+
+    default ResultActions listCastMembers(final int page, final int perPage, final String search) throws Exception {
+        return listCastMembers(page, perPage, search, "", "");
+    }
+
+    default ResultActions listCastMembers(final int page, final int perPage, final String search, final String sort, final String direction) throws Exception {
+        return this.list("/cast_members", page, perPage, search, sort, direction);
+    }
+
+    default CastMemberResponse retrieveACastMember(final CastMemberID anId) throws Exception {
+        return this.retrieve("/cast_members/", anId, CastMemberResponse.class);
+    }
+
+    default ResultActions retrieveACastMemberResult(final CastMemberID anId) throws Exception {
+        return this.retrieveResult("/cast_members/", anId);
+    }
+
+    default ResultActions updateACastMember(final CastMemberID anId, final String aName, final CastMemberType aType) throws Exception {
+        final var updateCastMemberRequest = new UpdateCastMemberRequest(aName, aType);
+        return this.update("/cast_members/", anId, updateCastMemberRequest);
+    }
+
+    default ResultActions deleteACastMember(final CastMemberID anId) throws Exception {
+        return this.delete("/cast_members/", anId);
+    }
 
     /**
      * Category
@@ -169,4 +217,5 @@ public interface MockDsl {
 
         return this.mvc().perform(aRequest);
     }
+
 }
