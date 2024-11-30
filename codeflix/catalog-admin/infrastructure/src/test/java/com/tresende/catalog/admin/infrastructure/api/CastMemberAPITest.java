@@ -352,7 +352,7 @@ class CastMemberAPITest {
                 .andExpect(jsonPath("$.items", hasSize(expectedItemsCount)))
                 .andExpect(jsonPath("$.items[0].name", equalTo(castMember.getName())))
                 .andExpect(jsonPath("$.items[0].type", equalTo(castMember.getType().name())))
-                .andExpect(jsonPath("$.items[0].createdAt", equalTo(castMember.getCreatedAt().toString())));
+                .andExpect(jsonPath("$.items[0].created_at", equalTo(castMember.getCreatedAt().toString())));
 
         verify(listCastMembersUseCase).execute(argThat(aQuery ->
                 Objects.equals(expectedPage, aQuery.page())
@@ -395,7 +395,7 @@ class CastMemberAPITest {
                 .andExpect(jsonPath("$.items", hasSize(expectedItemsCount)))
                 .andExpect(jsonPath("$.items[0].name", equalTo(aMember.getName())))
                 .andExpect(jsonPath("$.items[0].type", equalTo(aMember.getType().name())))
-                .andExpect(jsonPath("$.items[0].createdAt", equalTo(aMember.getCreatedAt().toString())));
+                .andExpect(jsonPath("$.items[0].created_at", equalTo(aMember.getCreatedAt().toString())));
 
         verify(listCastMembersUseCase).execute(argThat(aQuery ->
                 Objects.equals(expectedPage, aQuery.page())
