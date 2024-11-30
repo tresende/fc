@@ -8,6 +8,7 @@ import com.tresende.catalog.admin.application.castmember.create.DefaultCreateCas
 import com.tresende.catalog.admin.application.castmember.delete.DefaultDeleteCastMemberUseCase;
 import com.tresende.catalog.admin.application.castmember.retreive.get.CastMemberOutput;
 import com.tresende.catalog.admin.application.castmember.retreive.get.DefaultGetCastMemberByIdUseCase;
+import com.tresende.catalog.admin.application.castmember.retreive.list.CastMemberListOutput;
 import com.tresende.catalog.admin.application.castmember.retreive.list.DefaultListCastMembersUseCase;
 import com.tresende.catalog.admin.application.castmember.update.DefaultUpdateCastMemberUseCase;
 import com.tresende.catalog.admin.application.castmember.update.UpdateCastMemberOutput;
@@ -16,6 +17,7 @@ import com.tresende.catalog.admin.domain.castmember.CastMemberID;
 import com.tresende.catalog.admin.domain.castmember.CastMemberType;
 import com.tresende.catalog.admin.domain.exceptions.NotFoundException;
 import com.tresende.catalog.admin.domain.exceptions.NotificationException;
+import com.tresende.catalog.admin.domain.pagination.Pagination;
 import com.tresende.catalog.admin.domain.validation.Error;
 import com.tresende.catalog.admin.infrastructure.castmember.model.CreateCastMemberRequest;
 import com.tresende.catalog.admin.infrastructure.castmember.model.UpdateCastMemberRequest;
@@ -25,6 +27,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Objects;
 
 import static org.hamcrest.Matchers.*;
@@ -292,4 +295,112 @@ class CastMemberAPITest {
         ));
     }
 
+    @Test
+    public void givenAValidId_whenCallsDeleteById_shouldDeleteIt() throws Exception {
+        // given
+        final var expectedId = "123";
+
+        doNothing()
+                .when(deleteCastMemberUseCase).execute(any());
+
+        // when
+        final var aRequest = delete("/cast_members/{id}", expectedId);
+
+        final var response = this.mvc.perform(aRequest);
+
+        // then
+        response.andExpect(status().isNoContent());
+
+        verify(deleteCastMemberUseCase).execute(eq(expectedId));
+    }
+
+    @Test
+    public void givenValidParams_whenCallListCastMembers_shouldReturnIt() throws Exception {
+        //given
+        final var castMember = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
+        final var expectedPage = 1;
+        final var expectedPerPage = 20;
+        final var expectedTerms = "Alg";
+        final var expectedSort = "type";
+        final var expectedDirection = "desc";
+
+        final var expectedItemsCount = 1;
+        final var expectedTotal = 1;
+
+        final var expectedItems = List.of(CastMemberListOutput.from(castMember));
+        //when
+
+        when(listCastMembersUseCase.execute(any()))
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal, expectedItems));
+
+        final var aRequest = get("/cast_members")
+                .queryParam("page", String.valueOf(expectedPage))
+                .queryParam("perPage", String.valueOf(expectedPerPage))
+                .queryParam("search", expectedTerms)
+                .queryParam("sort", expectedSort)
+                .queryParam("dir", expectedDirection)
+                .accept(MediaType.APPLICATION_JSON);
+
+        //then
+        final var response = mvc.perform(aRequest);
+
+        response.andExpect(status().isOk())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", equalTo(expectedPage)))
+                .andExpect(jsonPath("$.per_page", equalTo(expectedPerPage)))
+                .andExpect(jsonPath("$.total", equalTo(expectedTotal)))
+                .andExpect(jsonPath("$.items", hasSize(expectedItemsCount)))
+                .andExpect(jsonPath("$.items[0].name", equalTo(castMember.getName())))
+                .andExpect(jsonPath("$.items[0].type", equalTo(castMember.getType().name())))
+                .andExpect(jsonPath("$.items[0].createdAt", equalTo(castMember.getCreatedAt().toString())));
+
+        verify(listCastMembersUseCase).execute(argThat(aQuery ->
+                Objects.equals(expectedPage, aQuery.page())
+                        && Objects.equals(expectedTerms, aQuery.terms())
+                        && Objects.equals(expectedSort, aQuery.sort())
+                        && Objects.equals(expectedDirection, aQuery.direction())));
+    }
+
+    @Test
+    public void givenEmptyParams_whenCallListCastMembers_shouldUseDefaultsAndReturnIt() throws Exception {
+        // given
+        final var aMember = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
+
+        final var expectedPage = 0;
+        final var expectedPerPage = 10;
+        final var expectedTerms = "";
+        final var expectedSort = "name";
+        final var expectedDirection = "asc";
+
+        final var expectedItemsCount = 1;
+        final var expectedTotal = 1;
+
+        final var expectedItems = List.of(CastMemberListOutput.from(aMember));
+        //when
+
+        when(listCastMembersUseCase.execute(any()))
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal, expectedItems));
+
+        final var aRequest = get("/cast_members")
+                .accept(MediaType.APPLICATION_JSON);
+
+        //then
+        final var response = mvc.perform(aRequest);
+
+        response.andExpect(status().isOk())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", equalTo(expectedPage)))
+                .andExpect(jsonPath("$.per_page", equalTo(expectedPerPage)))
+                .andExpect(jsonPath("$.total", equalTo(expectedTotal)))
+                .andExpect(jsonPath("$.items", hasSize(expectedItemsCount)))
+                .andExpect(jsonPath("$.items[0].name", equalTo(aMember.getName())))
+                .andExpect(jsonPath("$.items[0].type", equalTo(aMember.getType().name())))
+                .andExpect(jsonPath("$.items[0].createdAt", equalTo(aMember.getCreatedAt().toString())));
+
+        verify(listCastMembersUseCase).execute(argThat(aQuery ->
+                Objects.equals(expectedPage, aQuery.page())
+                        && Objects.equals(expectedTerms, aQuery.terms())
+                        && Objects.equals(expectedSort, aQuery.sort())
+                        && Objects.equals(expectedDirection, aQuery.direction())));
+    }
 }
