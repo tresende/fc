@@ -2,19 +2,22 @@ package com.tresende.catalog.admin.infrastructure.api;
 
 import com.tresende.catalog.admin.infrastructure.castmember.model.CastMemberResponse;
 import com.tresende.catalog.admin.infrastructure.castmember.model.CreateCastMemberRequest;
+import com.tresende.catalog.admin.infrastructure.castmember.model.UpdateCastMemberRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
 
-@RequestMapping("/cast_members")
+@RequestMapping(value = "cast_members")
 @Tag(name = "Cast Members")
 public interface CastMemberAPI {
+
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -27,7 +30,21 @@ public interface CastMemberAPI {
     })
     ResponseEntity<?> create(@RequestBody CreateCastMemberRequest input) throws URISyntaxException;
 
-    @GetMapping(value = "/{id}")
+//    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+//    @Operation(summary = "List all cast members")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "Cast members retrieved"),
+//            @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
+//    })
+//    Pagination<CastMemberListResponse> list(
+//            @RequestParam(name = "search", required = false, defaultValue = "") final String search,
+//            @RequestParam(name = "page", required = false, defaultValue = "0") final int page,
+//            @RequestParam(name = "perPage", required = false, defaultValue = "10") final int perPage,
+//            @RequestParam(name = "sort", required = false, defaultValue = "name") final String sort,
+//            @RequestParam(name = "dir", required = false, defaultValue = "asc") final String direction
+//    );
+
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get a cast member by it's identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cast member retrieved"),
@@ -35,4 +52,27 @@ public interface CastMemberAPI {
             @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
     })
     CastMemberResponse getById(@PathVariable String id);
+
+    @PutMapping(
+            value = "{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @Operation(summary = "Update a cast member by it's identifier")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cast member updated"),
+            @ApiResponse(responseCode = "404", description = "Cast member was not found"),
+            @ApiResponse(responseCode = "422", description = "A validation error was thrown"),
+            @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
+    })
+    ResponseEntity<?> updateById(@PathVariable String id, @RequestBody UpdateCastMemberRequest aBody);
+
+    @DeleteMapping(value = "{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete a cast member by it's identifier")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Cast member deleted"),
+            @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
+    })
+    void deleteById(@PathVariable String id);
 }
