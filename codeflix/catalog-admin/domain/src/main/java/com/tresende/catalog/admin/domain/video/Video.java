@@ -9,32 +9,33 @@ import com.tresende.catalog.admin.domain.validation.ValidationHandler;
 
 import java.time.Instant;
 import java.time.Year;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
 public class Video extends AggregateRoot<VideoID> {
 
-    private String title;
-    private String description;
-    private Year launchedAt;
-    private double duration;
-    private boolean opened;
-    private boolean published;
-    private Rating rating;
+    private final String title;
+    private final String description;
+    private final Year launchedAt;
+    private final double duration;
+    private final boolean opened;
+    private final boolean published;
+    private final Rating rating;
 
-    private Instant createdAt;
-    private Instant updatedAt;
+    private final Instant createdAt;
+    private final Instant updatedAt;
 
-    private ImageMedia banner;
-    private ImageMedia thumbnail;
-    private ImageMedia thumbnailHalf;
+    private final ImageMedia banner;
+    private final ImageMedia thumbnail;
+    private final ImageMedia thumbnailHalf;
 
-    private AudioVideoMedia trailer;
-    private AudioVideoMedia video;
+    private final AudioVideoMedia trailer;
+    private final AudioVideoMedia video;
 
-    private Set<CategoryID> categories;
-    private Set<GenreID> genres;
-    private Set<CastMemberID> castMembers;
+    private final Set<CategoryID> categories;
+    private final Set<GenreID> genres;
+    private final Set<CastMemberID> castMembers;
 
     protected Video(
             final VideoID anId,
@@ -169,15 +170,15 @@ public class Video extends AggregateRoot<VideoID> {
     }
 
     public Set<CategoryID> getCategories() {
-        return categories;
+        return categories != null ? Collections.unmodifiableSet(categories) : Collections.emptySet();
     }
 
     public Set<GenreID> getGenres() {
-        return genres;
+        return genres != null ? Collections.unmodifiableSet(genres) : Collections.emptySet();
     }
 
     public Set<CastMemberID> getCastMembers() {
-        return castMembers;
+        return castMembers != null ? Collections.unmodifiableSet(castMembers) : Collections.emptySet();
     }
 
     @Override
