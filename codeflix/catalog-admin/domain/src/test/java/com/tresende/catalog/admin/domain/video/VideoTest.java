@@ -14,7 +14,7 @@ public class VideoTest {
 
     @Test
     public void givenValidParams_whenCallsNewVideo_shouldInstantiate() {
-        //given
+        // given
         final var expectedTitle = "System Design Interviews";
         final var expectedDescription = """
                 Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
@@ -22,7 +22,6 @@ public class VideoTest {
                 Para acessar todas as aulas, lives e desafios, acesse:
                 https://imersao.fullcycle.com.br/
                 """;
-
         final var expectedLaunchedAt = Year.of(2022);
         final var expectedDuration = 120.10;
         final var expectedOpened = false;
@@ -32,7 +31,7 @@ public class VideoTest {
         final var expectedGenres = Set.of(GenreID.unique());
         final var expectedMembers = Set.of(CastMemberID.unique());
 
-        //when
+        // when
         final var actualVideo = Video.newVideo(
                 expectedTitle,
                 expectedDescription,
@@ -46,7 +45,7 @@ public class VideoTest {
                 expectedMembers
         );
 
-        //then
+        // then
         Assertions.assertNotNull(actualVideo);
         Assertions.assertNotNull(actualVideo.getId());
         Assertions.assertNotNull(actualVideo.getCreatedAt());
