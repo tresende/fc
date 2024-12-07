@@ -10,32 +10,29 @@ import com.tresende.catalog.admin.domain.validation.ValidationHandler;
 import java.time.Instant;
 import java.time.Year;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
 public class Video extends AggregateRoot<VideoID> {
 
-    private final String title;
-    private final String description;
-    private final Year launchedAt;
-    private final double duration;
-    private final boolean opened;
-    private final boolean published;
-    private final Rating rating;
-
-    private final Instant createdAt;
-    private final Instant updatedAt;
-
-    private final ImageMedia banner;
-    private final ImageMedia thumbnail;
-    private final ImageMedia thumbnailHalf;
-
-    private final AudioVideoMedia trailer;
-    private final AudioVideoMedia video;
-
-    private final Set<CategoryID> categories;
-    private final Set<GenreID> genres;
-    private final Set<CastMemberID> castMembers;
+    private Instant createdAt;
+    private Rating rating;
+    private boolean published;
+    private Year launchedAt;
+    private double duration;
+    private boolean opened;
+    private String description;
+    private String title;
+    private Set<CastMemberID> castMembers;
+    private Set<GenreID> genres;
+    private Set<CategoryID> categories;
+    private AudioVideoMedia trailer;
+    private AudioVideoMedia video;
+    private ImageMedia thumbnail;
+    private ImageMedia thumbnailHalf;
+    private Instant updatedAt;
+    private ImageMedia banner;
 
     protected Video(
             final VideoID anId,
@@ -113,6 +110,29 @@ public class Video extends AggregateRoot<VideoID> {
         );
     }
 
+    public static Video with(final Video aVideo) {
+        return new Video(
+                aVideo.getId(),
+                aVideo.getTitle(),
+                aVideo.getDescription(),
+                aVideo.getLaunchedAt(),
+                aVideo.getDuration(),
+                aVideo.getOpened(),
+                aVideo.getPublished(),
+                aVideo.getRating(),
+                aVideo.getCreatedAt(),
+                aVideo.getUpdatedAt(),
+                aVideo.getBanner().orElse(null),
+                aVideo.getThumbnail().orElse(null),
+                aVideo.getThumbnailHalf().orElse(null),
+                aVideo.getTrailer().orElse(null),
+                aVideo.getVideo().orElse(null),
+                new HashSet<>(aVideo.getCategories()),
+                new HashSet<>(aVideo.getGenres()),
+                new HashSet<>(aVideo.getCastMembers())
+        );
+    }
+
     public String getTitle() {
         return title;
     }
@@ -173,12 +193,24 @@ public class Video extends AggregateRoot<VideoID> {
         return categories != null ? Collections.unmodifiableSet(categories) : Collections.emptySet();
     }
 
+    private void setCategories(final Set<CategoryID> categories) {
+        this.categories = categories != null ? new HashSet<>(categories) : Collections.emptySet();
+    }
+
     public Set<GenreID> getGenres() {
         return genres != null ? Collections.unmodifiableSet(genres) : Collections.emptySet();
     }
 
+    private void setGenres(final Set<GenreID> genres) {
+        this.genres = genres != null ? new HashSet<>(genres) : Collections.emptySet();
+    }
+
     public Set<CastMemberID> getCastMembers() {
         return castMembers != null ? Collections.unmodifiableSet(castMembers) : Collections.emptySet();
+    }
+
+    private void setCastMembers(final Set<CastMemberID> castMembers) {
+        this.castMembers = castMembers != null ? new HashSet<>(castMembers) : Collections.emptySet();
     }
 
     @Override
@@ -186,4 +218,60 @@ public class Video extends AggregateRoot<VideoID> {
         new VideoValidator(this, handler).validate();
     }
 
+    public Video update(
+            final String aTitle,
+            final String aDescription,
+            final Year aLaunchYear,
+            final double aDuration,
+            final boolean wasOpened,
+            final boolean wasPublished,
+            final Rating aRating,
+            final Set<CategoryID> categories,
+            final Set<GenreID> genres,
+            final Set<CastMemberID> castMembers) {
+        this.setCategories(categories);
+        this.setGenres(genres);
+        this.setCastMembers(castMembers);
+        this.updatedAt = InstantUtils.now();
+        this.title = aTitle;
+        this.description = aDescription;
+        this.launchedAt = aLaunchYear;
+        this.duration = aDuration;
+        this.opened = wasOpened;
+        this.published = wasPublished;
+        this.rating = aRating;
+        this.categories = categories;
+        this.genres = genres;
+        return this;
+    }
+
+    public Video updateBannerMedia(final ImageMedia aBannerMedia) {
+        this.banner = aBannerMedia;
+        this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public Video updateThumbnailHalfMedia(final ImageMedia aThumbnailHalfMedia) {
+        this.thumbnailHalf = aThumbnailHalfMedia;
+        this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public Video updateThumbnailMedia(final ImageMedia aThumbnailMedia) {
+        this.thumbnail = aThumbnailMedia;
+        this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public Video updateVideoMedia(final AudioVideoMedia aVideoMedia) {
+        this.video = aVideoMedia;
+        this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public Video updateTrailerMedia(final AudioVideoMedia aTrailerMedia) {
+        this.trailer = aTrailerMedia;
+        this.updatedAt = InstantUtils.now();
+        return this;
+    }
 }
