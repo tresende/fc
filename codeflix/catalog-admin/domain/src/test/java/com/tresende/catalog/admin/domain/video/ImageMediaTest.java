@@ -6,49 +6,55 @@ import org.junit.jupiter.api.Test;
 public class ImageMediaTest {
 
     @Test
-    public void givenValidParams_whenCallsNewImage_shouldReturnInstance() {
-        //given
-        final var expectedChecksum = "name";
-        final var expectedName = "banner.png";
-        final var expectedLocation = "/iamages/ac";
+    public void givenValidParams_whenCallsNewImage_ShouldReturnInstance() {
+        // given
+        final var expectedChecksum = "abc";
+        final var expectedName = "Banner.png";
+        final var expectedLocation = "/images/ac";
 
-        //when
-        final var actualImage = ImageMedia.with(expectedChecksum, expectedName, expectedLocation);
+        // when
+        final var actualImage =
+                ImageMedia.with(expectedChecksum, expectedName, expectedLocation);
 
-        //then
+        // then
         Assertions.assertNotNull(actualImage);
         Assertions.assertEquals(expectedChecksum, actualImage.checksum());
-        Assertions.assertNotNull(expectedName, actualImage.name());
-        Assertions.assertNotNull(expectedLocation, actualImage.location());
+        Assertions.assertEquals(expectedName, actualImage.name());
+        Assertions.assertEquals(expectedLocation, actualImage.location());
     }
 
     @Test
-    public void givenTwoImagesWithSameLocationAndChecksum_whenCallsEquals_shouldReturnTrue() {
-        //given
-        final var expectedChecksum = "name";
-        final var expectedLocation = "/iamages/ac";
+    public void givenTwoImagesWithSameChecksumAndLocation_whenCallsEquals_ShouldReturnTrue() {
+        // given
+        final var expectedChecksum = "abc";
+        final var expectedLocation = "/images/ac";
 
-        final var image2 = ImageMedia.with(expectedChecksum, "image2", expectedLocation);
-        final var image1 = ImageMedia.with(expectedChecksum, "image1", expectedLocation);
+        final var img1 =
+                ImageMedia.with(expectedChecksum, "Random", expectedLocation);
 
-        //then
-        Assertions.assertEquals(image1, image2);
-        Assertions.assertNotSame(image1, image2);
+        final var img2 =
+                ImageMedia.with(expectedChecksum, "Simple", expectedLocation);
+
+        // then
+        Assertions.assertEquals(img1, img2);
+        Assertions.assertNotSame(img1, img2);
     }
 
     @Test
-    public void givenInvalidParams_WhenCalls_shouldReturnError() {
-        Assertions.assertThrows(NullPointerException.class, () ->
-                ImageMedia.with(null, "Random", "/abc")
+    public void givenInvalidParams_whenCallsWith_ShouldReturnError() {
+        Assertions.assertThrows(
+                NullPointerException.class,
+                () -> ImageMedia.with(null, "Random", "/images")
         );
 
-        Assertions.assertThrows(NullPointerException.class, () ->
-                ImageMedia.with("abc", null, "/abc")
+        Assertions.assertThrows(
+                NullPointerException.class,
+                () -> ImageMedia.with("abc", null, "/images")
         );
 
-        Assertions.assertThrows(NullPointerException.class, () ->
-                ImageMedia.with("abc", "Random", null)
+        Assertions.assertThrows(
+                NullPointerException.class,
+                () -> ImageMedia.with("abc", "Random", null)
         );
-
     }
 }
