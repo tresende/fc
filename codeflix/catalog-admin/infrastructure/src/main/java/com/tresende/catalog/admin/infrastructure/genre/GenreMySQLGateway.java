@@ -13,8 +13,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 public class GenreMySQLGateway implements GenreGateway {
@@ -71,6 +73,11 @@ public class GenreMySQLGateway implements GenreGateway {
                 pageResult.getTotalElements(),
                 pageResult.map(GenreJpaEntity::toAggregate).toList()
         );
+    }
+
+    @Override
+    public List<GenreID> existsByIds(final Set<GenreID> ids) {
+        throw new UnsupportedOperationException();
     }
 
     private Specification<GenreJpaEntity> assembleSpecification(final String terms) {

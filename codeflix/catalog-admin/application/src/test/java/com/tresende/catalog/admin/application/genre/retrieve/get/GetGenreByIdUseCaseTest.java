@@ -81,8 +81,4 @@ public class GetGenreByIdUseCaseTest extends UseCaseTest {
 
         verify(genreGateway, times(1)).findById(expectedId);
     }
-
-    private List<String> asString(List<CategoryID> ids) {
-        return ids.stream().map(CategoryID::getValue).toList();
-    }
 }
