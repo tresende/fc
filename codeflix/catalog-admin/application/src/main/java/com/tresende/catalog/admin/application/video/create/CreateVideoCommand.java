@@ -60,23 +60,23 @@ public record CreateVideoCommand(
     }
 
     public Optional<Resource> getVideo() {
-        return Optional.of(video);
+        return Optional.ofNullable(video);
     }
 
     public Optional<Resource> getTrailer() {
-        return Optional.of(trailer);
+        return Optional.ofNullable(trailer);
     }
 
     public Optional<Resource> getBanner() {
-        return Optional.of(banner);
+        return Optional.ofNullable(banner);
     }
 
     public Optional<Resource> getThumbnail() {
-        return Optional.of(thumbnail);
+        return Optional.ofNullable(thumbnail);
     }
 
     public Optional<Resource> getThumbnailHalf() {
-        return Optional.of(thumbnailHalf);
+        return Optional.ofNullable(thumbnailHalf);
     }
 
 }

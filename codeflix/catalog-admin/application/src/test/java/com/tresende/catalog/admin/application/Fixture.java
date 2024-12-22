@@ -7,6 +7,7 @@ import com.tresende.catalog.admin.domain.category.Category;
 import com.tresende.catalog.admin.domain.genre.Genre;
 import com.tresende.catalog.admin.domain.video.Rating;
 import com.tresende.catalog.admin.domain.video.Resource;
+import com.tresende.catalog.admin.domain.video.VideoMediaType;
 
 import static io.vavr.API.*;
 
@@ -93,9 +94,9 @@ public final class Fixture {
             return FAKER.options().option(Rating.values());
         }
 
-        public static Resource resource(final Resource.Type type) {
+        public static Resource resource(final VideoMediaType type) {
             final String contentType = Match(type).of(
-                    Case($(List(Resource.Type.VIDEO, Resource.Type.TRAILER)::contains), "video/mp4"),
+                    Case($(List(VideoMediaType.VIDEO, VideoMediaType.TRAILER)::contains), "video/mp4"),
                     Case($(), "image/jpg")
             );
 
