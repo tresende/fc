@@ -7,7 +7,11 @@ import com.tresende.catalog.admin.domain.category.Category;
 import com.tresende.catalog.admin.domain.genre.Genre;
 import com.tresende.catalog.admin.domain.video.Rating;
 import com.tresende.catalog.admin.domain.video.Resource;
+import com.tresende.catalog.admin.domain.video.Video;
 import com.tresende.catalog.admin.domain.video.VideoMediaType;
+
+import java.time.Year;
+import java.util.Set;
 
 import static io.vavr.API.*;
 
@@ -75,6 +79,22 @@ public final class Fixture {
     }
 
     public static final class Videos {
+
+        public static Video systemDesign() {
+            return Video.newVideo(
+                    Fixture.title(),
+                    description(),
+                    Year.of(Fixture.year()),
+                    Fixture.duration(),
+                    Fixture.bool(),
+                    Fixture.bool(),
+                    rating(),
+                    Set.of(Categories.aulas().getId()),
+                    Set.of(Genres.tech().getId()),
+                    Set.of(CastMembers.wesley().getId(), CastMembers.gabriel().getId())
+            );
+        }
+
         public static String description() {
             return FAKER.options().option(
                     """

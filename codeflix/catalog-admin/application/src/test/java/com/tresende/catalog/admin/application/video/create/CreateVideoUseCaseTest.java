@@ -1006,6 +1006,5 @@ class CreateVideoUseCaseTest extends UseCaseTest {
             final var resource = t.getArgument(1, Resource.class);
             return AudioVideoMedia.with(UUID.randomUUID().toString(), resource.name(), "/video", "/video", MediaStatus.PENDING);
         });
-
     }
 }
