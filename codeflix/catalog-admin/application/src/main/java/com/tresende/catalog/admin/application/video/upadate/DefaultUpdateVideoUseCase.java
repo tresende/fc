@@ -123,7 +123,6 @@ public class DefaultUpdateVideoUseCase extends UpdateVideoUseCase {
                             .updateThumbnailHalfMedia(aThumbHalfMedia)
             );
         } catch (final Throwable t) {
-            this.mediaResourceGateway.clearResources(anId);
             throw InternalErrorException.with(
                     "An error on create video was observed [videoId:%s]".formatted(anId.getValue()),
                     t
