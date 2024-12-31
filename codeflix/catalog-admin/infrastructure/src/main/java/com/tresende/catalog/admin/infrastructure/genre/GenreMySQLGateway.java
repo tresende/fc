@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 @Component
 public class GenreMySQLGateway implements GenreGateway {
@@ -76,7 +75,7 @@ public class GenreMySQLGateway implements GenreGateway {
     }
 
     @Override
-    public List<GenreID> existsByIds(final Set<GenreID> ids) {
+    public List<GenreID> existsByIds(final Iterable<GenreID> ids) {
         throw new UnsupportedOperationException();
     }
 

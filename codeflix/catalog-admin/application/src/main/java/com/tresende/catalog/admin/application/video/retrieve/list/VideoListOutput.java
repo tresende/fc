@@ -8,6 +8,7 @@ public record VideoListOutput(
         String id,
         String title,
         String description,
+        //Set<String> categories,
         Instant createdAt,
         Instant updatedAt
 ) {
@@ -17,6 +18,7 @@ public record VideoListOutput(
                 aVideo.getId().getValue(),
                 aVideo.getTitle(),
                 aVideo.getDescription(),
+                //aVideo.getCategories().stream().map(CategoryID::getValue).collect(Collectors.toSet()),
                 aVideo.getCreatedAt(),
                 aVideo.getUpdatedAt()
         );
