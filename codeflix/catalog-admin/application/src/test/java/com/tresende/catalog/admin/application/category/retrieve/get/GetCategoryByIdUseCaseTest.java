@@ -13,7 +13,6 @@ import org.mockito.Mockito;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -57,7 +56,7 @@ public class GetCategoryByIdUseCaseTest extends UseCaseTest {
 
     @Test
     public void givenAnInValidId_whenCallsGetCategory_shouldReturnsNotFound() {
-        final var expectedId = CategoryID.from(UUID.randomUUID());
+        final var expectedId = CategoryID.unique();
         final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId.getValue());
 
         when(categoryGateway.findById(eq(expectedId))).thenReturn(Optional.empty());
@@ -70,7 +69,7 @@ public class GetCategoryByIdUseCaseTest extends UseCaseTest {
     @Test
     public void givenAnValidId_whenGatewayThrowsException_shouldReturnException() {
         final var expectedErrorMessage = "";
-        final var expectedId = CategoryID.from(UUID.randomUUID());
+        final var expectedId = CategoryID.unique();
 
         Mockito.doThrow(new IllegalStateException(expectedErrorMessage)).when(categoryGateway).findById(eq(expectedId));
         final var aCommand =

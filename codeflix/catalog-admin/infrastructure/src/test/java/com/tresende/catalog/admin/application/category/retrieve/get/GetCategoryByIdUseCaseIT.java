@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.Arrays;
-import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -55,7 +54,7 @@ class GetCategoryByIdUseCaseIT {
 
     @Test
     public void givenAnInValidId_whenCallsGetCategory_shouldReturnsNotFound() {
-        final var expectedId = CategoryID.from(UUID.randomUUID());
+        final var expectedId = CategoryID.unique();
         final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId.getValue());
 
         final var aCommand =
@@ -67,7 +66,7 @@ class GetCategoryByIdUseCaseIT {
     @Test
     public void givenAnValidId_whenGatewayThrowsException_shouldReturnException() {
         final var expectedErrorMessage = "";
-        final var expectedId = CategoryID.from(UUID.randomUUID());
+        final var expectedId = CategoryID.unique();
 
         doThrow(new IllegalStateException(expectedErrorMessage))
                 .when(categoryGateway).findById(eq(expectedId));

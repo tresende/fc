@@ -4,7 +4,6 @@ import com.tresende.catalog.admin.domain.Identifier;
 import com.tresende.catalog.admin.domain.utils.IdUtils;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class CategoryID extends Identifier {
     private String value;
@@ -19,10 +18,6 @@ public class CategoryID extends Identifier {
 
     public static CategoryID from(final String anId) {
         return new CategoryID(anId);
-    }
-
-    public static CategoryID from(final UUID anId) {
-        return new CategoryID(anId.toString().toLowerCase());
     }
 
     public String getValue() {
