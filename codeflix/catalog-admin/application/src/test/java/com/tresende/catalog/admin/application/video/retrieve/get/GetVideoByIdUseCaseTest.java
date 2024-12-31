@@ -3,6 +3,7 @@ package com.tresende.catalog.admin.application.video.retrieve.get;
 import com.tresende.catalog.admin.application.Fixture;
 import com.tresende.catalog.admin.application.UseCaseTest;
 import com.tresende.catalog.admin.domain.exceptions.NotFoundException;
+import com.tresende.catalog.admin.domain.utils.IdUtils;
 import com.tresende.catalog.admin.domain.video.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,6 @@ import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -121,12 +121,12 @@ class GetVideoByIdUseCaseTest extends UseCaseTest {
     }
 
     private AudioVideoMedia audioVideo(final VideoMediaType type) {
-        final var checksum = UUID.randomUUID().toString();
+        final var checksum = IdUtils.uuid();
         return AudioVideoMedia.with(checksum, type.name().toLowerCase(), "/videos" + checksum, "/videos", MediaStatus.PENDING);
     }
 
     private ImageMedia image(final VideoMediaType type) {
-        final var checksum = UUID.randomUUID().toString();
+        final var checksum = IdUtils.uuid();
         return ImageMedia.with(checksum, type.name().toLowerCase(), "/images" + checksum);
     }
 }

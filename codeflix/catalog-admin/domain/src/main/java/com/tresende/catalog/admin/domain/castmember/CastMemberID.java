@@ -4,7 +4,6 @@ import com.tresende.catalog.admin.domain.Identifier;
 import com.tresende.catalog.admin.domain.utils.IdUtils;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class CastMemberID extends Identifier {
     private String value;
@@ -19,10 +18,6 @@ public class CastMemberID extends Identifier {
 
     public static CastMemberID from(final String anId) {
         return new CastMemberID(anId);
-    }
-
-    public static CastMemberID from(final UUID anId) {
-        return new CastMemberID(anId.toString().toLowerCase());
     }
 
     public String getValue() {

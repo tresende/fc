@@ -4,7 +4,6 @@ import com.tresende.catalog.admin.domain.Identifier;
 import com.tresende.catalog.admin.domain.utils.IdUtils;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class VideoID extends Identifier {
     private String value;
@@ -18,11 +17,7 @@ public class VideoID extends Identifier {
     }
 
     public static VideoID from(final String anId) {
-        return new VideoID(anId);
-    }
-
-    public static VideoID from(final UUID anId) {
-        return new VideoID(anId.toString().toLowerCase());
+        return new VideoID(anId.toLowerCase());
     }
 
     public String getValue() {

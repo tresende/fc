@@ -4,7 +4,6 @@ import com.tresende.catalog.admin.domain.Identifier;
 import com.tresende.catalog.admin.domain.utils.IdUtils;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class GenreID extends Identifier {
     private String value;
@@ -19,10 +18,6 @@ public class GenreID extends Identifier {
 
     public static GenreID from(final String anId) {
         return new GenreID(anId);
-    }
-
-    public static GenreID from(final UUID anId) {
-        return new GenreID(anId.toString().toLowerCase());
     }
 
     public String getValue() {
