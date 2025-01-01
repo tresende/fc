@@ -1,7 +1,7 @@
 package com.tresende.catalog.admin.e2e.castmember;
 
 import com.tresende.catalog.admin.E2ETest;
-import com.tresende.catalog.admin.Fixture;
+import com.tresende.catalog.admin.domain.Fixture;
 import com.tresende.catalog.admin.domain.castmember.CastMemberID;
 import com.tresende.catalog.admin.domain.castmember.CastMemberType;
 import com.tresende.catalog.admin.e2e.MockDsl;

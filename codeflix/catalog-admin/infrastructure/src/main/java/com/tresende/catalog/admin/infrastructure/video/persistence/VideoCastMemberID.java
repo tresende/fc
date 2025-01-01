@@ -13,14 +13,14 @@ class VideoCastMemberID implements Serializable {
     private String videoId;
 
     @Column(name = "cast_member_id", nullable = false)
-    private String CastMemberId;
+    private String castMemberId;
 
     public VideoCastMemberID() {
     }
 
     private VideoCastMemberID(final String videoId, final String castMemberId) {
         this.videoId = videoId;
-        CastMemberId = castMemberId;
+        this.castMemberId = castMemberId;
     }
 
     public static VideoCastMemberID from(final String videoId, final String castMemberId) {
@@ -48,10 +48,10 @@ class VideoCastMemberID implements Serializable {
     }
 
     public String getCastMemberId() {
-        return CastMemberId;
+        return castMemberId;
     }
 
     public void setCastMemberId(final String castMemberId) {
-        CastMemberId = castMemberId;
+        this.castMemberId = castMemberId;
     }
 }

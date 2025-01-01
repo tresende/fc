@@ -1,4 +1,4 @@
-package com.tresende.catalog.admin.application;
+package com.tresende.catalog.admin.domain;
 
 import com.github.javafaker.Faker;
 import com.tresende.catalog.admin.domain.castmember.CastMember;
@@ -41,6 +41,21 @@ public final class Fixture {
                 "Testes de Mutação. Você não testa seu software corretamente"
         );
     }
+
+//    public static Video video() {
+//        return Video.newVideo(
+//                Fixture.title(),
+//                Videos.description(),
+//                Year.of(Fixture.year()),
+//                Fixture.duration(),
+//                Fixture.bool(),
+//                Fixture.bool(),
+//                Videos.rating(),
+//                Set.of(Categories.aulas().getId()),
+//                Set.of(Genres.tech().getId()),
+//                Set.of(CastMembers.wesley().getId(), CastMembers.gabriel().getId())
+//        );
+//    }
 
     public static Video video() {
         return Video.newVideo(

@@ -1,16 +1,17 @@
 package com.tresende.catalog.admin.application.video.retrieve.list;
 
-import com.tresende.catalog.admin.application.Fixture;
 import com.tresende.catalog.admin.application.UseCaseTest;
+import com.tresende.catalog.admin.domain.Fixture;
 import com.tresende.catalog.admin.domain.pagination.Pagination;
-import com.tresende.catalog.admin.domain.video.Video;
 import com.tresende.catalog.admin.domain.video.VideoGateway;
+import com.tresende.catalog.admin.domain.video.VideoPreview;
 import com.tresende.catalog.admin.domain.video.VideoSearchQuery;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -34,9 +35,10 @@ class ListVideoUseCastTest extends UseCaseTest {
     public void givenAValidQuery_whenCallsListVideos_shouldReturnVideos() {
         //given
         final var videos = List.of(
-                Fixture.video(),
-                Fixture.video()
+                new VideoPreview(Fixture.video()),
+                new VideoPreview(Fixture.video())
         );
+
 
         final var expectedPage = 0;
         final var expectedPerPage = 10;
@@ -60,7 +62,7 @@ class ListVideoUseCastTest extends UseCaseTest {
                 .thenReturn(expectedPagination);
 
         final var aQuery =
-                new VideoSearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+                new VideoSearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection, Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
 
         // when
         final var actualOutput = useCase.execute(aQuery);
@@ -77,7 +79,7 @@ class ListVideoUseCastTest extends UseCaseTest {
     @Test
     public void givenAValidQuery_whenCallsListVideoAndResultIsEmpty_shouldReturnVideos() {
         // given
-        final var videos = List.<Video>of();
+        final var videos = List.<VideoPreview>of();
 
         final var expectedPage = 0;
         final var expectedPerPage = 10;
@@ -99,7 +101,7 @@ class ListVideoUseCastTest extends UseCaseTest {
                 .thenReturn(expectedPagination);
 
         final var aQuery =
-                new VideoSearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+                new VideoSearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection, Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
 
         // when
         final var actualOutput = useCase.execute(aQuery);
@@ -128,7 +130,7 @@ class ListVideoUseCastTest extends UseCaseTest {
                 .thenThrow(new IllegalStateException(expectedErrorMessage));
 
         final var aQuery =
-                new VideoSearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+                new VideoSearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection, Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
 
         // when
         final var actualOutput = Assertions.assertThrows(

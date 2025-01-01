@@ -13,9 +13,11 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation('org.mockito:mockito-junit-jupiter:5.14.1')
     testImplementation('org.junit.jupiter:junit-jupiter')
-    testImplementation("com.github.javafaker:javafaker:1.0.2")
     implementation 'io.vavr:vavr:0.10.4'
     implementation(project(":domain"))
+    implementation 'org.yaml:snakeyaml:2.0'
+
+    testImplementation(project(path: ':domain', configuration: 'testClasses'))
 }
 
 test {

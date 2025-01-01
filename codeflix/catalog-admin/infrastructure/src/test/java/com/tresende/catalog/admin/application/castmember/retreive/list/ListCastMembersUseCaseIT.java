@@ -1,7 +1,7 @@
 package com.tresende.catalog.admin.application.castmember.retreive.list;
 
-import com.tresende.catalog.admin.Fixture;
 import com.tresende.catalog.admin.IntegrationTest;
+import com.tresende.catalog.admin.domain.Fixture;
 import com.tresende.catalog.admin.domain.castmember.CastMember;
 import com.tresende.catalog.admin.domain.castmember.CastMemberGateway;
 import com.tresende.catalog.admin.domain.pagination.SearchQuery;

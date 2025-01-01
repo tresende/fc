@@ -1,7 +1,7 @@
 package com.tresende.catalog.admin.application.video.retrieve.get;
 
-import com.tresende.catalog.admin.application.Fixture;
 import com.tresende.catalog.admin.application.UseCaseTest;
+import com.tresende.catalog.admin.domain.Fixture;
 import com.tresende.catalog.admin.domain.exceptions.NotFoundException;
 import com.tresende.catalog.admin.domain.utils.IdUtils;
 import com.tresende.catalog.admin.domain.video.*;

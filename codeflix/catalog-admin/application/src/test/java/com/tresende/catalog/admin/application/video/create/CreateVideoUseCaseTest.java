@@ -1,7 +1,7 @@
 package com.tresende.catalog.admin.application.video.create;
 
-import com.tresende.catalog.admin.application.Fixture;
 import com.tresende.catalog.admin.application.UseCaseTest;
+import com.tresende.catalog.admin.domain.Fixture;
 import com.tresende.catalog.admin.domain.castmember.CastMemberGateway;
 import com.tresende.catalog.admin.domain.castmember.CastMemberID;
 import com.tresende.catalog.admin.domain.category.CategoryGateway;

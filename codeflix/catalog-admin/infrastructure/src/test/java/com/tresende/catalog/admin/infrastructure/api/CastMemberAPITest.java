@@ -2,7 +2,6 @@ package com.tresende.catalog.admin.infrastructure.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tresende.catalog.admin.ControllerTest;
-import com.tresende.catalog.admin.Fixture;
 import com.tresende.catalog.admin.application.castmember.create.CreateCastMemberOutput;
 import com.tresende.catalog.admin.application.castmember.create.DefaultCreateCastMemberUseCase;
 import com.tresende.catalog.admin.application.castmember.delete.DefaultDeleteCastMemberUseCase;
@@ -12,6 +11,7 @@ import com.tresende.catalog.admin.application.castmember.retreive.list.CastMembe
 import com.tresende.catalog.admin.application.castmember.retreive.list.DefaultListCastMembersUseCase;
 import com.tresende.catalog.admin.application.castmember.update.DefaultUpdateCastMemberUseCase;
 import com.tresende.catalog.admin.application.castmember.update.UpdateCastMemberOutput;
+import com.tresende.catalog.admin.domain.Fixture;
 import com.tresende.catalog.admin.domain.castmember.CastMember;
 import com.tresende.catalog.admin.domain.castmember.CastMemberID;
 import com.tresende.catalog.admin.domain.castmember.CastMemberType;

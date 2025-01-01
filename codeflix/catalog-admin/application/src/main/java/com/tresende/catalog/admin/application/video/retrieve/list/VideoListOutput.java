@@ -1,6 +1,6 @@
 package com.tresende.catalog.admin.application.video.retrieve.list;
 
-import com.tresende.catalog.admin.domain.video.Video;
+import com.tresende.catalog.admin.domain.video.VideoPreview;
 
 import java.time.Instant;
 
@@ -13,14 +13,14 @@ public record VideoListOutput(
         Instant updatedAt
 ) {
 
-    public static VideoListOutput from(final Video aVideo) {
+    public static VideoListOutput from(final VideoPreview aVideo) {
         return new VideoListOutput(
-                aVideo.getId().getValue(),
-                aVideo.getTitle(),
-                aVideo.getDescription(),
+                aVideo.id(),
+                aVideo.title(),
+                aVideo.description(),
                 //aVideo.getCategories().stream().map(CategoryID::getValue).collect(Collectors.toSet()),
-                aVideo.getCreatedAt(),
-                aVideo.getUpdatedAt()
+                aVideo.createdAt(),
+                aVideo.updatedAt()
         );
     }
 }

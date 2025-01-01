@@ -1,7 +1,7 @@
 package com.tresende.catalog.admin.application.castmember.delete;
 
-import com.tresende.catalog.admin.application.Fixture;
 import com.tresende.catalog.admin.application.UseCaseTest;
+import com.tresende.catalog.admin.domain.Fixture;
 import com.tresende.catalog.admin.domain.castmember.CastMember;
 import com.tresende.catalog.admin.domain.castmember.CastMemberGateway;
 import com.tresende.catalog.admin.domain.castmember.CastMemberID;

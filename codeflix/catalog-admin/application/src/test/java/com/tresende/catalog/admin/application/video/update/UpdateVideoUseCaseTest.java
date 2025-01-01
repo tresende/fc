@@ -1,9 +1,9 @@
 package com.tresende.catalog.admin.application.video.update;
 
-import com.tresende.catalog.admin.application.Fixture;
 import com.tresende.catalog.admin.application.UseCaseTest;
 import com.tresende.catalog.admin.application.video.upadate.DefaultUpdateVideoUseCase;
 import com.tresende.catalog.admin.application.video.upadate.UpdateVideoCommand;
+import com.tresende.catalog.admin.domain.Fixture;
 import com.tresende.catalog.admin.domain.castmember.CastMemberGateway;
 import com.tresende.catalog.admin.domain.castmember.CastMemberID;
 import com.tresende.catalog.admin.domain.category.CategoryGateway;

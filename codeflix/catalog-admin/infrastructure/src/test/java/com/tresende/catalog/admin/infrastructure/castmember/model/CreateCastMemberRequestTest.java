@@ -1,8 +1,8 @@
 package com.tresende.catalog.admin.infrastructure.castmember.model;
 
 
-import com.tresende.catalog.admin.Fixture;
 import com.tresende.catalog.admin.JacksonTest;
+import com.tresende.catalog.admin.domain.Fixture;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
