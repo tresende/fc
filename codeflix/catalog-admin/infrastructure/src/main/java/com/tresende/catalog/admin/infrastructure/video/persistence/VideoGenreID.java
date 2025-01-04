@@ -33,16 +33,8 @@ public class VideoGenreID implements Serializable {
         return videoId;
     }
 
-    public void setVideoId(final String videoId) {
-        this.videoId = videoId;
-    }
-
     public String getGenreId() {
         return genreId;
-    }
-
-    public void setGenreId(final String genreId) {
-        this.genreId = genreId;
     }
 
     @Override

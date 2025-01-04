@@ -225,11 +225,6 @@ public class VideoJpaEntity {
         return title;
     }
 
-    public VideoJpaEntity setTitle(String title) {
-        this.title = title;
-        return this;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -243,45 +238,20 @@ public class VideoJpaEntity {
         return yearLaunched;
     }
 
-    public VideoJpaEntity setYearLaunched(int yearLaunched) {
-        this.yearLaunched = yearLaunched;
-        return this;
-    }
-
     public boolean isOpened() {
         return opened;
-    }
-
-    public VideoJpaEntity setOpened(boolean opened) {
-        this.opened = opened;
-        return this;
     }
 
     public boolean isPublished() {
         return published;
     }
 
-    public VideoJpaEntity setPublished(boolean published) {
-        this.published = published;
-        return this;
-    }
-
     public Rating getRating() {
         return rating;
     }
 
-    public VideoJpaEntity setRating(Rating rating) {
-        this.rating = rating;
-        return this;
-    }
-
     public double getDuration() {
         return duration;
-    }
-
-    public VideoJpaEntity setDuration(double duration) {
-        this.duration = duration;
-        return this;
     }
 
     public Instant getCreatedAt() {
@@ -306,45 +276,20 @@ public class VideoJpaEntity {
         return video;
     }
 
-    public VideoJpaEntity setVideo(AudioVideoMediaJpaEntity video) {
-        this.video = video;
-        return this;
-    }
-
     public AudioVideoMediaJpaEntity getTrailer() {
         return trailer;
-    }
-
-    public VideoJpaEntity setTrailer(AudioVideoMediaJpaEntity trailer) {
-        this.trailer = trailer;
-        return this;
     }
 
     public ImageMediaJpaEntity getBanner() {
         return banner;
     }
 
-    public VideoJpaEntity setBanner(ImageMediaJpaEntity banner) {
-        this.banner = banner;
-        return this;
-    }
-
     public ImageMediaJpaEntity getThumbnail() {
         return thumbnail;
     }
 
-    public VideoJpaEntity setThumbnail(ImageMediaJpaEntity thumbnail) {
-        this.thumbnail = thumbnail;
-        return this;
-    }
-
     public ImageMediaJpaEntity getThumbnailHalf() {
         return thumbnailHalf;
-    }
-
-    public VideoJpaEntity setThumbnailHalf(ImageMediaJpaEntity thumbnailHalf) {
-        this.thumbnailHalf = thumbnailHalf;
-        return this;
     }
 
     public Set<VideoCategoryJpaEntity> getCategories() {
@@ -367,11 +312,6 @@ public class VideoJpaEntity {
 
     public Set<VideoCastMemberJpaEntity> getCastMembers() {
         return castMembers;
-    }
-
-    public VideoJpaEntity setCastMembers(Set<VideoCastMemberJpaEntity> castMembers) {
-        this.castMembers = castMembers;
-        return this;
     }
 
     public Set<CategoryID> getCategoriesID() {

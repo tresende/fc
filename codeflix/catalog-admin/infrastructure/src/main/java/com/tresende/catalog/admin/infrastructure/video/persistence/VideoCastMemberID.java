@@ -43,15 +43,7 @@ class VideoCastMemberID implements Serializable {
         return videoId;
     }
 
-    public void setVideoId(final String videoId) {
-        this.videoId = videoId;
-    }
-
     public String getCastMemberId() {
         return castMemberId;
-    }
-
-    public void setCastMemberId(final String castMemberId) {
-        this.castMemberId = castMemberId;
     }
 }

@@ -15,7 +15,6 @@ public class VideoCategoryID implements Serializable {
     @Column(name = "category_id", nullable = false)
     private String categoryId;
 
-
     private VideoCategoryID(final String videoId, final String categoryId) {
         this.videoId = videoId;
         this.categoryId = categoryId;
@@ -33,16 +32,8 @@ public class VideoCategoryID implements Serializable {
         return videoId;
     }
 
-    public void setVideoId(final String videoId) {
-        this.videoId = videoId;
-    }
-
     public String getCategoryId() {
         return categoryId;
-    }
-
-    public void setCategoryId(final String categoryId) {
-        this.categoryId = categoryId;
     }
 
     @Override
