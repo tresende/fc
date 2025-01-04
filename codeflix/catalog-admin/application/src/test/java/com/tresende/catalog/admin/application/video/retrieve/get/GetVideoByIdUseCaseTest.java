@@ -122,12 +122,12 @@ class GetVideoByIdUseCaseTest extends UseCaseTest {
 
     private AudioVideoMedia audioVideo(final VideoMediaType type) {
         final var checksum = IdUtils.uuid();
-        return AudioVideoMedia.with(checksum, type.name().toLowerCase(), "/videos" + checksum, "/videos", MediaStatus.PENDING);
+        return AudioVideoMedia.with(IdUtils.uuid(), checksum, type.name().toLowerCase(), "/videos" + checksum, "/videos", MediaStatus.PENDING);
     }
 
     private ImageMedia image(final VideoMediaType type) {
         final var checksum = IdUtils.uuid();
-        return ImageMedia.with(checksum, type.name().toLowerCase(), "/images" + checksum);
+        return ImageMedia.with(IdUtils.uuid(), checksum, type.name().toLowerCase(), "/images" + checksum);
     }
 }
 

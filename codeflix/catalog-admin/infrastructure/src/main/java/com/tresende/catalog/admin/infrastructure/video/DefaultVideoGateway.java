@@ -9,6 +9,7 @@ import com.tresende.catalog.admin.infrastructure.video.persistence.VideoReposito
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import static com.tresende.catalog.admin.domain.utils.CollectionUtils.mapTo;
 import static com.tresende.catalog.admin.domain.utils.CollectionUtils.nullIfEmpty;
 
+@Component
 class DefaultVideoGateway implements VideoGateway {
 
     private final VideoRepository videoRepository;

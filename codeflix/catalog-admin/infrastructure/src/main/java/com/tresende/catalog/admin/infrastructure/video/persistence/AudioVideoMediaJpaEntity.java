@@ -10,6 +10,9 @@ public class AudioVideoMediaJpaEntity {
     @Id
     private String id;
 
+    @Column(name = "checksum", nullable = false)
+    private String checksum;
+
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -29,12 +32,14 @@ public class AudioVideoMediaJpaEntity {
 
     public AudioVideoMediaJpaEntity(
             final String id,
+            final String checksum,
             final String name,
             final String filePath,
             final String encodedPath,
             final MediaStatus status
     ) {
         this.id = id;
+        this.checksum = checksum;
         this.name = name;
         this.filePath = filePath;
         this.encodedPath = encodedPath;
@@ -43,6 +48,7 @@ public class AudioVideoMediaJpaEntity {
 
     public static AudioVideoMediaJpaEntity from(final AudioVideoMedia media) {
         return new AudioVideoMediaJpaEntity(
+                media.id(),
                 media.checksum(),
                 media.name(),
                 media.rawLocation(),
@@ -51,49 +57,34 @@ public class AudioVideoMediaJpaEntity {
         );
     }
 
-    public String getId() {
-        return id;
+    public String getChecksum() {
+        return checksum;
     }
 
-    public void setId(final String id) {
-        this.id = id;
+    public String getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public String getFilePath() {
         return filePath;
-    }
-
-    public void setFilePath(final String filePath) {
-        this.filePath = filePath;
     }
 
     public String getEncodedPath() {
         return encodedPath;
     }
 
-    public void setEncodedPath(final String encodedPath) {
-        this.encodedPath = encodedPath;
-    }
-
     public MediaStatus getStatus() {
         return status;
-    }
-
-    public void setStatus(final MediaStatus status) {
-        this.status = status;
     }
 
     public AudioVideoMedia toDomain() {
         return AudioVideoMedia.with(
                 this.getId(),
+                this.getChecksum(),
                 this.getName(),
                 this.getFilePath(),
                 this.getEncodedPath(),

@@ -3,6 +3,7 @@ package com.tresende.catalog.admin.infrastructure.video.persistence;
 import com.tresende.catalog.admin.domain.castmember.CastMemberID;
 import com.tresende.catalog.admin.domain.category.CategoryID;
 import com.tresende.catalog.admin.domain.genre.GenreID;
+import com.tresende.catalog.admin.domain.utils.CollectionUtils;
 import com.tresende.catalog.admin.domain.video.Rating;
 import com.tresende.catalog.admin.domain.video.Video;
 import com.tresende.catalog.admin.domain.video.VideoID;
@@ -14,9 +15,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.FetchType.EAGER;
 
 @Table(name = "videos")
 @Entity(name = "Video")
@@ -32,17 +30,16 @@ public class VideoJpaEntity {
     @Column(name = "description", length = 4000)
     private String description;
 
-    @Column(name = "year_launched")
+    @Column(name = "year_launched", nullable = false)
     private int yearLaunched;
 
-    @Column(name = "opened")
+    @Column(name = "opened", nullable = false)
     private boolean opened;
 
-    @Column(name = "published")
+    @Column(name = "published", nullable = false)
     private boolean published;
 
     @Column(name = "rating")
-    @Enumerated(EnumType.STRING)
     private Rating rating;
 
     @Column(name = "duration", precision = 2)
@@ -54,27 +51,36 @@ public class VideoJpaEntity {
     @Column(name = "updated_at", nullable = false, columnDefinition = "DATETIME(6)")
     private Instant updatedAt;
 
-    @OneToOne(cascade = ALL, fetch = EAGER, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "video_id")
     private AudioVideoMediaJpaEntity video;
 
-    @OneToOne(cascade = ALL, fetch = EAGER, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "trailer_id")
     private AudioVideoMediaJpaEntity trailer;
 
-    @OneToMany(mappedBy = "video", cascade = ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = "banner_id")
+    private ImageMediaJpaEntity banner;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = "thumbnail_id")
+    private ImageMediaJpaEntity thumbnail;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = "thumbnail_half_id")
+    private ImageMediaJpaEntity thumbnailHalf;
+
+    @OneToMany(mappedBy = "video", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<VideoCategoryJpaEntity> categories;
 
-    @OneToMany(mappedBy = "video", cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "video", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<VideoGenreJpaEntity> genres;
 
-    @OneToMany(mappedBy = "video", cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "video", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<VideoCastMemberJpaEntity> castMembers;
 
     public VideoJpaEntity() {
-        this.categories = new HashSet<>(3);
-        this.genres = new HashSet<>(3);
-        this.castMembers = new HashSet<>(3);
     }
 
     private VideoJpaEntity(
@@ -89,7 +95,10 @@ public class VideoJpaEntity {
             final Instant createdAt,
             final Instant updatedAt,
             final AudioVideoMediaJpaEntity video,
-            final AudioVideoMediaJpaEntity trailer
+            final AudioVideoMediaJpaEntity trailer,
+            final ImageMediaJpaEntity banner,
+            final ImageMediaJpaEntity thumbnail,
+            final ImageMediaJpaEntity thumbnailHalf
     ) {
         this.id = id;
         this.title = title;
@@ -103,6 +112,9 @@ public class VideoJpaEntity {
         this.updatedAt = updatedAt;
         this.video = video;
         this.trailer = trailer;
+        this.banner = banner;
+        this.thumbnail = thumbnail;
+        this.thumbnailHalf = thumbnailHalf;
         this.categories = new HashSet<>(3);
         this.genres = new HashSet<>(3);
         this.castMembers = new HashSet<>(3);
@@ -120,8 +132,21 @@ public class VideoJpaEntity {
                 aVideo.getDuration(),
                 aVideo.getCreatedAt(),
                 aVideo.getUpdatedAt(),
-                aVideo.getVideo().map(AudioVideoMediaJpaEntity::from).orElse(null),
-                aVideo.getTrailer().map(AudioVideoMediaJpaEntity::from).orElse(null)
+                aVideo.getVideo()
+                        .map(AudioVideoMediaJpaEntity::from)
+                        .orElse(null),
+                aVideo.getTrailer()
+                        .map(AudioVideoMediaJpaEntity::from)
+                        .orElse(null),
+                aVideo.getBanner()
+                        .map(ImageMediaJpaEntity::from)
+                        .orElse(null),
+                aVideo.getThumbnail()
+                        .map(ImageMediaJpaEntity::from)
+                        .orElse(null),
+                aVideo.getThumbnailHalf()
+                        .map(ImageMediaJpaEntity::from)
+                        .orElse(null)
         );
 
         aVideo.getCategories()
@@ -131,143 +156,9 @@ public class VideoJpaEntity {
                 .forEach(entity::addGenre);
 
         aVideo.getCastMembers()
-                .forEach(entity::addCastMembers);
-
+                .forEach(entity::addCastMember);
 
         return entity;
-    }
-
-    private void addCastMembers(CastMemberID castMemberID) {
-        this.castMembers.add(VideoCastMemberJpaEntity.from(this, castMemberID));
-    }
-
-    private void addGenre(final GenreID genreID) {
-        this.genres.add(VideoGenreJpaEntity.from(this, genreID));
-
-    }
-
-    public Set<VideoGenreJpaEntity> getGenres() {
-        return genres;
-    }
-
-    public void setGenres(final Set<VideoGenreJpaEntity> genres) {
-        this.genres = genres;
-    }
-
-    public void addCategory(final CategoryID categoryID) {
-        this.categories.add(VideoCategoryJpaEntity.from(this, categoryID));
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(final String id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(final String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(final String description) {
-        this.description = description;
-    }
-
-    public int getYearLaunched() {
-        return yearLaunched;
-    }
-
-    public void setYearLaunched(final int yearLaunched) {
-        this.yearLaunched = yearLaunched;
-    }
-
-    public boolean isOpened() {
-        return opened;
-    }
-
-    public void setOpened(final boolean opened) {
-        this.opened = opened;
-    }
-
-    public boolean isPublished() {
-        return published;
-    }
-
-    public void setPublished(final boolean published) {
-        this.published = published;
-    }
-
-    public Rating getRating() {
-        return rating;
-    }
-
-    public void setRating(final Rating rating) {
-        this.rating = rating;
-    }
-
-    public double getDuration() {
-        return duration;
-    }
-
-    public void setDuration(final double duration) {
-        this.duration = duration;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(final Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(final Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public AudioVideoMediaJpaEntity getVideo() {
-        return video;
-    }
-
-    public void setVideo(final AudioVideoMediaJpaEntity video) {
-        this.video = video;
-    }
-
-    public AudioVideoMediaJpaEntity getTrailer() {
-        return trailer;
-    }
-
-    public void setTrailer(final AudioVideoMediaJpaEntity trailer) {
-        this.trailer = trailer;
-    }
-
-    public Set<VideoCategoryJpaEntity> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(final Set<VideoCategoryJpaEntity> categories) {
-        this.categories = categories;
-    }
-
-    public Set<VideoCastMemberJpaEntity> getCastMembers() {
-        return castMembers;
-    }
-
-    public void setCastMembers(final Set<VideoCastMemberJpaEntity> castMembers) {
-        this.castMembers = castMembers;
     }
 
     public Video toAggregate() {
@@ -282,23 +173,216 @@ public class VideoJpaEntity {
                 getRating(),
                 getCreatedAt(),
                 getUpdatedAt(),
-                null,
-                null,
-                null,
+                Optional.ofNullable(getBanner())
+                        .map(ImageMediaJpaEntity::toDomain)
+                        .orElse(null),
+                Optional.ofNullable(getThumbnail())
+                        .map(ImageMediaJpaEntity::toDomain)
+                        .orElse(null),
+                Optional.ofNullable(getThumbnailHalf())
+                        .map(ImageMediaJpaEntity::toDomain)
+                        .orElse(null),
                 Optional.ofNullable(getTrailer())
                         .map(AudioVideoMediaJpaEntity::toDomain)
                         .orElse(null),
                 Optional.ofNullable(getVideo())
                         .map(AudioVideoMediaJpaEntity::toDomain)
                         .orElse(null),
-                getCategories().stream().map(it -> CategoryID.from(it.getId().getCategoryId()))
+                getCategories().stream()
+                        .map(it -> CategoryID.from(it.getId().getCategoryId()))
                         .collect(Collectors.toSet()),
-                getGenres().stream().map(it -> GenreID.from(it.getId().getGenreId()))
+                getGenres().stream()
+                        .map(it -> GenreID.from(it.getId().getGenreId()))
                         .collect(Collectors.toSet()),
-                getCastMembers().stream().map(it -> CastMemberID.from(it.getId().getCastMemberId()))
+                getCastMembers().stream()
+                        .map(it -> CastMemberID.from(it.getId().getCastMemberId()))
                         .collect(Collectors.toSet())
         );
+    }
 
+    public void addCategory(final CategoryID anId) {
+        this.categories.add(VideoCategoryJpaEntity.from(this, anId));
+    }
 
+    public void addGenre(final GenreID anId) {
+        this.genres.add(VideoGenreJpaEntity.from(this, anId));
+    }
+
+    public void addCastMember(final CastMemberID anId) {
+        this.castMembers.add(VideoCastMemberJpaEntity.from(this, anId));
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public VideoJpaEntity setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public VideoJpaEntity setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public VideoJpaEntity setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public int getYearLaunched() {
+        return yearLaunched;
+    }
+
+    public VideoJpaEntity setYearLaunched(int yearLaunched) {
+        this.yearLaunched = yearLaunched;
+        return this;
+    }
+
+    public boolean isOpened() {
+        return opened;
+    }
+
+    public VideoJpaEntity setOpened(boolean opened) {
+        this.opened = opened;
+        return this;
+    }
+
+    public boolean isPublished() {
+        return published;
+    }
+
+    public VideoJpaEntity setPublished(boolean published) {
+        this.published = published;
+        return this;
+    }
+
+    public Rating getRating() {
+        return rating;
+    }
+
+    public VideoJpaEntity setRating(Rating rating) {
+        this.rating = rating;
+        return this;
+    }
+
+    public double getDuration() {
+        return duration;
+    }
+
+    public VideoJpaEntity setDuration(double duration) {
+        this.duration = duration;
+        return this;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public VideoJpaEntity setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+        return this;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public VideoJpaEntity setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+        return this;
+    }
+
+    public AudioVideoMediaJpaEntity getVideo() {
+        return video;
+    }
+
+    public VideoJpaEntity setVideo(AudioVideoMediaJpaEntity video) {
+        this.video = video;
+        return this;
+    }
+
+    public AudioVideoMediaJpaEntity getTrailer() {
+        return trailer;
+    }
+
+    public VideoJpaEntity setTrailer(AudioVideoMediaJpaEntity trailer) {
+        this.trailer = trailer;
+        return this;
+    }
+
+    public ImageMediaJpaEntity getBanner() {
+        return banner;
+    }
+
+    public VideoJpaEntity setBanner(ImageMediaJpaEntity banner) {
+        this.banner = banner;
+        return this;
+    }
+
+    public ImageMediaJpaEntity getThumbnail() {
+        return thumbnail;
+    }
+
+    public VideoJpaEntity setThumbnail(ImageMediaJpaEntity thumbnail) {
+        this.thumbnail = thumbnail;
+        return this;
+    }
+
+    public ImageMediaJpaEntity getThumbnailHalf() {
+        return thumbnailHalf;
+    }
+
+    public VideoJpaEntity setThumbnailHalf(ImageMediaJpaEntity thumbnailHalf) {
+        this.thumbnailHalf = thumbnailHalf;
+        return this;
+    }
+
+    public Set<VideoCategoryJpaEntity> getCategories() {
+        return categories;
+    }
+
+    public VideoJpaEntity setCategories(Set<VideoCategoryJpaEntity> categories) {
+        this.categories = categories;
+        return this;
+    }
+
+    public Set<VideoGenreJpaEntity> getGenres() {
+        return genres;
+    }
+
+    public VideoJpaEntity setGenres(Set<VideoGenreJpaEntity> genres) {
+        this.genres = genres;
+        return this;
+    }
+
+    public Set<VideoCastMemberJpaEntity> getCastMembers() {
+        return castMembers;
+    }
+
+    public VideoJpaEntity setCastMembers(Set<VideoCastMemberJpaEntity> castMembers) {
+        this.castMembers = castMembers;
+        return this;
+    }
+
+    public Set<CategoryID> getCategoriesID() {
+        return CollectionUtils.mapTo(getCategories(), it -> CategoryID.from(it.getId().getCategoryId()));
+    }
+
+    public Set<GenreID> getGenresID() {
+        return CollectionUtils.mapTo(getGenres(), it -> GenreID.from(it.getId().getGenreId()));
+    }
+
+    public Set<CastMemberID> getCastMembersID() {
+        return CollectionUtils.mapTo(getCastMembers(), it -> CastMemberID.from(it.getId().getCastMemberId()));
     }
 }
