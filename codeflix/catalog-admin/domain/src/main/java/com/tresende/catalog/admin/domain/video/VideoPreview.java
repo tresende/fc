@@ -4,8 +4,8 @@ import java.time.Instant;
 
 public record VideoPreview(
         String id,
-        String description,
         String title,
+        String description,
         Instant createdAt,
         Instant updatedAt
 ) {

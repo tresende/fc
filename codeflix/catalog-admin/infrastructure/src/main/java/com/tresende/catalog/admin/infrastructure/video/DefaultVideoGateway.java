@@ -54,18 +54,19 @@ class DefaultVideoGateway implements VideoGateway {
 
     @Override
     public Pagination<VideoPreview> findAll(final VideoSearchQuery aQuery) {
-        final var pageRequest = PageRequest.of(
+        final var page = PageRequest.of(
                 aQuery.page(),
                 aQuery.perPage(),
                 Sort.by(Sort.Direction.fromString(aQuery.direction()), aQuery.sort())
         );
 
         final var actualPage = this.videoRepository.findAll(
-                SqlUtils.like(aQuery.terms()),
+                SqlUtils.like(SqlUtils.upper(aQuery.terms())),
                 nullIfEmpty(mapTo(aQuery.castMembers(), Identifier::getValue)),
                 nullIfEmpty(mapTo(aQuery.categories(), Identifier::getValue)),
                 nullIfEmpty(mapTo(aQuery.genres(), Identifier::getValue)),
-                pageRequest);
+                page
+        );
 
         return new Pagination<>(
                 actualPage.getNumber(),

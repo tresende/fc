@@ -5,10 +5,7 @@ import com.tresende.catalog.admin.domain.castmember.CastMember;
 import com.tresende.catalog.admin.domain.castmember.CastMemberType;
 import com.tresende.catalog.admin.domain.category.Category;
 import com.tresende.catalog.admin.domain.genre.Genre;
-import com.tresende.catalog.admin.domain.video.Rating;
-import com.tresende.catalog.admin.domain.video.Resource;
-import com.tresende.catalog.admin.domain.video.Video;
-import com.tresende.catalog.admin.domain.video.VideoMediaType;
+import com.tresende.catalog.admin.domain.video.*;
 
 import java.time.Year;
 import java.util.Set;
@@ -16,6 +13,7 @@ import java.util.Set;
 import static io.vavr.API.*;
 
 public final class Fixture {
+
     private static final Faker FAKER = new Faker();
 
     public static String name() {
@@ -23,7 +21,7 @@ public final class Fixture {
     }
 
     public static Integer year() {
-        return FAKER.random().nextInt(2000, 2030);
+        return FAKER.random().nextInt(2020, 2030);
     }
 
     public static Double duration() {
@@ -31,7 +29,7 @@ public final class Fixture {
     }
 
     public static boolean bool() {
-        return FAKER.random().nextBoolean();
+        return FAKER.bool().bool();
     }
 
     public static String title() {
@@ -42,20 +40,9 @@ public final class Fixture {
         );
     }
 
-//    public static Video video() {
-//        return Video.newVideo(
-//                Fixture.title(),
-//                Videos.description(),
-//                Year.of(Fixture.year()),
-//                Fixture.duration(),
-//                Fixture.bool(),
-//                Fixture.bool(),
-//                Videos.rating(),
-//                Set.of(Categories.aulas().getId()),
-//                Set.of(Genres.tech().getId()),
-//                Set.of(CastMembers.wesley().getId(), CastMembers.gabriel().getId())
-//        );
-//    }
+    public static String checksum() {
+        return "03fe62de";
+    }
 
     public static Video video() {
         return Video.newVideo(
@@ -72,12 +59,30 @@ public final class Fixture {
         );
     }
 
-    public static final class CastMembers {
-        private static final CastMember WESLEY =
-                CastMember.newMember("Wesley", CastMemberType.ACTOR);
+    public static final class Categories {
 
-        private static final CastMember THIAGO =
-                CastMember.newMember("Thiago", CastMemberType.ACTOR);
+        private static final Category AULAS =
+                Category.newCategory("Aulas", "Some description", true);
+
+        private static final Category LIVES =
+                Category.newCategory("Lives", "Some description", true);
+
+        public static Category aulas() {
+            return AULAS.clone();
+        }
+
+        public static Category lives() {
+            return LIVES.clone();
+        }
+    }
+
+    public static final class CastMembers {
+
+        private static final CastMember WESLEY =
+                CastMember.newMember("Wesley FullCycle", CastMemberType.ACTOR);
+
+        private static final CastMember GABRIEL =
+                CastMember.newMember("Gabriel FullCycle", CastMemberType.ACTOR);
 
         public static CastMemberType type() {
             return FAKER.options().option(CastMemberType.values());
@@ -88,29 +93,30 @@ public final class Fixture {
         }
 
         public static CastMember gabriel() {
-            return CastMember.with(THIAGO);
-        }
-    }
-
-    public static final class Categories {
-        private static final Category AULAS = Category.newCategory("Aulas", "Some description", true);
-
-        public static Category aulas() {
-            return AULAS.clone();
+            return CastMember.with(GABRIEL);
         }
     }
 
     public static final class Genres {
-        private static final Genre TECH = Genre.newGenre("Technology", true);
+
+        private static final Genre TECH =
+                Genre.newGenre("Technology", true);
+
+        private static final Genre BUSINESS =
+                Genre.newGenre("Business", true);
 
         public static Genre tech() {
             return Genre.with(TECH);
+        }
+
+        public static Genre business() {
+            return Genre.with(BUSINESS);
         }
     }
 
     public static final class Videos {
 
-        private static Video SYSTEM_DESIGN = Video.newVideo(
+        private static final Video SYSTEM_DESIGN = Video.newVideo(
                 "System Design no Mercado Livre na prática",
                 description(),
                 Year.of(2022),
@@ -125,6 +131,24 @@ public final class Fixture {
 
         public static Video systemDesign() {
             return Video.with(SYSTEM_DESIGN);
+        }
+
+        public static Rating rating() {
+            return FAKER.options().option(Rating.values());
+        }
+
+        public static VideoMediaType mediaType() {
+            return FAKER.options().option(VideoMediaType.values());
+        }
+
+        public static Resource resource(final VideoMediaType type) {
+            final String contentType = Match(type).of(
+                    Case($(List(VideoMediaType.VIDEO, VideoMediaType.TRAILER)::contains), "video/mp4"),
+                    Case($(), "image/jpg")
+            );
+
+            final var content = "Conteudo".getBytes();
+            return Resource.of(content, contentType, type.name().toLowerCase(), type);
         }
 
         public static String description() {
@@ -142,18 +166,22 @@ public final class Fixture {
             );
         }
 
-        public static Rating rating() {
-            return FAKER.options().option(Rating.values());
+        public static AudioVideoMedia audioVideo(final VideoMediaType type) {
+            final var checksum = Fixture.checksum();
+            return AudioVideoMedia.with(
+                    checksum,
+                    type.name().toLowerCase(),
+                    "/videos/" + checksum
+            );
         }
 
-        public static Resource resource(final VideoMediaType type) {
-            final String contentType = Match(type).of(
-                    Case($(List(VideoMediaType.VIDEO, VideoMediaType.TRAILER)::contains), "video/mp4"),
-                    Case($(), "image/jpg")
+        public static ImageMedia image(final VideoMediaType type) {
+            final var checksum = Fixture.checksum();
+            return ImageMedia.with(
+                    checksum,
+                    type.name().toLowerCase(),
+                    "/images/" + checksum
             );
-
-            final var content = "Conteudo".getBytes();
-            return Resource.of(content, contentType, type.name().toLowerCase(), type);
         }
     }
 }
