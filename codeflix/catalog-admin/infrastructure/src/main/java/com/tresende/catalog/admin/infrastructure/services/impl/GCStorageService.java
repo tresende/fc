@@ -12,12 +12,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
-class GoogleCloudStorage implements StorageService {
+public class GCStorageService implements StorageService {
 
     private final String bucket;
     private final Storage storage;
 
-    public GoogleCloudStorage(final String bucket, final Storage storage) {
+    public GCStorageService(final String bucket, final Storage storage) {
         this.bucket = Objects.requireNonNull(bucket);
         this.storage = Objects.requireNonNull(storage);
     }
@@ -44,7 +44,7 @@ class GoogleCloudStorage implements StorageService {
     public void store(final String name, final Resource resource) {
         final var blobInfo = BlobInfo.newBuilder(bucket, name)
                 .setContentType(resource.contentType())
-                .setCrc32cFromHexString("")
+                .setCrc32cFromHexString(resource.checksum())
                 .build();
         storage.create(blobInfo, resource.content());
     }

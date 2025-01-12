@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InMemoryStorageService implements StorageService {
     private final Map<String, Resource> storage;
 
-    public InMemoryStorageService(final Map<String, Resource> storage) {
+    public InMemoryStorageService() {
         this.storage = new ConcurrentHashMap<>();
     }
 
