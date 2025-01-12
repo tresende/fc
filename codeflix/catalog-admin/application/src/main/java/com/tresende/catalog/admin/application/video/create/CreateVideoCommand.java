@@ -1,6 +1,6 @@
 package com.tresende.catalog.admin.application.video.create;
 
-import com.tresende.catalog.admin.domain.video.Resource;
+import com.tresende.catalog.admin.domain.resource.Resource;
 
 import java.util.Optional;
 import java.util.Set;

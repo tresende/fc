@@ -5,6 +5,8 @@ import com.tresende.catalog.admin.domain.castmember.CastMember;
 import com.tresende.catalog.admin.domain.castmember.CastMemberType;
 import com.tresende.catalog.admin.domain.category.Category;
 import com.tresende.catalog.admin.domain.genre.Genre;
+import com.tresende.catalog.admin.domain.resource.Resource;
+import com.tresende.catalog.admin.domain.utils.IdUtils;
 import com.tresende.catalog.admin.domain.video.*;
 
 import java.time.Year;
@@ -148,7 +150,8 @@ public final class Fixture {
             );
 
             final var content = "Conteudo".getBytes();
-            return Resource.of(content, contentType, type.name().toLowerCase(), type);
+            final var checksum = IdUtils.uuid();
+            return Resource.of(checksum, content, contentType, type.name().toLowerCase());
         }
 
         public static String description() {

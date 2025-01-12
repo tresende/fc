@@ -13,7 +13,7 @@ import com.tresende.catalog.admin.domain.exceptions.InternalErrorException;
 import com.tresende.catalog.admin.domain.exceptions.NotificationException;
 import com.tresende.catalog.admin.domain.genre.GenreGateway;
 import com.tresende.catalog.admin.domain.genre.GenreID;
-import com.tresende.catalog.admin.domain.utils.IdUtils;
+import com.tresende.catalog.admin.domain.resource.Resource;
 import com.tresende.catalog.admin.domain.video.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -1113,15 +1113,15 @@ class UpdateVideoUseCaseTest extends UseCaseTest {
 
     private void mockImageMedia() {
         when(mediaResourceGateway.storeImage(any(), any())).thenAnswer(t -> {
-            final var resource = t.getArgument(1, Resource.class);
-            return ImageMedia.with(IdUtils.uuid(), IdUtils.uuid(), resource.name(), "/img");
+            final var resource = t.getArgument(1, VideoResource.class);
+            return Fixture.Videos.image(resource.type());
         });
     }
 
     private void mockAudioVideoMedia() {
         when(mediaResourceGateway.storeAudioVideo(any(), any())).thenAnswer(t -> {
-            final var resource = t.getArgument(1, Resource.class);
-            return AudioVideoMedia.with(IdUtils.uuid(), IdUtils.uuid(), resource.name(), "/video", "/video", MediaStatus.PENDING);
+            final var resource = t.getArgument(1, VideoResource.class);
+            return Fixture.Videos.audioVideo(resource.type());
         });
     }
 }

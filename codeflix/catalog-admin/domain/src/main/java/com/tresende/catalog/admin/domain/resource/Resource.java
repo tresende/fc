@@ -1,27 +1,27 @@
-package com.tresende.catalog.admin.domain.video;
+package com.tresende.catalog.admin.domain.resource;
 
 import com.tresende.catalog.admin.domain.ValueObject;
 
 import java.util.Objects;
 
 public class Resource extends ValueObject {
+    private final String checksum;
     private final byte[] content;
     private final String contentType;
     private final String name;
-    private final VideoMediaType type;
 
-    private Resource(final byte[] content,
+    private Resource(final String checksum,
+                     final byte[] content,
                      final String contentType,
-                     final String name,
-                     final VideoMediaType type) {
+                     final String name) {
+        this.checksum = Objects.requireNonNull(checksum);
         this.content = Objects.requireNonNull(content);
         this.contentType = Objects.requireNonNull(contentType);
         this.name = Objects.requireNonNull(name);
-        this.type = Objects.requireNonNull(type);
     }
 
-    public static Resource of(final byte[] content, final String contentType, final String name, final VideoMediaType type) {
-        return new Resource(content, contentType, name, type);
+    public static Resource of(final String checksum, final byte[] content, final String contentType, final String name) {
+        return new Resource(checksum, content, contentType, name);
     }
 
     public byte[] content() {
@@ -36,9 +36,7 @@ public class Resource extends ValueObject {
         return name;
     }
 
-    public VideoMediaType type() {
-        return type;
+    public String checksum() {
+        return checksum;
     }
-
-
 }

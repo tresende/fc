@@ -558,7 +558,6 @@ public class VideoGatewayTest {
 
     @Test
     public void givenAValidCategory_whenCallFindAll_shouldReturnFilteredList() {
-        //18 min
         // given
         mockVideos();
 
