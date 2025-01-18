@@ -34,7 +34,7 @@ public class InMemoryStorageService implements StorageService {
         return Optional.ofNullable(storage.get(name));
     }
 
-    public void reset() {
+    public void clear() {
         storage.clear();
     }
 

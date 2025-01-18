@@ -53,3 +53,9 @@ google:
         retryMaxDelay: 50
         retryMaxAttempts: 2
         retryMultiplier: 1.0
+
+
+storage:
+  catalog-admin:
+    fileName-pattern: type-{type}
+    location-pattern: videoId-{videoId}

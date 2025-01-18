@@ -17,7 +17,7 @@ public class InMemoryStorageServiceTest {
 
     @BeforeEach
     public void setup() {
-        target.reset();
+        target.clear();
     }
 
     @Test

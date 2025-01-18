@@ -14,4 +14,5 @@ public interface StorageService {
     void store(String name, Resource resource);
 
     Optional<Resource> get(String name);
+
 }
