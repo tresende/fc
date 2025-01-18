@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class InMemoryStorageServiceTest {
 
@@ -86,23 +87,30 @@ public class InMemoryStorageServiceTest {
     public void givenValidNames_whenCallsDelete_shouldDeleteAll() {
         // Given
         final var expectedItemsCount = 2;
-        final var expectedNames = List.of(
+
+        final var expectedNames = Set.of(
+                "image_" + IdUtils.uuid(),
+                "image_" + IdUtils.uuid()
+        );
+
+        final var videos = List.of(
                 "video_" + IdUtils.uuid(),
                 "video_" + IdUtils.uuid(),
                 "video_" + IdUtils.uuid()
         );
+
         final var all = new ArrayList<>(expectedNames);
-        all.add("image_" + IdUtils.uuid());
-        all.add("image_" + IdUtils.uuid());
+        all.addAll(videos);
 
         all.forEach(it -> target.storage().put(it, Fixture.Videos.resource(VideoMediaType.VIDEO)));
 
         Assertions.assertEquals(5, target.storage().size());
 
         // When
-        target.deleteAll(expectedNames);
+        target.deleteAll(videos);
 
         // Then
-        Assertions.assertEquals(2, target.storage().size());
+        Assertions.assertEquals(expectedItemsCount, target.storage().size());
+        Assertions.assertEquals(expectedNames, target.storage().keySet());
     }
 }

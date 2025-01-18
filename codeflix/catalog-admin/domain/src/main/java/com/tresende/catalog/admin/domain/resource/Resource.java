@@ -39,4 +39,16 @@ public class Resource extends ValueObject {
     public String checksum() {
         return checksum;
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        final Resource resource = (Resource) o;
+        return Objects.equals(checksum, resource.checksum) && Objects.equals(contentType, resource.contentType) && Objects.equals(name, resource.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(checksum, contentType, name);
+    }
 }

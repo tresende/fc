@@ -34,7 +34,7 @@ public class GCStorageService implements StorageService {
     @Override
     public void deleteAll(final Collection<String> names) {
         final var blobs = names.stream()
-                .map(it -> BlobId.of(bucket, bucket))
+                .map(it -> BlobId.of(bucket, itsyn))
                 .toList();
 
         storage.delete(blobs);
@@ -54,8 +54,8 @@ public class GCStorageService implements StorageService {
         return Optional.ofNullable(storage.get(bucket, name)).map(it -> Resource.of(
                 it.getCrc32cToHexString(),
                 it.getContent(),
-                name,
-                it.getContentType()
+                it.getContentType(),
+                it.getName()
         ));
     }
 }
