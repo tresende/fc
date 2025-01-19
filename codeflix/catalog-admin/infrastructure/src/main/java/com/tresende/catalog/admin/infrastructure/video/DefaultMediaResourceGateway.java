@@ -6,6 +6,8 @@ import com.tresende.catalog.admin.infrastructure.configuration.properties.storag
 import com.tresende.catalog.admin.infrastructure.services.StorageService;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 class DefaultMediaResourceGateway implements MediaResourceGateway {
 
@@ -42,6 +44,11 @@ class DefaultMediaResourceGateway implements MediaResourceGateway {
     public void clearResources(final VideoID anId) {
         final var ids = storageService.list(folder(anId));
         storageService.deleteAll(ids);
+    }
+
+    @Override
+    public Optional<Resource> getResource(final VideoID anId, final VideoMediaType aType) {
+        return Optional.empty();
     }
 
     private String filepath(final VideoID anId, final VideoResource aResource) {
