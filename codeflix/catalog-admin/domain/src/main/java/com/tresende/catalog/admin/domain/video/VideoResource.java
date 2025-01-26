@@ -14,7 +14,7 @@ public class VideoResource extends ValueObject {
         this.type = Objects.requireNonNull(aType);
     }
 
-    public static VideoResource with(final Resource aResource, final VideoMediaType aType) {
+    public static VideoResource with(final VideoMediaType aType, final Resource aResource) {
         return new VideoResource(aResource, aType);
     }
 

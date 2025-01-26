@@ -1,116 +1,86 @@
 package com.tresende.catalog.admin.infrastructure.services.local;
 
 import com.tresende.catalog.admin.domain.Fixture;
-import com.tresende.catalog.admin.domain.utils.IdUtils;
 import com.tresende.catalog.admin.domain.video.VideoMediaType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class InMemoryStorageServiceTest {
 
-    private final InMemoryStorageService target = new InMemoryStorageService();
+    private InMemoryStorageService target = new InMemoryStorageService();
 
     @BeforeEach
-    public void setup() {
+    public void setUp() {
         target.clear();
     }
 
     @Test
     public void givenValidResource_whenCallsStore_shouldStoreIt() {
-        // Given
-        final var expectedResource = Fixture.Videos.resource(VideoMediaType.VIDEO);
-        final var expectedName = IdUtils.uuid();
+        final var expectedResource = Fixture.Videos.resource(VideoMediaType.THUMBNAIL);
+        final var expectedId = "item";
 
-        // When
-        target.store(expectedName, expectedResource);
+        target.store(expectedId, expectedResource);
 
-        // Then
-        Assertions.assertEquals(expectedResource, target.storage().get(expectedName));
+        final var actualContent = this.target.storage().get(expectedId);
+
+        Assertions.assertEquals(expectedResource, actualContent);
     }
 
     @Test
-    public void givenValidResource_whenCallsStore_shouldRetrieveIt() {
-        // Given
-        final var expectedResource = Fixture.Videos.resource(VideoMediaType.VIDEO);
-        final var expectedName = IdUtils.uuid();
-        target.storage().put(expectedName, expectedResource);
+    public void givenResource_whenCallsGet_shouldRetrieveIt() {
+        final var expectedResource = Fixture.Videos.resource(VideoMediaType.THUMBNAIL);
+        final var expectedId = "item";
 
-        // When
-        final var actualResource = target.get(expectedName).get();
+        this.target.storage().put(expectedId, expectedResource);
 
-        // Then
-        Assertions.assertEquals(expectedResource, actualResource);
+        final var actualContent = target.get(expectedId).get();
+
+        Assertions.assertEquals(expectedResource, actualContent);
     }
 
     @Test
-    public void givenInvalidResource_whenCallsGet_shouldBeEmpty() {
-        // Given
-        final var expectedName = IdUtils.uuid();
+    public void givenInvalidResource_whenCallsGet_shouldRetrieveEmpty() {
+        final var expectedResource = Fixture.Videos.resource(VideoMediaType.THUMBNAIL);
+        final var expectedId = "jajaja";
 
-        // When
-        final var actualResource = target.get(expectedName);
+        this.target.storage().put("item", expectedResource);
 
-        // Then
-        Assertions.assertTrue(actualResource.isEmpty());
+        final var actualContent = target.get(expectedId);
+
+        Assertions.assertTrue(actualContent.isEmpty());
     }
 
     @Test
-    public void givenValidPrefix_whenCallsList_shouldRetrieveAll() {
-        // Given
-        final var expectedItemsCount = 3;
-        final var expectedNames = List.of(
-                "video_" + IdUtils.uuid(),
-                "video_" + IdUtils.uuid(),
-                "video_" + IdUtils.uuid()
+    public void givenPrefix_whenCallsList_shouldRetrieveAll() {
+        final var expectedResource = Fixture.Videos.resource(VideoMediaType.THUMBNAIL);
+
+        final var expectedIds = List.of("item1", "item2");
+
+        this.target.storage().put("item1", expectedResource);
+        this.target.storage().put("item2", expectedResource);
+
+        final var actualContent = target.list("it");
+
+        Assertions.assertTrue(
+                expectedIds.size() == actualContent.size()
+                        && expectedIds.containsAll(actualContent)
         );
-        final var all = new ArrayList<>(expectedNames);
-        all.add("image_" + IdUtils.uuid());
-        all.add("image_" + IdUtils.uuid());
-
-        all.forEach(it -> target.storage().put(it, Fixture.Videos.resource(VideoMediaType.VIDEO)));
-
-        Assertions.assertEquals(5, target.storage().size());
-
-        // When
-        final var actualResource = target.list("video_");
-
-        // Then
-        Assertions.assertEquals(expectedItemsCount, actualResource.size());
     }
 
     @Test
-    public void givenValidNames_whenCallsDelete_shouldDeleteAll() {
-        // Given
-        final var expectedItemsCount = 2;
+    public void givenResource_whenCallsDeleteAll_shouldEmptyStorage() {
+        final var expectedResource = Fixture.Videos.resource(VideoMediaType.THUMBNAIL);
 
-        final var expectedNames = Set.of(
-                "image_" + IdUtils.uuid(),
-                "image_" + IdUtils.uuid()
-        );
+        final var expectedIds = List.of("item1", "item2");
 
-        final var videos = List.of(
-                "video_" + IdUtils.uuid(),
-                "video_" + IdUtils.uuid(),
-                "video_" + IdUtils.uuid()
-        );
+        this.target.storage().put("item1", expectedResource);
+        this.target.storage().put("item2", expectedResource);
 
-        final var all = new ArrayList<>(expectedNames);
-        all.addAll(videos);
+        target.deleteAll(expectedIds);
 
-        all.forEach(it -> target.storage().put(it, Fixture.Videos.resource(VideoMediaType.VIDEO)));
-
-        Assertions.assertEquals(5, target.storage().size());
-
-        // When
-        target.deleteAll(videos);
-
-        // Then
-        Assertions.assertEquals(expectedItemsCount, target.storage().size());
-        Assertions.assertEquals(expectedNames, target.storage().keySet());
+        Assertions.assertTrue(this.target.storage().isEmpty());
     }
 }

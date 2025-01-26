@@ -114,7 +114,6 @@ class GCStorageServiceTest {
                 expectedResources.size() == actualResources.size()
                         && expectedResources.containsAll(actualResources)
         );
-
     }
 
     @Test
