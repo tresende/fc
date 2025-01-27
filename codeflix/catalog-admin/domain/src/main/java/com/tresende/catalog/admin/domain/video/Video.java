@@ -227,8 +227,16 @@ public class Video extends AggregateRoot<VideoID> {
         return Optional.ofNullable(trailer);
     }
 
+    public void setTrailer(final AudioVideoMedia trailer) {
+        this.trailer = trailer;
+    }
+
     public Optional<AudioVideoMedia> getVideo() {
         return Optional.ofNullable(video);
+    }
+
+    public void setVideo(final AudioVideoMedia video) {
+        this.video = video;
     }
 
     public Set<CategoryID> getCategories() {
@@ -314,6 +322,26 @@ public class Video extends AggregateRoot<VideoID> {
     public Video updateTrailerMedia(final AudioVideoMedia aTrailerMedia) {
         this.trailer = aTrailerMedia;
         this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public Video processing(final VideoMediaType aType) {
+        if (aType == VideoMediaType.VIDEO) {
+            getVideo().ifPresent(media -> setVideo(media.processing()));
+        }
+        if (aType == VideoMediaType.TRAILER) {
+            getTrailer().ifPresent(media -> setTrailer(media.processing()));
+        }
+        return this;
+    }
+
+    public Video completed(final VideoMediaType aType, final String encodedPath) {
+        if (aType == VideoMediaType.VIDEO) {
+            getVideo().ifPresent(media -> setVideo(media.completed(encodedPath)));
+        }
+        if (aType == VideoMediaType.TRAILER) {
+            getTrailer().ifPresent(media -> setTrailer(media.completed(encodedPath)));
+        }
         return this;
     }
 }
