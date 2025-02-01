@@ -16,5 +16,5 @@ amqp:
     auto-create: true
   host: localhost
   port: 5672
-  username: admin_videos
+  username: adm_videos
   password: 123456
