@@ -11,7 +11,6 @@ public class DefaultDeleteVideoUseCase extends DeleteVideoUseCase {
     private final VideoGateway videoGateway;
     private final MediaResourceGateway mediaResourceGateway;
 
-
     public DefaultDeleteVideoUseCase(final VideoGateway videoGateway, final MediaResourceGateway mediaResourceGateway) {
         this.videoGateway = Objects.requireNonNull(videoGateway);
         this.mediaResourceGateway = Objects.requireNonNull(mediaResourceGateway);

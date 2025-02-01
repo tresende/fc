@@ -37,6 +37,7 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     implementation 'mysql:mysql-connector-java:8.0.33'
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('org.springframework.boot:spring-boot-starter-amqp')
     testRuntimeOnly("com.h2database:h2")
     testImplementation('org.flywaydb:flyway-core')
     testImplementation('org.flywaydb:flyway-mysql')
@@ -47,6 +48,7 @@ dependencies {
     implementation("com.google.guava:guava:31.1-jre")
 
     testImplementation('org.testcontainers:testcontainers:1.20.2')
+    testImplementation('org.springframework.amqp:spring-rabbit-test:2.4.8')
     testImplementation('org.testcontainers:mysql:1.20.2')
     testImplementation('org.testcontainers:junit-jupiter:1.20.2')
     implementation("com.google.cloud:google-cloud-storage:2.15.1")
