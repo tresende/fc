@@ -13,11 +13,6 @@ public abstract class Entity<ID extends Identifier> {
     protected final ID id;
     private final List<DomainEvent> domainEvents;
 
-
-    public Entity(ID id) {
-        this(id, Collections.emptyList());
-    }
-
     public Entity(ID id, final List<DomainEvent> domainEvents) {
         Objects.requireNonNull(id, "Id should not be null");
         this.id = id;
@@ -46,7 +41,7 @@ public abstract class Entity<ID extends Identifier> {
 
     public abstract void validate(ValidationHandler handler);
 
-    public void publishDomainEvents(final DomainEventPublisher publisher) {
+    public void publishDomainEvents(final DomainEventPublisher<synDomainEvent> publisher) {
         if (publisher == null) return;
         getDomainEvents()
                 .forEach(publisher::publishEvent);
