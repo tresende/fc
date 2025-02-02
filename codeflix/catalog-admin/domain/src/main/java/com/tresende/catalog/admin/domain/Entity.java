@@ -41,7 +41,7 @@ public abstract class Entity<ID extends Identifier> {
 
     public abstract void validate(ValidationHandler handler);
 
-    public void publishDomainEvents(final DomainEventPublisher<synDomainEvent> publisher) {
+    public void publishDomainEvents(final DomainEventPublisher<DomainEvent> publisher) {
         if (publisher == null) return;
         getDomainEvents()
                 .forEach(publisher::publishEvent);
