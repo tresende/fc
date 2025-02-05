@@ -4,6 +4,7 @@ import com.tresende.catalog.admin.domain.event.DomainEvent;
 import com.tresende.catalog.admin.domain.event.DomainEventPublisher;
 import com.tresende.catalog.admin.domain.validation.ValidationHandler;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +17,7 @@ public abstract class Entity<ID extends Identifier> {
     public Entity(ID id, final List<DomainEvent> domainEvents) {
         Objects.requireNonNull(id, "Id should not be null");
         this.id = id;
-        this.domainEvents = domainEvents == null ? Collections.emptyList() : domainEvents;
+        this.domainEvents = new ArrayList<>(domainEvents == null ? Collections.emptyList() : domainEvents);
     }
 
     public ID getId() {
@@ -41,7 +42,7 @@ public abstract class Entity<ID extends Identifier> {
 
     public abstract void validate(ValidationHandler handler);
 
-    public void publishDomainEvents(final DomainEventPublisher<DomainEvent> publisher) {
+    public void publishDomainEvents(final DomainEventPublisher publisher) {
         if (publisher == null) return;
         getDomainEvents()
                 .forEach(publisher::publishEvent);
