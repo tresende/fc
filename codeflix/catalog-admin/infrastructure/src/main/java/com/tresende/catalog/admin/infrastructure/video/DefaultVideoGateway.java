@@ -3,6 +3,8 @@ package com.tresende.catalog.admin.infrastructure.video;
 import com.tresende.catalog.admin.domain.Identifier;
 import com.tresende.catalog.admin.domain.pagination.Pagination;
 import com.tresende.catalog.admin.domain.video.*;
+import com.tresende.catalog.admin.infrastructure.configuration.annotations.VideoCreatedQueue;
+import com.tresende.catalog.admin.infrastructure.services.EventService;
 import com.tresende.catalog.admin.infrastructure.utils.SqlUtils;
 import com.tresende.catalog.admin.infrastructure.video.persistence.VideoJpaEntity;
 import com.tresende.catalog.admin.infrastructure.video.persistence.VideoRepository;
@@ -21,9 +23,11 @@ import static com.tresende.catalog.admin.domain.utils.CollectionUtils.nullIfEmpt
 class DefaultVideoGateway implements VideoGateway {
 
     private final VideoRepository videoRepository;
+    private final EventService eventService;
 
-    public DefaultVideoGateway(final VideoRepository videoRepository) {
+    public DefaultVideoGateway(final VideoRepository videoRepository, @VideoCreatedQueue final EventService eventService) {
         this.videoRepository = Objects.requireNonNull(videoRepository);
+        this.eventService = Objects.requireNonNull(eventService);
     }
 
     @Override
@@ -78,6 +82,8 @@ class DefaultVideoGateway implements VideoGateway {
 
     private Video save(final Video aVideo) {
         final var entity = VideoJpaEntity.from(aVideo);
-        return this.videoRepository.save(entity).toAggregate();
+        final var result = this.videoRepository.save(entity).toAggregate();
+        aVideo.publishDomainEvents(eventService::send);
+        return result;
     }
 }
