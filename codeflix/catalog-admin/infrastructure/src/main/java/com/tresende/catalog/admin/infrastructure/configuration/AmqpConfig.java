@@ -4,10 +4,7 @@ import com.tresende.catalog.admin.infrastructure.configuration.annotations.Video
 import com.tresende.catalog.admin.infrastructure.configuration.annotations.VideoEncodedQueue;
 import com.tresende.catalog.admin.infrastructure.configuration.annotations.VideoEvents;
 import com.tresende.catalog.admin.infrastructure.configuration.properties.amqp.QueueProperties;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,46 +31,40 @@ public class AmqpConfig {
 
         @Bean
         @VideoEvents
-        public DirectExchange videoEventsExchange(@VideoCreatedQueue QueueProperties props) {
+        Exchange videoEventsExchange(@VideoCreatedQueue QueueProperties props) {
             return new DirectExchange(props.getExchange());
         }
 
         @Bean
         @VideoCreatedQueue
-        public Queue videoCreatedQueue(@VideoCreatedQueue QueueProperties props) {
-            return new Queue(props.getQueue());
-        }
-
-        @Bean
-        @VideoEncodedQueue
-        public Queue videoEncodedQueue(@VideoEncodedQueue QueueProperties props) {
+        Queue videoCreatedQueue(@VideoCreatedQueue QueueProperties props) {
             return new Queue(props.getQueue());
         }
 
         @Bean
         @VideoCreatedQueue
-        public Binding videoCreatedBinding(
+        Binding videoCreatedQueueBinding(
                 @VideoEvents DirectExchange exchange,
                 @VideoCreatedQueue Queue queue,
                 @VideoCreatedQueue QueueProperties props
         ) {
-            return BindingBuilder
-                    .bind(queue)
-                    .to(exchange)
-                    .with(props.getRoutingKey());
+            return BindingBuilder.bind(queue).to(exchange).with(props.getRoutingKey());
         }
 
         @Bean
         @VideoEncodedQueue
-        public Binding videoEncodedBinding(
+        Queue videoEncodedQueue(@VideoEncodedQueue QueueProperties props) {
+            return new Queue(props.getQueue());
+        }
+
+        @Bean
+        @VideoEncodedQueue
+        Binding videoEncodedQueueBinding(
                 @VideoEvents DirectExchange exchange,
                 @VideoEncodedQueue Queue queue,
                 @VideoEncodedQueue QueueProperties props
         ) {
-            return BindingBuilder
-                    .bind(queue)
-                    .to(exchange)
-                    .with(props.getRoutingKey());
+            return BindingBuilder.bind(queue).to(exchange).with(props.getRoutingKey());
         }
     }
 }

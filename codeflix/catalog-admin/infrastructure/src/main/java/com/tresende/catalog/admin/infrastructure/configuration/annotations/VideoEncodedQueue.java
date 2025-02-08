@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 
 @Qualifier("VideoEncodedQueue")
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 public @interface VideoEncodedQueue {
 }
