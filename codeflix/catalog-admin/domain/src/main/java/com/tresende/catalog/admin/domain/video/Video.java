@@ -229,16 +229,14 @@ public class Video extends AggregateRoot<VideoID> {
         return Optional.ofNullable(trailer);
     }
 
-    public void setTrailer(final AudioVideoMedia trailer) {
-        this.trailer = trailer;
+    private void onAudioVideoMediaUpdated(final AudioVideoMedia media) {
+        if (media != null && media.isPendingEncode()) {
+            registerEvent(new VideoMediaCreated(getId().getValue(), media.rawLocation()));
+        }
     }
 
     public Optional<AudioVideoMedia> getVideo() {
         return Optional.ofNullable(video);
-    }
-
-    public void setVideo(final AudioVideoMedia video) {
-        this.video = video;
     }
 
     public Set<CategoryID> getCategories() {
@@ -318,31 +316,34 @@ public class Video extends AggregateRoot<VideoID> {
     public Video updateVideoMedia(final AudioVideoMedia aVideoMedia) {
         this.video = aVideoMedia;
         this.updatedAt = InstantUtils.now();
+        onAudioVideoMediaUpdated(aVideoMedia);
+
         return this;
     }
 
     public Video updateTrailerMedia(final AudioVideoMedia aTrailerMedia) {
         this.trailer = aTrailerMedia;
         this.updatedAt = InstantUtils.now();
+        onAudioVideoMediaUpdated(aTrailerMedia);
         return this;
     }
 
     public Video processing(final VideoMediaType aType) {
         if (aType == VideoMediaType.VIDEO) {
-            getVideo().ifPresent(media -> setVideo(media.processing()));
+            getVideo().ifPresent(media -> updateVideoMedia(media.processing()));
         }
         if (aType == VideoMediaType.TRAILER) {
-            getTrailer().ifPresent(media -> setTrailer(media.processing()));
+            getTrailer().ifPresent(media -> updateTrailerMedia(media.processing()));
         }
         return this;
     }
 
     public Video completed(final VideoMediaType aType, final String encodedPath) {
         if (aType == VideoMediaType.VIDEO) {
-            getVideo().ifPresent(media -> setVideo(media.completed(encodedPath)));
+            getVideo().ifPresent(media -> updateVideoMedia(media.completed(encodedPath)));
         }
         if (aType == VideoMediaType.TRAILER) {
-            getTrailer().ifPresent(media -> setTrailer(media.completed(encodedPath)));
+            getTrailer().ifPresent(media -> updateTrailerMedia(media.completed(encodedPath)));
         }
         return this;
     }
