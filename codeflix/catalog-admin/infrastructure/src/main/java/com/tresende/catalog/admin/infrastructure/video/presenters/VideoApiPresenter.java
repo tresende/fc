@@ -1,10 +1,12 @@
 package com.tresende.catalog.admin.infrastructure.video.presenters;
 
 import com.tresende.catalog.admin.application.video.retrieve.get.VideoOutput;
+import com.tresende.catalog.admin.application.video.upadate.UpdateVideoOutput;
 import com.tresende.catalog.admin.domain.video.AudioVideoMedia;
 import com.tresende.catalog.admin.domain.video.ImageMedia;
 import com.tresende.catalog.admin.infrastructure.video.models.AudioVideoMediaResponse;
 import com.tresende.catalog.admin.infrastructure.video.models.ImageMediaResponse;
+import com.tresende.catalog.admin.infrastructure.video.models.UpdateVideoResponse;
 import com.tresende.catalog.admin.infrastructure.video.models.VideoResponse;
 
 public interface VideoApiPresenter {
@@ -52,5 +54,9 @@ public interface VideoApiPresenter {
                 image.name(),
                 image.location()
         );
+    }
+
+    static UpdateVideoResponse present(UpdateVideoOutput output) {
+        return new UpdateVideoResponse(output.id());
     }
 }
