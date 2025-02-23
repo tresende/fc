@@ -3,16 +3,27 @@ package com.tresende.catalog.admin.infrastructure.api.controllers;
 import com.tresende.catalog.admin.application.video.create.CreateVideoCommand;
 import com.tresende.catalog.admin.application.video.create.CreateVideoUseCase;
 import com.tresende.catalog.admin.application.video.delete.DeleteVideoUseCase;
+import com.tresende.catalog.admin.application.video.media.get.GetMediaCommand;
+import com.tresende.catalog.admin.application.video.media.get.GetMediaUseCase;
 import com.tresende.catalog.admin.application.video.retrieve.get.GetVideoByIdUseCase;
+import com.tresende.catalog.admin.application.video.retrieve.list.ListVideoUseCase;
 import com.tresende.catalog.admin.application.video.upadate.UpdateVideoCommand;
 import com.tresende.catalog.admin.application.video.upadate.UpdateVideoUseCase;
+import com.tresende.catalog.admin.domain.castmember.CastMemberID;
+import com.tresende.catalog.admin.domain.category.CategoryID;
+import com.tresende.catalog.admin.domain.genre.GenreID;
+import com.tresende.catalog.admin.domain.pagination.Pagination;
 import com.tresende.catalog.admin.domain.resource.Resource;
+import com.tresende.catalog.admin.domain.video.VideoSearchQuery;
 import com.tresende.catalog.admin.infrastructure.api.VideoAPI;
 import com.tresende.catalog.admin.infrastructure.utils.HashingUtils;
 import com.tresende.catalog.admin.infrastructure.video.models.CreateVideoRequest;
 import com.tresende.catalog.admin.infrastructure.video.models.UpdateVideoRequest;
+import com.tresende.catalog.admin.infrastructure.video.models.VideoListResponse;
 import com.tresende.catalog.admin.infrastructure.video.models.VideoResponse;
 import com.tresende.catalog.admin.infrastructure.video.presenters.VideoApiPresenter;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +32,8 @@ import java.net.URI;
 import java.util.Objects;
 import java.util.Set;
 
+import static com.tresende.catalog.admin.domain.utils.CollectionUtils.mapTo;
+
 @RestController
 public class VideoController implements VideoAPI {
 
@@ -28,16 +41,35 @@ public class VideoController implements VideoAPI {
     private final GetVideoByIdUseCase getVideoByIdUseCase;
     private final UpdateVideoUseCase updateVideoUseCase;
     private final DeleteVideoUseCase deleteVideoUseCase;
+    private final ListVideoUseCase listVideosUseCase;
+    private final GetMediaUseCase getMediaUseCase;
 
     public VideoController(
             final CreateVideoUseCase createVideoUseCase,
             final GetVideoByIdUseCase getVideoByIdUseCase,
-            final UpdateVideoUseCase updateVideoUseCase, final DeleteVideoUseCase deleteVideoUseCase
+            final UpdateVideoUseCase updateVideoUseCase,
+            final DeleteVideoUseCase deleteVideoUseCase,
+            final ListVideoUseCase listVideosUseCase,
+            final GetMediaUseCase getMediaUseCase
     ) {
         this.createVideoUseCase = Objects.requireNonNull(createVideoUseCase);
         this.getVideoByIdUseCase = Objects.requireNonNull(getVideoByIdUseCase);
         this.updateVideoUseCase = Objects.requireNonNull(updateVideoUseCase);
         this.deleteVideoUseCase = Objects.requireNonNull(deleteVideoUseCase);
+        this.listVideosUseCase = Objects.requireNonNull(listVideosUseCase);
+        this.getMediaUseCase = Objects.requireNonNull(getMediaUseCase);
+    }
+
+    @Override
+    public Pagination<VideoListResponse> list(final String search, final int page, final int perPage, final String sort, final String direction, final Set<String> castMembers, final Set<String> categories, final Set<String> genres) {
+        final var castMemberIDs = mapTo(castMembers, CastMemberID::from);
+        final var categoriesIDs = mapTo(categories, CategoryID::from);
+        final var genresIDs = mapTo(genres, GenreID::from);
+
+        final var aQuery =
+                new VideoSearchQuery(page, perPage, search, sort, direction, castMemberIDs, categoriesIDs, genresIDs);
+
+        return VideoApiPresenter.present(listVideosUseCase.execute(aQuery));
     }
 
     @Override
@@ -129,6 +161,17 @@ public class VideoController implements VideoAPI {
     @Override
     public void deleteById(final String id) {
         deleteVideoUseCase.execute(id);
+    }
+
+    @Override
+    public ResponseEntity<byte[]> getMediaByType(final String id, final String type) {
+        final var command = GetMediaCommand.with(id, type);
+        final var aMedia = getMediaUseCase.execute(command);
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf(aMedia.contentType()))
+                .contentLength(aMedia.content().length)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=%s".formatted(aMedia.name()))
+                .body(aMedia.content());
     }
 
     private Resource resourceOf(final MultipartFile part) {

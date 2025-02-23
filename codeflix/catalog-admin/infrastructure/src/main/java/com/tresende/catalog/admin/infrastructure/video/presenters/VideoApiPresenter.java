@@ -1,13 +1,12 @@
 package com.tresende.catalog.admin.infrastructure.video.presenters;
 
 import com.tresende.catalog.admin.application.video.retrieve.get.VideoOutput;
+import com.tresende.catalog.admin.application.video.retrieve.list.VideoListOutput;
 import com.tresende.catalog.admin.application.video.upadate.UpdateVideoOutput;
+import com.tresende.catalog.admin.domain.pagination.Pagination;
 import com.tresende.catalog.admin.domain.video.AudioVideoMedia;
 import com.tresende.catalog.admin.domain.video.ImageMedia;
-import com.tresende.catalog.admin.infrastructure.video.models.AudioVideoMediaResponse;
-import com.tresende.catalog.admin.infrastructure.video.models.ImageMediaResponse;
-import com.tresende.catalog.admin.infrastructure.video.models.UpdateVideoResponse;
-import com.tresende.catalog.admin.infrastructure.video.models.VideoResponse;
+import com.tresende.catalog.admin.infrastructure.video.models.*;
 
 public interface VideoApiPresenter {
 
@@ -58,5 +57,14 @@ public interface VideoApiPresenter {
 
     static UpdateVideoResponse present(UpdateVideoOutput output) {
         return new UpdateVideoResponse(output.id());
+    }
+
+
+    static VideoListResponse present(VideoListOutput output) {
+        return new VideoListResponse(output.id(), output.title(), output.description(), output.createdAt(), output.updatedAt());
+    }
+
+    static Pagination<VideoListResponse> present(final Pagination<VideoListOutput> page) {
+        return page.map(VideoApiPresenter::present);
     }
 }
