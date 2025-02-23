@@ -27,7 +27,7 @@ class DefaultMediaResourceGateway implements MediaResourceGateway {
     @Override
     public AudioVideoMedia storeAudioVideo(final VideoID anId, final VideoResource videoResource) {
         final var filepath = filepath(anId, videoResource.type());
-        final var aResource = videoResource.getResource();
+        final var aResource = videoResource.resource();
         store(filepath, aResource);
         return AudioVideoMedia.with(aResource.checksum(), aResource.name(), filepath);
     }
@@ -35,7 +35,7 @@ class DefaultMediaResourceGateway implements MediaResourceGateway {
     @Override
     public ImageMedia storeImage(final VideoID anId, final VideoResource imageResource) {
         final var filepath = filepath(anId, imageResource.type());
-        final var aResource = imageResource.getResource();
+        final var aResource = imageResource.resource();
         store(filepath, aResource);
         return ImageMedia.with(aResource.checksum(), aResource.name(), filepath);
     }

@@ -1,5 +1,6 @@
 package com.tresende.catalog.admin.infrastructure.video.presenters;
 
+import com.tresende.catalog.admin.application.video.media.upload.UploadMediaOutput;
 import com.tresende.catalog.admin.application.video.retrieve.get.VideoOutput;
 import com.tresende.catalog.admin.application.video.retrieve.list.VideoListOutput;
 import com.tresende.catalog.admin.application.video.upadate.UpdateVideoOutput;
@@ -66,5 +67,9 @@ public interface VideoApiPresenter {
 
     static Pagination<VideoListResponse> present(final Pagination<VideoListOutput> page) {
         return page.map(VideoApiPresenter::present);
+    }
+
+    static UploadMediaResponse present(UploadMediaOutput output) {
+        return new UploadMediaResponse(output.videoId(), output.mediaType());
     }
 }

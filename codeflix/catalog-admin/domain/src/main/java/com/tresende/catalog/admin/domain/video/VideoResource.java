@@ -34,7 +34,7 @@ public class VideoResource extends ValueObject {
         return type;
     }
 
-    public Resource getResource() {
+    public Resource resource() {
         return resource;
     }
 }
