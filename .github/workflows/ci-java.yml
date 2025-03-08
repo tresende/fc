@@ -18,4 +18,4 @@ jobs:
         distribution: 'temurin'
         java-version: '21'
     - name: Run application tests
-      name: ./gradlew test
+      run: ./gradlew test
