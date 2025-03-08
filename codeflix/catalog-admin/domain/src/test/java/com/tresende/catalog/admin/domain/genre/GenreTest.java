@@ -1,5 +1,6 @@
 package com.tresende.catalog.admin.domain.genre;
 
+import com.tresende.catalog.admin.domain.UnitTest;
 import com.tresende.catalog.admin.domain.category.CategoryID;
 import com.tresende.catalog.admin.domain.exceptions.NotificationException;
 import org.junit.jupiter.api.Assertions;
@@ -8,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenreTest {
+public class GenreTest extends UnitTest {
 
     @Test
     public void givenValidParams_whenCallNewGenre_shouldInstantiateAGenre() {

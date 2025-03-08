@@ -1,5 +1,6 @@
 package com.tresende.catalog.admin.domain.video;
 
+import com.tresende.catalog.admin.domain.UnitTest;
 import com.tresende.catalog.admin.domain.castmember.CastMemberID;
 import com.tresende.catalog.admin.domain.category.CategoryID;
 import com.tresende.catalog.admin.domain.exceptions.DomainException;
@@ -11,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Year;
 import java.util.Set;
 
-public class VideoValidatorTest {
+public class VideoValidatorTest extends UnitTest {
 
     @Test
     public void givenNullTitle_whenCallsValidate_shouldReceiveError() {

@@ -43,7 +43,6 @@ dependencies {
     testImplementation('org.flywaydb:flyway-mysql')
 
     // Utility
-    implementation('io.vavr:vavr:0.10.4')
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
     implementation('com.fasterxml.jackson.module:jackson-module-afterburner')
     implementation("com.google.guava:guava:31.1-jre")

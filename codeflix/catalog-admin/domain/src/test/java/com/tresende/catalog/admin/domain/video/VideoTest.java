@@ -1,5 +1,6 @@
 package com.tresende.catalog.admin.domain.video;
 
+import com.tresende.catalog.admin.domain.UnitTest;
 import com.tresende.catalog.admin.domain.castmember.CastMemberID;
 import com.tresende.catalog.admin.domain.category.CategoryID;
 import com.tresende.catalog.admin.domain.genre.GenreID;
@@ -12,7 +13,7 @@ import java.time.Year;
 import java.util.Set;
 
 
-public class VideoTest {
+public class VideoTest extends UnitTest {
 
     @Test
     public void givenValidParams_whenCallsNewVideo_shouldInstantiate() {

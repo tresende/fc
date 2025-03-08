@@ -1,11 +1,12 @@
 package com.tresende.catalog.admin.domain.category;
 
+import com.tresende.catalog.admin.domain.UnitTest;
 import com.tresende.catalog.admin.domain.exceptions.DomainException;
 import com.tresende.catalog.admin.domain.validation.handler.ThrowsValidationHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class CategoryTest {
+class CategoryTest extends UnitTest {
 
     @Test
     public void givenAValidParams_whenCallNewCategory_thenInstantiateACategory() {

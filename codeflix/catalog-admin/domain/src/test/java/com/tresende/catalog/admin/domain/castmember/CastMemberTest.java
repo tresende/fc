@@ -1,10 +1,11 @@
 package com.tresende.catalog.admin.domain.castmember;
 
+import com.tresende.catalog.admin.domain.UnitTest;
 import com.tresende.catalog.admin.domain.exceptions.NotificationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class CastMemberTest {
+class CastMemberTest extends UnitTest {
 
     @Test
     public void givenAValidParams_whenCallsNewMember_thenInstantiateACastMember() {

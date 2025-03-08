@@ -1,9 +1,10 @@
 package com.tresende.catalog.admin.domain.video;
 
+import com.tresende.catalog.admin.domain.UnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ImageMediaTest {
+public class ImageMediaTest extends UnitTest {
 
     @Test
     public void givenValidParams_whenCallsNewImage_ShouldReturnInstance() {

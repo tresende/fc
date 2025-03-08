@@ -1,6 +1,7 @@
 package com.tresende.catalog.admin.application;
 
 import com.tresende.catalog.admin.domain.Identifier;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.reset;
 
+@Tag("unitTest")
 @ExtendWith(MockitoExtension.class)
 public abstract class UseCaseTest implements BeforeEachCallback {
 
