@@ -8,6 +8,7 @@ on:
       
 jobs:
   tests:
+    
     name: Tests Runner
     runs-on: ubuntu-latest
     steps:
@@ -18,4 +19,5 @@ jobs:
         distribution: 'temurin'
         java-version: '21'
     - name: Run application tests
+      working-directory: ./codeflix/catalog-admin
       run: ./gradlew test
