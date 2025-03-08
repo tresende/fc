@@ -8,7 +8,7 @@ buildscript {
 }
 
 plugins {
-    id 'java'
+    id 'java-conventions'
     id 'application'
     id "org.springframework.boot" version "3.3.4"
     id "io.spring.dependency-management" version "1.1.6"
@@ -16,16 +16,12 @@ plugins {
 }
 
 group = 'com.tresende.catalog.admin.infrastructure'
-version = '1.0-SNAPSHOT'
-
-repositories {
-    mavenCentral()
-}
 
 bootJar {
     setArchiveBaseName('application')
     destinationDirectory.set(file("${rootProject.buildDir}/libs"))
 }
+
 dependencies {
     // Project
     implementation(project(":domain"))
@@ -60,10 +56,6 @@ dependencies {
     testImplementation('org.testcontainers:junit-jupiter:1.20.2')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation(project(path: ':domain', configuration: 'testClasses'))
-}
-
-test {
-    useJUnitPlatform()
 }
 
 flyway {
