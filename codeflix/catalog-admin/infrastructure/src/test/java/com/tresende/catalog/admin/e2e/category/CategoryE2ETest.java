@@ -1,5 +1,6 @@
 package com.tresende.catalog.admin.e2e.category;
 
+import com.tresende.catalog.admin.ApiTest;
 import com.tresende.catalog.admin.E2ETest;
 import com.tresende.catalog.admin.domain.category.CategoryID;
 import com.tresende.catalog.admin.e2e.MockDsl;
@@ -169,12 +170,12 @@ class CategoryE2ETest implements MockDsl {
         Assertions.assertTrue(MYSQL_CONTAINER.isRunning());
         Assertions.assertEquals(0, categoryRepository.count());
 
-
         final var aRequest = get("/categories/123")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON);
+                .with(ApiTest.ADMIN_JWT)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
 
-        mvc.perform(aRequest)
+        this.mvc.perform(aRequest)
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", equalTo("Category with ID 123 was not found")));
     }

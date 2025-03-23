@@ -1,5 +1,6 @@
 package com.tresende.catalog.admin.e2e.genre;
 
+import com.tresende.catalog.admin.ApiTest;
 import com.tresende.catalog.admin.E2ETest;
 import com.tresende.catalog.admin.domain.category.CategoryID;
 import com.tresende.catalog.admin.domain.genre.GenreID;
@@ -211,6 +212,7 @@ class GenreE2ETest implements MockDsl {
         Assertions.assertEquals(0, genreRepository.count());
 
         final var aRequest = get("/genres/123")
+                .with(ApiTest.ADMIN_JWT)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 

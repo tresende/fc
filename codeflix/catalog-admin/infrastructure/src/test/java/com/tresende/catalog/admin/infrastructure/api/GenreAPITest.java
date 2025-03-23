@@ -259,6 +259,7 @@ class GenreAPITest {
 
         // when
         final var aRequest = put("/genres/{id}", expectedId)
+                .with(ApiTest.CAST_MEMBERS_JWT)
 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.mapper.writeValueAsString(aCommand));
@@ -289,6 +290,7 @@ class GenreAPITest {
 
         // when
         final var aRequest = delete("/genres/{id}", expectedId)
+                .with(ApiTest.CAST_MEMBERS_JWT)
                 .accept(MediaType.APPLICATION_JSON);
 
         final var result = this.mvc.perform(aRequest);

@@ -173,12 +173,12 @@ public interface MockDsl {
 
     private ResultActions list(final String url, final int page, final int perPage, final String search, final String sort, final String direction) throws Exception {
         final var aRequest = get(url)
-                .with(ApiTest.ADMIN_JWT)
                 .queryParam("page", String.valueOf(page))
                 .queryParam("perPage", String.valueOf(perPage))
                 .queryParam("search", search)
                 .queryParam("sort", sort)
                 .queryParam("dir", direction)
+                .with(ApiTest.ADMIN_JWT)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
