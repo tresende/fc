@@ -11,10 +11,15 @@ server:
       worker: 64 # Generally this should be reasonably high, at least 10 per CPU core: https://undertow.io/undertow-docs/undertow-docs-2.1.0/index.html#listeners-2
       io: 4 # One IO thread per CPU core is a reasonable default: https://undertow.io/undertow-docs/undertow-docs-2.1.0/index.html#listeners-2
 
+
 logging:
   level:
+    org:
+      springframework:
+        security: DEBUG
     root: info
     com.tresende.catalog.admin: DEBUG
+
 
 spring:
   datasource:
@@ -49,6 +54,12 @@ spring:
     multipart:
       max-file-size: 10GB
       max-request-size: 100GB
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${keycloak.host}/realms/${keycloak.realm}/protocol/openid-connect/certs
+          issuer-uri: ${keycloak.host}/realms/${keycloak.realm}
 
 google:
   cloud:
