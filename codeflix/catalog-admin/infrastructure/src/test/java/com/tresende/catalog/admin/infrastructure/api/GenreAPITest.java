@@ -1,6 +1,7 @@
 package com.tresende.catalog.admin.infrastructure.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tresende.catalog.admin.ApiTest;
 import com.tresende.catalog.admin.ControllerTest;
 import com.tresende.catalog.admin.application.genre.create.CreateGenreOutput;
 import com.tresende.catalog.admin.application.genre.create.CreateGenreUseCase;
@@ -31,8 +32,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -79,7 +80,7 @@ class GenreAPITest {
 
         // when
         final var aRequest = post("/genres")
-
+                .with(ApiTest.CAST_MEMBERS_JWT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.mapper.writeValueAsString(aCommand));
 
@@ -115,7 +116,7 @@ class GenreAPITest {
 
         // when
         final var aRequest = post("/genres")
-
+                .with(ApiTest.CAST_MEMBERS_JWT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.mapper.writeValueAsString(aCommand));
 
@@ -157,7 +158,7 @@ class GenreAPITest {
 
         // when
         final var aRequest = get("/genres/{id}", expectedId)
-
+                .with(ApiTest.CAST_MEMBERS_JWT)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -188,7 +189,7 @@ class GenreAPITest {
 
         // when
         final var aRequest = get("/genres/{id}", expectedId.getValue())
-
+                .with(ApiTest.CAST_MEMBERS_JWT)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -220,7 +221,7 @@ class GenreAPITest {
 
         // when
         final var aRequest = put("/genres/{id}", expectedId)
-
+                .with(ApiTest.CAST_MEMBERS_JWT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.mapper.writeValueAsString(aCommand));
 
@@ -318,6 +319,7 @@ class GenreAPITest {
 
         // when
         final var aRequest = get("/genres")
+                .with(ApiTest.CAST_MEMBERS_JWT)
                 .queryParam("page", String.valueOf(expectedPage))
                 .queryParam("perPage", String.valueOf(expectedPerPage))
                 .queryParam("sort", expectedSort)
