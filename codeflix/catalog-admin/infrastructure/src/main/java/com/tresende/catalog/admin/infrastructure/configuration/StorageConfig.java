@@ -15,24 +15,24 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class StorageConfig {
 
-    @Bean(name = "storageService")
-    @Profile({"development", "production"})
-    public StorageService gcStorageService(
+    @Bean
+    @ConfigurationProperties(value = "storage.catalog-admin")
+    public StorageProperties storageProperties() {
+        return new StorageProperties();
+    }
+
+    @Bean
+    @Profile({"development", "test-integration", "test-e2e"})
+    public StorageService localStorageAPI() {
+        return new InMemoryStorageService();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public StorageService gcStorageAPI(
             final GoogleStorageProperties props,
             final Storage storage
     ) {
         return new GCStorageService(props.getBucket(), storage);
-    }
-
-    @Bean(name = "storageService")
-    @ConditionalOnMissingBean
-    public StorageService inMemoryStorageService() {
-        return new InMemoryStorageService();
-    }
-
-    @Bean(name = "storageProperties")
-    @ConfigurationProperties(value = "storage.catalog-admin")
-    public StorageProperties storageProperties() {
-        return new StorageProperties();
     }
 }
