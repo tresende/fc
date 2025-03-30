@@ -1,5 +1,4 @@
 services:
-
   app:
     container_name: adm_videos_app
     build:

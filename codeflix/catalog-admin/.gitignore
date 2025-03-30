@@ -44,3 +44,4 @@ bin/
 .env
 .docker/
 sandbox/.docker/
+/sandbox/app/.env.local
