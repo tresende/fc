@@ -5,19 +5,21 @@ import com.tresende.catalog.domain.Fixture;
 import com.tresende.catalog.domain.category.Category;
 import com.tresende.catalog.domain.category.CategoryGateway;
 import com.tresende.catalog.domain.exceptions.DomainException;
-import com.tresende.catalog.domain.utils.IdUtils;
 import com.tresende.catalog.domain.utils.InstantUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class SaveCategoryUseCaseTest extends UseCaseTest {
+
+public class SaveCategoryUseCaseTest extends UseCaseTest {
 
     @InjectMocks
     private SaveCategoryUseCase useCase;
@@ -27,88 +29,85 @@ class SaveCategoryUseCaseTest extends UseCaseTest {
 
     @Test
     public void givenValidCategory_whenCallsSave_shouldPersistIt() {
-        //given
+        // given
         final var aCategory = Fixture.Categories.aulas();
 
-        when(categoryGateway.save(aCategory))
+        when(categoryGateway.save(any()))
                 .thenAnswer(returnsFirstArg());
 
-        //when
-        useCase.execute(aCategory);
+        // when
+        this.useCase.execute(aCategory);
 
-        //then
-
-        verify(categoryGateway, times(1)).save(any());
+        // then
+        verify(categoryGateway, times(1)).save(eq(aCategory));
     }
 
     @Test
-    public void givenInvalidCategory_whenCallsSave_shouldReturnError() {
-        //given
-
-        final var expectedErrorMessage = "'name' should not be empty";
+    public void givenNullCategory_whenCallsSave_shouldReturnError() {
+        // given
+        final Category aCategory = null;
         final var expectedErrorCount = 1;
+        final var expectedErrorMessage = "'aCategory' cannot be null";
 
-        final var aCategory = Category.with(
-                IdUtils.uuid(),
-                "",
-                "Conteúdo Gravado",
-                true,
-                InstantUtils.now(),
-                InstantUtils.now(),
-                null
-        );
+        // when
+        final var actualError = assertThrows(DomainException.class, () -> this.useCase.execute(aCategory));
 
-        //when
-        final var actualError = Assertions.assertThrows(DomainException.class, () -> useCase.execute(aCategory));
-
-        //then
-        assertEquals(expectedErrorMessage, actualError.getErrors().getFirst().message());
+        // then
         assertEquals(expectedErrorCount, actualError.getErrors().size());
-        verify(categoryGateway, times(0)).save(any());
+        assertEquals(expectedErrorMessage, actualError.getErrors().get(0).message());
+
+        verify(categoryGateway, times(0)).save(eq(aCategory));
     }
 
     @Test
     public void givenInvalidId_whenCallsSave_shouldReturnError() {
-        //given
-
-        final var expectedErrorMessage = "'id' should not be empty";
+        // given
         final var expectedErrorCount = 1;
+        final var expectedErrorMessage = "'id' should not be empty";
 
         final var aCategory = Category.with(
                 "",
                 "Aulas",
-                "Conteúdo Gravado",
+                "Conteudo gravado",
                 true,
                 InstantUtils.now(),
                 InstantUtils.now(),
                 null
         );
 
-        //when
-        final var actualError = Assertions.assertThrows(DomainException.class, () -> useCase.execute(aCategory));
+        // when
+        final var actualError = assertThrows(DomainException.class, () -> this.useCase.execute(aCategory));
 
-        //then
-        assertEquals(expectedErrorMessage, actualError.getErrors().getFirst().message());
+        // then
         assertEquals(expectedErrorCount, actualError.getErrors().size());
-        verify(categoryGateway, times(0)).save(any());
+        assertEquals(expectedErrorMessage, actualError.getErrors().get(0).message());
+
+        verify(categoryGateway, times(0)).save(eq(aCategory));
     }
 
-
     @Test
-    public void givenNullCategory_whenCallsSave_shouldReturnError() {
-        //given
-
-        final var expectedErrorMessage = "category cant be null";
+    public void givenInvalidName_whenCallsSave_shouldReturnError() {
+        // given
         final var expectedErrorCount = 1;
+        final var expectedErrorMessage = "'name' should not be empty";
 
-        final Category aCategory = null;
+        final var aCategory = Category.with(
+                UUID.randomUUID().toString().replace("-", ""),
+                "",
+                "Conteudo gravado",
+                true,
+                InstantUtils.now(),
+                InstantUtils.now(),
+                null
+        );
 
-        //when
-        final var actualError = Assertions.assertThrows(DomainException.class, () -> useCase.execute(aCategory));
+        // when
+        final var actualError = assertThrows(DomainException.class, () -> this.useCase.execute(aCategory));
 
-        //then
-        assertEquals(expectedErrorMessage, actualError.getErrors().getFirst().message());
+        // then
         assertEquals(expectedErrorCount, actualError.getErrors().size());
-        verify(categoryGateway, times(0)).save(any());
+        assertEquals(expectedErrorMessage, actualError.getErrors().get(0).message());
+
+        verify(categoryGateway, times(0)).save(eq(aCategory));
     }
 }

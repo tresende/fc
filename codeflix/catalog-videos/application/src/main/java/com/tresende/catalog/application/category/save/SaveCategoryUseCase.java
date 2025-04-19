@@ -19,16 +19,17 @@ public class SaveCategoryUseCase extends UseCase<Category, Category> {
 
     @Override
     public Category execute(final Category aCategory) {
-        if (aCategory == null)
-            throw NotificationException.with(new Error("category cant be null"));
+        if (aCategory == null) {
+            throw NotificationException.with(new Error("'aCategory' cannot be null"));
+        }
 
         final var notification = Notification.create();
         aCategory.validate(notification);
 
         if (notification.hasError()) {
-            throw NotificationException.with("", notification);
+            throw NotificationException.with("Invalid category", notification);
         }
 
-        return categoryGateway.save(aCategory);
+        return this.categoryGateway.save(aCategory);
     }
 }
