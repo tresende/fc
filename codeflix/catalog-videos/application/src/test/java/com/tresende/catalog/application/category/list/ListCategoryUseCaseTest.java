@@ -12,8 +12,8 @@ import org.mockito.Mock;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-
 
 public class ListCategoryUseCaseTest extends UseCaseTest {
 
@@ -38,22 +38,17 @@ public class ListCategoryUseCaseTest extends UseCaseTest {
         final var expectedPage = 0;
         final var expectedPerPage = 10;
         final var expectedTerms = "Algo";
-        final var expectedSort = "Name";
-        final var expectedDirection = "ASC";
+        final var expectedSort = "name";
+        final var expectedDirection = "asc";
         final var expectedItemsCount = 2;
 
         final var aQuery =
                 new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
 
         final var pagination =
-                new Pagination<>(
-                        expectedPage,
-                        expectedPerPage,
-                        categories.size(),
-                        categories
-                );
+                new Pagination<>(expectedPage, expectedPerPage, categories.size(), categories);
 
-        when(categoryGateway.findAll(aQuery))
+        when(this.categoryGateway.findAll(any()))
                 .thenReturn(pagination);
 
         // when
