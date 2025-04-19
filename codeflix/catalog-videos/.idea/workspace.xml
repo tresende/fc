@@ -4,13 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="51c52407-f40a-4dda-a3a4-e12aa316255c" name="Changes" comment="Update .gitignore to exclude sandbox Docker files and rename docker-compose.yml for clarity">
-      <change beforePath="$PROJECT_DIR$/../catalog-admin/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/../catalog-admin/.env.example" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../catalog-admin/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../catalog-admin/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../catalog-admin/infrastructure/src/main/resources/application-sandbox.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../catalog-admin/infrastructure/src/main/resources/application-sandbox.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../catalog-admin/sandbox/app/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../catalog-admin/sandbox/app/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../catalog-admin/sandbox/run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../catalog-admin/sandbox/run.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/domain/src/main/java/com/tresende/catalog/domain/Dummy.java" beforeDir="false" />
+    <list default="true" id="51c52407-f40a-4dda-a3a4-e12aa316255c" name="Changes" comment="Add domain classes for category management and validation handling">
+      <change beforePath="$PROJECT_DIR$/../catalog-admin/sandbox/services/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../catalog-admin/sandbox/services/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/src/test/java/com/tresende/catalog/application/UseCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/application/src/test/java/com/tresende/catalog/application/UseCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/domain/src/main/java/com/tresende/catalog/domain/exceptions/NotificationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/domain/src/main/java/com/tresende/catalog/domain/exceptions/NotificationException.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,14 +52,7 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="catalog-videos" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="catalog-videos" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="verification" type="c8890929:TasksNode$1" />
+                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
               </path>
             </expand>
             <select />
@@ -76,8 +69,8 @@
         <option value="Interface" />
         <option value="Record" />
         <option value="Dockerfile" />
-        <option value="Class" />
         <option value="JUnit5 Test Class" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -254,6 +247,7 @@
     "Gradle.RabbitEventServiceTest.executor": "Run",
     "Gradle.RabbitEventServiceTest.test.executor": "Debug",
     "Gradle.SampleIT.executor": "Run",
+    "Gradle.SaveCategoryUseCaseTest.executor": "Run",
     "Gradle.Tests in 'catalog-admin.application.test'.executor": "Run",
     "Gradle.Tests in 'com.tresende.catalog.admin.infrastructure.genre.model'.executor": "Run",
     "Gradle.UpdateCastMemberRequestTest.testUnmarshall.executor": "Run",
@@ -345,12 +339,12 @@
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "kotlin.migration.detection.enabled": "false",
-    "last_opened_file_path": "/Users/thiago.resende/projects/fc/codeflix/catalog-videos/domain/src/main/java/com/tresende/catalog/domain",
+    "last_opened_file_path": "/Users/thiago.resende/projects/fc/codeflix/catalog-videos",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "rearrange.code.on.save": "true",
-    "settings.editor.selected.configurable": "preferences.fileTypes"
+    "settings.editor.selected.configurable": "preferences.keymap"
   },
   "keyToStringList": {
     "DatabaseDriversLRU": [
@@ -393,7 +387,7 @@
       <recent name="com.tresende.catalog.admin.infrastructure.video.models" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.CategoryTest">
+  <component name="RunManager" selected="Gradle.SaveCategoryUseCaseTest">
     <configuration name="CategoryTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -432,6 +426,30 @@
             <option value=":domain:test" />
             <option value="--tests" />
             <option value="&quot;com.tresende.catalog.domain.category.CategoryTest.givenAValidParams_whenCallWith_thenInstantiateACategory&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="SaveCategoryUseCaseTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":application:test" />
+            <option value="--tests" />
+            <option value="&quot;com.tresende.catalog.application.category.save.SaveCategoryUseCaseTest&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -486,13 +504,6 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="Main" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="catalog-videos.infrastructure.main" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.tresende.catalog.infrastructure.Main" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Main" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="catalog-admin.infrastructure.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.tresende.catalog.admin.infrastructure.Main" />
@@ -502,20 +513,13 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.SaveCategoryUseCaseTest" />
         <item itemvalue="Gradle.CategoryTest" />
         <item itemvalue="Gradle.CategoryTest.givenAValidParams_whenCallWith_thenInstantiateACategory" />
-        <item itemvalue="Spring Boot.Main" />
         <item itemvalue="Gradle.catalog-videos [clean]" />
         <item itemvalue="Gradle.catalog-videos [test]" />
       </list>
     </recent_temporary>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SpringGeneralSettings">
@@ -593,7 +597,23 @@
       <option name="project" value="LOCAL" />
       <updated>1743184382057</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Update environment configuration for sandbox setup and enhance Docker networking">
+      <option name="closed" value="true" />
+      <created>1743345175514</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1743345175514</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Add domain classes for category management and validation handling">
+      <option name="closed" value="true" />
+      <created>1743345189691</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1743345189691</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -627,7 +647,9 @@
     <MESSAGE value="Refactor application configuration to enhance profile management and streamline service definitions" />
     <MESSAGE value="Refactor GoogleCloudConfig profile to exclude additional test environments" />
     <MESSAGE value="Update .gitignore to exclude sandbox Docker files and rename docker-compose.yml for clarity" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update .gitignore to exclude sandbox Docker files and rename docker-compose.yml for clarity" />
+    <MESSAGE value="Update environment configuration for sandbox setup and enhance Docker networking" />
+    <MESSAGE value="Add domain classes for category management and validation handling" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add domain classes for category management and validation handling" />
     <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />
   </component>
   <component name="XDebuggerManager">
@@ -786,10 +808,15 @@
           <line>39</line>
           <option name="timeStamp" value="156" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/application/src/main/java/com/tresende/catalog/application/category/save/SaveCategoryUseCase.java</url>
+          <line>21</line>
+          <option name="timeStamp" value="158" />
+        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/infrastructure/src/test/java/com/tresende/catalog/application/category/create/CreateCategoryUseCaseIT.java</url>
           <line>28</line>
-          <properties class="com.tresende.catalog.application.category.create.CreateCategoryUseCaseIT" method="givenAValidCommand_whenCallsCreateCategory_shouldReturnCategoryId">
+          <properties class="com.tresende.catalog.application.category.create.CreateCategoryUseCaseIT">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
@@ -798,7 +825,7 @@
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/infrastructure/src/test/java/com/tresende/catalog/e2e/genre/GenreE2ETest.java</url>
           <line>54</line>
-          <properties class="com.tresende.catalog.e2e.genre.GenreE2ETest" method="asACatalogAdminIShouldBeAbleToCreateANewGenreWithValidValues">
+          <properties class="com.tresende.catalog.e2e.genre.GenreE2ETest">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
@@ -807,7 +834,7 @@
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/infrastructure/src/test/java/com/tresende/catalog/application/genre/create/CreateGenreUseCaseIT.java</url>
           <line>34</line>
-          <properties class="com.tresende.catalog.application.genre.create.CreateGenreUseCaseIT" method="givenAValidCommand_whenCallsCreateGenre_shouldReturnGenreId">
+          <properties class="com.tresende.catalog.application.genre.create.CreateGenreUseCaseIT">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
@@ -816,7 +843,7 @@
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/infrastructure/src/test/java/com/tresende/catalog/application/genre/update/UpdateGenreUseCaseIT.java</url>
           <line>158</line>
-          <properties class="com.tresende.catalog.application.genre.update.UpdateGenreUseCaseIT" method="givenAnInvalidName_whenCallsUpdateGenre_shouldReturnNotificationException">
+          <properties class="com.tresende.catalog.application.genre.update.UpdateGenreUseCaseIT">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
@@ -825,7 +852,7 @@
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/infrastructure/src/test/java/com/tresende/catalog/infrastructure/video/VideoGatewayTest.java</url>
           <line>833</line>
-          <properties class="com.tresende.catalog.infrastructure.video.VideoGatewayTest" method="mockVideos">
+          <properties class="com.tresende.catalog.infrastructure.video.VideoGatewayTest">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
@@ -834,7 +861,7 @@
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/infrastructure/src/test/java/com/tresende/catalog/infrastructure/api/VideoAPITest.java</url>
           <line>771</line>
-          <properties class="com.tresende.catalog.infrastructure.api.VideoAPITest" method="givenAnInvalidMediaType_whenCallsUploadMedia_shouldReturnError">
+          <properties class="com.tresende.catalog.infrastructure.api.VideoAPITest">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
