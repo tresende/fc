@@ -1,4 +1,4 @@
-package usecases;
+package com.tresende.catalog.infrastructure.configuration.usecases;
 
 import com.tresende.catalog.application.category.delete.DeleteCategoryUseCase;
 import com.tresende.catalog.application.category.list.ListCategoryUseCase;

@@ -23,6 +23,7 @@ dependencies {
         exclude module: 'spring-boot-starter-tomcat'
     }
     implementation('org.springframework.boot:spring-boot-starter-undertow')
+    implementation('org.springframework.boot:spring-boot-starter-graphql')
     implementation('org.springframework.boot:spring-boot-starter-security')
     implementation('org.springframework.boot:spring-boot-starter-oauth2-resource-server')
 
@@ -36,8 +37,10 @@ dependencies {
     testImplementation('org.testcontainers:testcontainers:1.20.2')
     testImplementation('org.testcontainers:junit-jupiter:1.20.2')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation(project(path: ':domain', configuration: 'testClasses'))
     testImplementation('org.springframework.security:spring-security-test')
+    testImplementation('org.springframework.security:spring-graphql-test')
 }
 
 testCodeCoverageReport {

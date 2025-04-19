@@ -1,3 +1,6 @@
+graphql:
+  graphiql: false
+
 server:
   port: 8080
   servlet:
@@ -21,6 +24,9 @@ logging:
 
 
 spring:
+  graphql:
+    graphiql:
+      enabled: ${graphql.graphiql}
   servlet:
     multipart:
       max-file-size: 10GB
