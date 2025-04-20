@@ -40,7 +40,7 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation(project(path: ':domain', configuration: 'testClasses'))
     testImplementation('org.springframework.security:spring-security-test')
-    testImplementation('org.springframework.security:spring-graphql-test')
+    testImplementation('org.springframework.graphql:spring-graphql-test')
 }
 
 testCodeCoverageReport {
