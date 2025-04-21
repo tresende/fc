@@ -94,15 +94,20 @@ class CategoryGraphQLControllerTest {
                 .thenReturn(new Pagination<>(expectedPage, expectedPerPage, categories.size(), categories));
 
         final var query = """
-                {
-                    categories(search: "%s", page: %s, perPage: %s, sort: "%s", direction: "%s"){
+                query allCategories($search: String, $page: Int, $perPage: Int, $sort: String, $direction: String) {
+                    categories(search: $search, page: $page, perPage: $perPage, sort: $sort, direction: $direction){
                         id
                         name
                     }
                 }
-                """.formatted(expectedSearch, expectedPage, expectedPerPage, expectedSort, expectedDirection);
+                """;
 
         final var res = graphql.document(query)
+                .variable("search", expectedSearch)
+                .variable("page", expectedPage)
+                .variable("perPage", expectedPerPage)
+                .variable("sort", expectedSort)
+                .variable("direction", expectedDirection)
                 .execute();
 
         //when
