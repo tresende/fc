@@ -3,9 +3,13 @@ package com.tresende.catalog.graphql;
 import com.tresende.catalog.GraphQLControllerTest;
 import com.tresende.catalog.application.category.list.ListCategoryOutput;
 import com.tresende.catalog.application.category.list.ListCategoryUseCase;
+import com.tresende.catalog.application.category.save.SaveCategoryUseCase;
 import com.tresende.catalog.domain.Fixture;
+import com.tresende.catalog.domain.category.Category;
 import com.tresende.catalog.domain.category.CategorySearchQuery;
 import com.tresende.catalog.domain.pagination.Pagination;
+import com.tresende.catalog.domain.utils.IdUtils;
+import com.tresende.catalog.domain.utils.InstantUtils;
 import com.tresende.catalog.infrastructure.graphql.CategoryGraphQLController;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,7 +19,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.graphql.test.tester.GraphQlTester;
 
 import java.util.List;
+import java.util.Map;
 
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -23,6 +29,9 @@ import static org.mockito.Mockito.*;
 class CategoryGraphQLControllerTest {
     @MockBean
     private ListCategoryUseCase listCategoryUseCase;
+
+    @MockBean
+    private SaveCategoryUseCase saveCategoryUseCase;
 
     @Autowired
     private GraphQlTester graphql;
@@ -123,11 +132,63 @@ class CategoryGraphQLControllerTest {
 
         final var capturer = ArgumentCaptor.forClass(CategorySearchQuery.class);
         verify(listCategoryUseCase, times(1)).execute(capturer.capture());
+    }
 
-//        final var actualQuery = capturer.getValue();
-//        Assertions.assertEquals(expectedPage, actualQuery.page());
-//        Assertions.assertEquals(expectedPerPage, actualQuery.perPage());
-//        Assertions.assertEquals(expectedSort, actualQuery.sort());
-//        Assertions.assertEquals(expectedDirection, actualQuery.direction());
+    @Test
+    public void givenCategoryInputWhenCallsSaveCategoryMutationShouldPersistAndReturn() {
+        //given
+        final var expectedId = IdUtils.uniqueId();
+        final var expectedName = "Aulas";
+        final var expectedDescription = "A melhor categoria";
+        final var expectedActive = false;
+        final var expectedCreatedAt = InstantUtils.now();
+        final var expectedUpdatedAt = InstantUtils.now();
+        final var expectedDeletedAt = InstantUtils.now();
+
+        //when
+        final var input = Map.of(
+                "id", expectedId,
+                "name", expectedName,
+                "description", expectedDescription,
+                "active", expectedActive,
+                "createdAt", expectedCreatedAt.toString(),
+                "updatedAt", expectedUpdatedAt.toString(),
+                "deletedAt", expectedDeletedAt.toString()
+        );
+
+        final var query = """
+                mutation SaveCategory($input: CategoryInput!) {
+                    category: saveCategory(input: $input) {
+                        id
+                        name
+                        description
+                    }
+                }
+                """;
+
+
+        when(saveCategoryUseCase.execute(any()))
+                .thenAnswer(returnsFirstArg());
+
+        graphql.document(query)
+                .variable("input", input)
+                .execute()
+                .path("category.id").entity(String.class).isEqualTo(expectedId)
+                .path("category.name").entity(String.class).isEqualTo(expectedName)
+                .path("category.description").entity(String.class).isEqualTo(expectedDescription);
+
+        //then
+
+        final var capturer = ArgumentCaptor.forClass(Category.class);
+        verify(saveCategoryUseCase, times(1)).execute(capturer.capture());
+
+        final var actualCategory = capturer.getValue();
+        Assertions.assertEquals(expectedId, actualCategory.id());
+        Assertions.assertEquals(expectedName, actualCategory.name());
+        Assertions.assertEquals(expectedDescription, actualCategory.description());
+        Assertions.assertEquals(expectedActive, actualCategory.active());
+        Assertions.assertEquals(expectedCreatedAt, actualCategory.createdAt());
+        Assertions.assertEquals(expectedUpdatedAt, actualCategory.updatedAt());
+        Assertions.assertEquals(expectedDeletedAt, actualCategory.deletedAt());
     }
 }

@@ -41,7 +41,7 @@ public final class Fixture {
 
         public static Category aulas() {
             return Category.with(
-                    IdUtils.uuid(),
+                    IdUtils.uniqueId(),
                     "Aulas",
                     "Conteúdo Gravado",
                     true,
@@ -53,7 +53,7 @@ public final class Fixture {
 
         public static Category lives() {
             return Category.with(
-                    IdUtils.uuid(),
+                    IdUtils.uniqueId(),
                     "Lives",
                     "Conteúdo ao vivo",
                     true,

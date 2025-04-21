@@ -1,6 +1,5 @@
 package com.tresende.catalog.domain.utils;
 
-
 import java.util.UUID;
 
 public final class IdUtils {
@@ -8,7 +7,7 @@ public final class IdUtils {
     private IdUtils() {
     }
 
-    public static String uuid() {
+    public static String uniqueId() {
         return UUID.randomUUID().toString().toLowerCase().replace("-", "");
     }
 }

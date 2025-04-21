@@ -13,7 +13,7 @@ class CategoryTest extends UnitTest {
     @Test
     public void givenAValidParams_whenCallWith_thenInstantiateACategory() {
         //given
-        final var expectedID = IdUtils.uuid();
+        final var expectedID = IdUtils.uniqueId();
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
@@ -37,7 +37,7 @@ class CategoryTest extends UnitTest {
     @Test
     public void givenAValidParams_whenCallWithCategory_thenInstantiateACategory() {
         //given
-        final var expectedID = IdUtils.uuid();
+        final var expectedID = IdUtils.uniqueId();
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
@@ -62,7 +62,7 @@ class CategoryTest extends UnitTest {
     @Test
     public void givenAnInvalidNullName_whenCallNewCategoryAndValidate_thenShouldReceiveError() {
         //given
-        final var expectedID = IdUtils.uuid();
+        final var expectedID = IdUtils.uniqueId();
         final String expectedName = null;
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
@@ -85,7 +85,7 @@ class CategoryTest extends UnitTest {
     @Test
     public void givenAnInvalidEmptyName_whenCallNewCategoryAndValidate_thenShouldReceiveError() {
         //given
-        final var expectedID = IdUtils.uuid();
+        final var expectedID = IdUtils.uniqueId();
         final String expectedName = " ";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
