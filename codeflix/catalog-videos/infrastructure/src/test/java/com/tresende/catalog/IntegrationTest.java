@@ -18,6 +18,7 @@ import java.lang.annotation.*;
 })
 @SpringBootTest(classes = {
         WebServerConfig.class,
+        IntegrationTestConfiguration.class
 })
 @Tag("integrationTest")
 public @interface IntegrationTest {
