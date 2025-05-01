@@ -1,4 +1,4 @@
-package com.tresende.catalog.graphql;
+package com.tresende.catalog.infrastructure.graphql;
 
 import com.tresende.catalog.GraphQLControllerTest;
 import com.tresende.catalog.application.category.list.ListCategoryOutput;
@@ -10,7 +10,6 @@ import com.tresende.catalog.domain.category.CategorySearchQuery;
 import com.tresende.catalog.domain.pagination.Pagination;
 import com.tresende.catalog.domain.utils.IdUtils;
 import com.tresende.catalog.domain.utils.InstantUtils;
-import com.tresende.catalog.infrastructure.graphql.CategoryGraphQLController;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

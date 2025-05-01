@@ -1,4 +1,4 @@
-package com.tresende.catalog;
+package com.tresende.catalog.infrastructure;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;

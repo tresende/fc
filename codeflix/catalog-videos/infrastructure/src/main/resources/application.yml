@@ -1,6 +1,10 @@
 graphql:
   graphiql: false
 
+elasticsearch:
+  socket-timeout: 250
+  connect-timeout: 1000
+
 server:
   port: 8080
   servlet:
@@ -24,6 +28,12 @@ logging:
 
 
 spring:
+  elasticsearch:
+    uris: ${elasticsearch.uris}
+    username: ${elasticsearch.username}
+    password: ${elasticsearch.password}
+    connection-timeout: ${elasticsearch.connect-timeout}
+    read-timeout: ${elasticsearch.socket-timeout}
   graphql:
     graphiql:
       enabled: ${graphql.graphiql}
