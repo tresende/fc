@@ -25,18 +25,19 @@ public class CategoryElasticsearchGateway implements CategoryGateway {
 
     @Override
     public Category save(final Category aCategory) {
-        this.categoryRepository.save(CategoryDocument.from(aCategory));
+        categoryRepository.save(CategoryDocument.from(aCategory));
         return aCategory;
     }
 
     @Override
     public void deleteById(final String anId) {
-        throw new UnsupportedOperationException();
+        categoryRepository.deleteById(anId);
     }
 
     @Override
     public Optional<Category> findById(final String anId) {
-        throw new UnsupportedOperationException();
+        return categoryRepository.findById(anId)
+                .map(CategoryDocument::toCategory);
     }
 
     @Override

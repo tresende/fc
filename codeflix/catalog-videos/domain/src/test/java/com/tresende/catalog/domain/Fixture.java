@@ -51,6 +51,18 @@ public final class Fixture {
             );
         }
 
+        public static Category taks() {
+            return Category.with(
+                    IdUtils.uniqueId(),
+                    "Talks",
+                    "Conteúdo Gravado",
+                    false,
+                    InstantUtils.now(),
+                    InstantUtils.now(),
+                    InstantUtils.now()
+            );
+        }
+
         public static Category lives() {
             return Category.with(
                     IdUtils.uniqueId(),
