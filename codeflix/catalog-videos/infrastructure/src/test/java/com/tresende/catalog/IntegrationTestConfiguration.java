@@ -1,6 +1,6 @@
 package com.tresende.catalog;
 
-import com.tresende.catalog.infrastructure.category.CategoryRepository;
+import com.tresende.catalog.infrastructure.category.persistence.CategoryRepository;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 

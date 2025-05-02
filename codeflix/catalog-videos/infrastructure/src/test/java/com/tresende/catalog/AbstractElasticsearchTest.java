@@ -17,10 +17,7 @@ import java.util.Collection;
         basePackages = {"com.tresende.catalog"},
         useDefaultFilters = false,
         includeFilters = {
-                @ComponentScan.Filter(
-                        type = FilterType.REGEX,
-                        pattern = "ElasticsearchGateway"
-                )
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = ".*ElasticsearchGateway")
         }
 )
 @DataElasticsearchTest
