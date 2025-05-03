@@ -23,13 +23,13 @@ public class CategoryDocument {
     @Field(type = FieldType.Boolean, name = "active")
     private boolean active;
 
-    @Field(type = FieldType.Date, name = "createdAt")
+    @Field(type = FieldType.Date, name = "created_at")
     private Instant createdAt;
 
-    @Field(type = FieldType.Date, name = "updatedAt")
+    @Field(type = FieldType.Date, name = "updated_at")
     private Instant updatedAt;
 
-    @Field(type = FieldType.Date, name = "deletedAt")
+    @Field(type = FieldType.Date, name = "deleted_at")
     private Instant deletedAt;
 
     public CategoryDocument(final String id, final String name, final String description, final boolean active, final Instant createdAt, final Instant updatedAt, final Instant deletedAt) {

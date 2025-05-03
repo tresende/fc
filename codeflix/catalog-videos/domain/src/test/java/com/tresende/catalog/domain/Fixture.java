@@ -51,7 +51,7 @@ public final class Fixture {
             );
         }
 
-        public static Category taks() {
+        public static Category talks() {
             return Category.with(
                     IdUtils.uniqueId(),
                     "Talks",
