@@ -1,3 +1,6 @@
+graphql:
+  graphiql: true
+
 keycloak:
   realm: ${KEYCLOAK_REALM:fc3-codeflix}
   host: ${KEYCLOAK_HOST:http://localhost:8443}
@@ -13,3 +16,11 @@ elasticsearch:
   uris: ${ELASTICSEARCH_URIS:http://localhost:9200}
   username: ${ELASTICSEARCH_USERNAME:elastic}
   password: ${ELASTICSEARCH_PASSWORD:elastic}
+
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration
+      - org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
