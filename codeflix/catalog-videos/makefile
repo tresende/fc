@@ -5,6 +5,6 @@ admin-videos-database:
 
 
 sandbox:
-	cd /Users/thiago.resende/projects/fc/codeflix/catalog-videos/sandbox/ && ./run.sh
+	cd /Users/thiago.resende/projects/fc/codeflix/catalog-videos/sandbox && ./run.sh
 
 
