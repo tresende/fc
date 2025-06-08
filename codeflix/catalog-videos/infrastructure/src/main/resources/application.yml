@@ -5,6 +5,20 @@ elasticsearch:
   socket-timeout: 250
   connect-timeout: 1000
 
+kafka:
+  auto-create-topics: false
+  pool-timeout: 1_000
+  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  consumer:
+    categories:
+      auto-offset-reset: earliest
+      concurrency: 1
+      id: kafka-listener-categories
+      topics: adm_videos_mysql.adm_videos.categories
+      group-id: catalogo-service
+      max-attempts: 4
+
+
 server:
   port: 8080
   servlet:
