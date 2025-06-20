@@ -1,8 +1,11 @@
-keycloak:
-  realm: test
-  host: http://test:8443
-
 elasticsearch:
   uris: http://localhost:9200
   username: elastic
   password: elastic
+
+kafka:
+  bootstrap-servers: localhost:29092
+
+spring:
+  kafka:
+    bootstrap-servers: ${kafka.bootstrap-servers}
