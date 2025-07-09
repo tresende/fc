@@ -1,7 +1,13 @@
 package com.tresende.catalog.infrastructure.kafka;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.tresende.catalog.application.category.delete.DeleteCategoryUseCase;
 import com.tresende.catalog.application.category.save.SaveCategoryUseCase;
+import com.tresende.catalog.infrastructure.category.CategoryGateway;
+import com.tresende.catalog.infrastructure.category.models.CategoryEvent;
+import com.tresende.catalog.infrastructure.configuration.json.Json;
+import com.tresende.catalog.infrastructure.kafka.models.connect.MessageValue;
+import com.tresende.catalog.infrastructure.kafka.models.connect.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -18,10 +24,12 @@ public class CategoryListener {
 
     private final SaveCategoryUseCase saveCategoryUseCase;
     private final DeleteCategoryUseCase deleteCategoryUseCase;
+    private final CategoryGateway categoryGateway;
 
-    public CategoryListener(final SaveCategoryUseCase saveCategoryUseCase, final DeleteCategoryUseCase deleteCategoryUseCase) {
+    public CategoryListener(final SaveCategoryUseCase saveCategoryUseCase, final DeleteCategoryUseCase deleteCategoryUseCase, final CategoryGateway categoryGateway) {
         this.saveCategoryUseCase = Objects.requireNonNull(saveCategoryUseCase);
         this.deleteCategoryUseCase = Objects.requireNonNull(deleteCategoryUseCase);
+        this.categoryGateway = Objects.requireNonNull(categoryGateway);
     }
 
     @KafkaListener(
@@ -37,13 +45,26 @@ public class CategoryListener {
 //    @RetryableTopic(
 //            attempts = "4",
 //            backoff = @Backoff(delay = 1000, multiplier = 2.0),
-//            topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE,
-//            include = Exception.class,
-//            exclude = {IllegalArgumentException.class, IllegalStateException.class}
+//            topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE
 //    )
-    public void onMessage(@Payload final String message, final ConsumerRecordMetadata metadata) {
-        LOG.info("Received message [topic:{}] [partition:{}]  [offset:{}] {} ", metadata.topic(), metadata.partition(), metadata.offset(), message);
+    public void onMessage(@Payload final String payload, final ConsumerRecordMetadata metadata) {
+        LOG.info("Received message [topic:{}] [partition:{}]  [offset:{}] {} ", metadata.topic(), metadata.partition(), metadata.offset(), payload);
+        final var messagePayload = Json.readValue(payload, new TypeReference<MessageValue<CategoryEvent>>() {
+        }).payload();
+        final var op = messagePayload.operation();
+
+        if (Operation.isDelete(op)) {
+            deleteCategoryUseCase.execute(messagePayload.before().id());
+        } else {
+            categoryGateway.categoryOfId(messagePayload.before().id())
+                    .ifPresentOrElse(saveCategoryUseCase::execute, () -> {
+                        LOG.warn("Category not found for id: {}", messagePayload.before().id());
+                    });
+        }
     }
 
-
+//    @DltHandler
+//    public void onDltMessage(@Payload final String message, final ConsumerRecordMetadata metadata) {
+//        LOG.error("Received message in DLT [topic:{}] [partition:{}]  [offset:{}] {} ", metadata.topic(), metadata.partition(), metadata.offset(), message);
+//    }
 }

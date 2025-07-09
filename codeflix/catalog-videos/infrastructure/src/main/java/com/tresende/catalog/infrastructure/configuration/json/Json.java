@@ -1,5 +1,6 @@
 package com.tresende.catalog.infrastructure.configuration.json;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -36,6 +37,10 @@ public enum Json {
     }
 
     public static <T> T readValue(final String string, final Class<T> clazz) {
+        return invoke(() -> INSTANCE.mapper.readValue(string, clazz));
+    }
+
+    public static <T> T readValue(final String string, final TypeReference<T> clazz) {
         return invoke(() -> INSTANCE.mapper.readValue(string, clazz));
     }
 
