@@ -34,7 +34,16 @@ public class CategoryListener {
                     "auto.offset.reset=${kafka.consumer.categories.auto-offset-reset}",
             }
     )
-    public void handler(@Payload final String message, final ConsumerRecordMetadata metadata) {
+//    @RetryableTopic(
+//            attempts = "4",
+//            backoff = @Backoff(delay = 1000, multiplier = 2.0),
+//            topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE,
+//            include = Exception.class,
+//            exclude = {IllegalArgumentException.class, IllegalStateException.class}
+//    )
+    public void onMessage(@Payload final String message, final ConsumerRecordMetadata metadata) {
         LOG.info("Received message [topic:{}] [partition:{}]  [offset:{}] {} ", metadata.topic(), metadata.partition(), metadata.offset(), message);
     }
+
+
 }

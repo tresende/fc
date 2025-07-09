@@ -15,12 +15,8 @@ services:
 
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT'
 
-      # Binds: bind em todas interfaces → :
-      KAFKA_LISTENERS: 'INTERNAL://:29092,CONTROLLER://:29093,EXTERNAL://:9092,OUTSIDE://:9094'
-
-      # Anuncia para outros containers
-      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka:29092,EXTERNAL://kafka:9092,OUTSIDE://host.docker.internal:9094'
-
+      KAFKA_LISTENERS: 'INTERNAL://:29092,EXTERNAL://:9092,OUTSIDE://:9094,CONTROLLER://:29093'
+      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka:29092,EXTERNAL://localhost:9092,OUTSIDE://host.docker.internal:9094'
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
       KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
@@ -46,7 +42,7 @@ services:
     ports:
       - "9021:9021"
     environment:
-      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:29092'
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'PLAINTEXT://kafka:29092'
       CONTROL_CENTER_REPLICATION_FACTOR: 1
       CONTROL_CENTER_CONNECT_CLUSTER: http://kafka-connect:8083
       PORT: 9021
@@ -55,9 +51,9 @@ services:
     networks:
       - kafka
 
-networks:
-  kafka:
-    external: true
+#networks:
+#  kafka:
+#    external: true
 
 volumes:
   kafka01:
