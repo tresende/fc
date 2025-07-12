@@ -10,9 +10,13 @@ import com.tresende.catalog.infrastructure.kafka.models.connect.MessageValue;
 import com.tresende.catalog.infrastructure.kafka.models.connect.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.listener.adapter.ConsumerRecordMetadata;
+import org.springframework.kafka.retrytopic.TopicSuffixingStrategy;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -42,16 +46,20 @@ public class CategoryListener {
                     "auto.offset.reset=${kafka.consumer.categories.auto-offset-reset}",
             }
     )
-//    @RetryableTopic(
-//            attempts = "4",
-//            backoff = @Backoff(delay = 1000, multiplier = 2.0),
-//            topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE
-//    )
+    @RetryableTopic(
+            attempts = "4",
+            backoff = @Backoff(delay = 1000, multiplier = 2.0),
+            topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE
+    )
     public void onMessage(@Payload final String payload, final ConsumerRecordMetadata metadata) {
         LOG.info("Received message [topic:{}] [partition:{}]  [offset:{}] {} ", metadata.topic(), metadata.partition(), metadata.offset(), payload);
-        final var messagePayload = Json.readValue(payload, new TypeReference<MessageValue<CategoryEvent>>() {
-        }).payload();
+        final var typeReference = new TypeReference<MessageValue<CategoryEvent>>() {
+        };
+        final var messagePayload = Json.readValue(payload, typeReference).payload();
         final var op = messagePayload.operation();
+        if (payload.contains("teste")) {
+            throw new RuntimeException("Teste exception");
+        }
 
         if (Operation.isDelete(op)) {
             deleteCategoryUseCase.execute(messagePayload.before().id());
@@ -63,8 +71,8 @@ public class CategoryListener {
         }
     }
 
-//    @DltHandler
-//    public void onDltMessage(@Payload final String message, final ConsumerRecordMetadata metadata) {
-//        LOG.error("Received message in DLT [topic:{}] [partition:{}]  [offset:{}] {} ", metadata.topic(), metadata.partition(), metadata.offset(), message);
-//    }
+    @DltHandler
+    public void onDltMessage(@Payload final String message, final ConsumerRecordMetadata metadata) {
+        LOG.error("Received message in DLT [topic:{}] [partition:{}]  [offset:{}] {} ", metadata.topic(), metadata.partition(), metadata.offset(), message);
+    }
 }

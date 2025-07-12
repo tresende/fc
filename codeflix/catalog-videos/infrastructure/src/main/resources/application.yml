@@ -5,6 +5,9 @@ elasticsearch:
   socket-timeout: 250
   connect-timeout: 1000
 
+keycloak:
+  token-uri: /protocol/openid-connect/token
+
 kafka:
   auto-create-topics: false
   pool-timeout: 1_000

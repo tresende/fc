@@ -3,6 +3,13 @@ elasticsearch:
   username: elastic
   password: elastic
 
+keycloak:
+  client-id: fc3-app
+  client-secret: seecret
+  host: "http://localhost:${wiremock.server.port:8001}"
+  realm: test
+
+
 kafka:
   bootstrap-servers: localhost:29092
 

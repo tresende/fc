@@ -1,6 +1,7 @@
 package com.tresende.catalog.infrastructure.kafka.models.connect;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Operation {
     CREATE("c"),
@@ -25,5 +26,10 @@ public enum Operation {
 
     public static boolean isDelete(final Operation op) {
         return op == DELETE;
+    }
+
+    @JsonValue
+    public String op() {
+        return op;
     }
 }

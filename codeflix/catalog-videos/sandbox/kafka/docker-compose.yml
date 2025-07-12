@@ -49,9 +49,9 @@ services:
     networks:
       - kafka
 
-#networks:
-#  kafka:
-#    external: true
+networks:
+  kafka:
+    external: true
 
 volumes:
   kafka01:
