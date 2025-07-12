@@ -39,7 +39,6 @@ public class CategoryListener {
     @KafkaListener(
             concurrency = "${kafka.consumer.categories.concurrency}",
             topics = "${kafka.consumer.categories.topics}",
-            containerFactory = "containerFactory",
             groupId = "${kafka.consumer.categories.group-id}",
             id = "${kafka.consumer.categories.id}",
             properties = {
@@ -47,8 +46,8 @@ public class CategoryListener {
             }
     )
     @RetryableTopic(
-            attempts = "4",
-            backoff = @Backoff(delay = 1000, multiplier = 2.0),
+            backoff = @Backoff(delay = 100, multiplier = 2),
+            attempts = "${kafka.consumer.categories.max-attempts}",
             topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE
     )
     public void onMessage(@Payload final String payload, final ConsumerRecordMetadata metadata) {
@@ -72,7 +71,9 @@ public class CategoryListener {
     }
 
     @DltHandler
-    public void onDltMessage(@Payload final String message, final ConsumerRecordMetadata metadata) {
-        LOG.error("Received message in DLT [topic:{}] [partition:{}]  [offset:{}] {} ", metadata.topic(), metadata.partition(), metadata.offset(), message);
+    public void onDLTMessage(@Payload final String message, final ConsumerRecordMetadata metadata) {
+
+        System.out.println(message);
+        LOG.warn("Received message in DLT [topic:{}] [partition:{}]  [offset:{}] {} ", metadata.topic(), metadata.partition(), metadata.offset(), message);
     }
 }

@@ -17,11 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collections;
-
-import static org.springframework.kafka.test.utils.KafkaTestUtils.producerProps;
 
 @EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9092", "port=9092"})
 @ActiveProfiles("test-integration")
@@ -43,8 +42,10 @@ public abstract class AbstractEmbeddedKafkaTest {
     @BeforeAll
     void init() {
         adminClient = AdminClient.create(Collections.singletonMap(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBroker.getBrokersAsString()));
-        producer = new DefaultKafkaProducerFactory<>(producerProps(kafkaBroker), new StringSerializer(), new StringSerializer())
-                .createProducer();
+
+        producer =
+                new DefaultKafkaProducerFactory<>(KafkaTestUtils.producerProps(kafkaBroker), new StringSerializer(), new StringSerializer())
+                        .createProducer();
     }
 
     @AfterAll
@@ -64,6 +65,4 @@ public abstract class AbstractEmbeddedKafkaTest {
     public Source aSource() {
         return new Source("admin_mysql", "admin_catalog", "categories");
     }
-
-
 }

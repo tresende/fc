@@ -28,8 +28,8 @@ public class KafkaConfig {
         this.kafkaProperties = kafkaProperties;
     }
 
-    @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>> containerFactory() {
+    @Bean(name = "defaultRetryTopicListenerContainerFactory")
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>> kafkaListenerFactory() {
         final var factory = new ConcurrentKafkaListenerContainerFactory<String, String>();
         factory.setConsumerFactory(consumerFactory());
         factory.getContainerProperties().setPollTimeout(kafkaProperties.poolTimeout());
