@@ -46,12 +46,12 @@ public class CategoryListener {
             }
     )
     @RetryableTopic(
-            backoff = @Backoff(delay = 100, multiplier = 2),
+            backoff = @Backoff(delay = 1000, multiplier = 2),
             attempts = "${kafka.consumer.categories.max-attempts}",
             topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE
     )
     public void onMessage(@Payload final String payload, final ConsumerRecordMetadata metadata) {
-        LOG.info("Received message [topic:{}] [partition:{}]  [offset:{}] {} ", metadata.topic(), metadata.partition(), metadata.offset(), payload);
+        LOG.info("Received message [topic:{}] [partition:{}]  [offset:{}] {} ", metadata.topic(), metadata.partition(), metadata.offset(), null);
         final var typeReference = new TypeReference<MessageValue<CategoryEvent>>() {
         };
         final var messagePayload = Json.readValue(payload, typeReference).payload();

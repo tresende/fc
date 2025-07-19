@@ -58,7 +58,7 @@ public abstract class AbstractEmbeddedKafkaTest {
         return producer;
     }
 
-    public AdminClient adminClient() {
+    public AdminClient admin() {
         return adminClient;
     }
 
