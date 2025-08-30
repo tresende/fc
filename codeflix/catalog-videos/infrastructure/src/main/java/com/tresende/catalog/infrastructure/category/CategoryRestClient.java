@@ -2,6 +2,7 @@ package com.tresende.catalog.infrastructure.category;
 
 import com.tresende.catalog.infrastructure.category.models.CategoryDTO;
 import com.tresende.catalog.infrastructure.utils.HttpClient;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -19,6 +20,7 @@ public class CategoryRestClient implements HttpClient {
         this.restClient = restClient;
     }
 
+    @Retry(name = NAMESPACE)
     public Optional<CategoryDTO> getById(final String categoryId) {
         return doGet(categoryId, () ->
                 restClient

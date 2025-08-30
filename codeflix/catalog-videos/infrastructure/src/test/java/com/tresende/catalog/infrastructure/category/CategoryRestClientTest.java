@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 
 import java.util.Map;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 
 public class CategoryRestClientTest extends AbstractRestClientTest {
@@ -136,5 +136,7 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
 
         //then
         Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
+
+        WireMock.verify(2, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
     }
 }
