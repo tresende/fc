@@ -1,42 +1,24 @@
 package com.tresende.catalog.infrastructure.category;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.tresende.catalog.IntegrationTestConfiguration;
+import com.tresende.catalog.AbstractRestClientTest;
 import com.tresende.catalog.domain.Fixture;
 import com.tresende.catalog.domain.exceptions.InternalErrorException;
 import com.tresende.catalog.infrastructure.category.models.CategoryDTO;
-import com.tresende.catalog.infrastructure.configuration.WebServerConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchRepositoriesAutoConfiguration;
-import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 
-@ActiveProfiles("test-integration")
-@EnableAutoConfiguration(exclude = {
-        KafkaAutoConfiguration.class,
-        ElasticsearchRepositoriesAutoConfiguration.class
-})
-@SpringBootTest(classes = {
-        WebServerConfig.class,
-        IntegrationTestConfiguration.class
-})
-@AutoConfigureWireMock(port = 0)
-public class CategoryRestClientTest {
-    @Autowired
-    ObjectMapper objectMapper;
+
+public class CategoryRestClientTest extends AbstractRestClientTest {
+
 
     @Autowired
     private CategoryRestClient target;
@@ -55,7 +37,7 @@ public class CategoryRestClientTest {
                 aulas.deletedAt()
         );
 
-        final var responseBodyJson = objectMapper.writeValueAsString(responseBody);
+        final var responseBodyJson = writeValueAsString(responseBody);
 
         WireMock.stubFor(
                 WireMock.get("/api/categories/%s".formatted(aulas.id()))
@@ -80,11 +62,11 @@ public class CategoryRestClientTest {
     }
 
     @Test
-    public void givenACategory_whenReceive5xxfromServer_shouldReturnInternalError() throws JsonProcessingException {
+    public void givenACategory_whenReceive5xxfromServer_shouldReturnInternalError() {
         //given
         final var expectedId = Fixture.Categories.aulas().id();
         final var expectedErrorMessage = "Failed to get Category of id %s".formatted(expectedId);
-        final var responseBodyJson = objectMapper.writeValueAsString(Map.of("message", "Internal Server Error"));
+        final var responseBodyJson = writeValueAsString(Map.of("message", "Internal Server Error"));
 
         WireMock.stubFor(
                 WireMock.get("/api/categories/%s".formatted(expectedId))
@@ -110,7 +92,7 @@ public class CategoryRestClientTest {
     public void givenACategory_whenReceive404fromServer_shouldReturnInternalError() throws JsonProcessingException {
         //given
         final var expectedId = Fixture.Categories.aulas().id();
-        final var responseBodyJson = objectMapper.writeValueAsString(Map.of("message", "Not Found"));
+        final var responseBodyJson = writeValueAsString(Map.of("message", "Not Found"));
 
         WireMock.stubFor(
                 WireMock.get("/api/categories/%s".formatted(expectedId))
@@ -130,11 +112,11 @@ public class CategoryRestClientTest {
 
 
     @Test
-    public void givenACategory_whenReceiveTimeoutFromServer_shouldReturnInternalError() throws JsonProcessingException {
+    public void givenACategory_whenReceiveTimeoutFromServer_shouldReturnInternalError() {
         //given
         final var expectedId = Fixture.Categories.aulas().id();
         final var expectedErrorMessage = "Timeout on get Category of id %s".formatted(expectedId);
-        final var responseBodyJson = objectMapper.writeValueAsString(Map.of("message", "Internal Server Error"));
+        final var responseBodyJson = writeValueAsString(Map.of("message", "Internal Server Error"));
 
         WireMock.stubFor(
                 WireMock.get("/api/categories/%s".formatted(expectedId))
