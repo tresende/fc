@@ -29,7 +29,9 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-oauth2-resource-server')
     implementation('org.springframework.boot:spring-boot-starter-data-elasticsearch')
     implementation("io.github.resilience4j:resilience4j-spring-boot3")
-    implementation("io.github.resilience4j:resilience4j-all")
+    implementation("io.github.resilience4j:resilience4j-retry")
+    implementation("io.github.resilience4j:resilience4j-bulkhead")
+    implementation("io.github.resilience4j:resilience4j-circuitbreaker")
 
     // Utility
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'

@@ -28,11 +28,17 @@ resilience4j.circuitbreaker:
       slowCallRateThreshold: 50
       slowCallDurationThreshold: 300
 
-resilience4j.retry:
-  configs:
-    default:
-      maxAttempts: 2
-      waitDuration: 100
+resilience4j:
+  bulkhead:
+    configs:
+      default:
+        max-concurrent-calls: 1
+  retry:
+    configs:
+      default:
+        maxAttempts: 2
+        waitDuration: 100
+
 
 kafka:
   bootstrap-servers: localhost:29092

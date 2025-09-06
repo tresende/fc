@@ -6,6 +6,7 @@ import com.tresende.catalog.AbstractRestClientTest;
 import com.tresende.catalog.domain.Fixture;
 import com.tresende.catalog.domain.exceptions.InternalErrorException;
 import com.tresende.catalog.infrastructure.category.models.CategoryDTO;
+import io.github.resilience4j.bulkhead.BulkheadFullException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 
 public class CategoryRestClientTest extends AbstractRestClientTest {
-
+    public static final String CATEGORY = CategoryRestClient.NAMESPACE;
 
     @Autowired
     private CategoryRestClient target;
@@ -85,6 +86,7 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
 
         //then
         Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
+        WireMock.verify(2, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
     }
 
     //404
@@ -108,6 +110,7 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
 
         //then
         Assertions.assertTrue(actualCategory.isEmpty());
+        WireMock.verify(1, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
     }
 
 
@@ -138,5 +141,23 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
         Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
 
         WireMock.verify(2, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
+    }
+
+    @Test
+    public void givenACategory_whenBulkheadIsfull_shouldReturnError() {
+        //given
+        final var expectedErrorMessage = "Bulkhead 'Category' is full and does not permit further calls";
+        acquireBulkheadPermission(CATEGORY);
+
+        //when
+        final var actualException = Assertions.assertThrows(
+                BulkheadFullException.class,
+                () -> target.getById("123")
+        );
+
+        //then
+        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
+
+        releaseBulkheadPermission(CATEGORY);
     }
 }

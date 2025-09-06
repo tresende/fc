@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient.ResponseSpec.ErrorHandler;
 
+import java.net.http.HttpConnectTimeoutException;
 import java.net.http.HttpTimeoutException;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
@@ -23,13 +24,13 @@ public interface HttpClient {
 
     default ErrorHandler notFoundErrorHandler(final String id) {
         return (req, res) -> {
-            throw NotFoundException.with("%s of id %s was not found".formatted(namespace(), id));
+            throw NotFoundException.with("Not found observed from %s [resourceId:%s]".formatted(namespace(), id));
         };
     }
 
     default ErrorHandler a5xxHandler(final String id) {
         return (req, res) -> {
-            throw InternalErrorException.with("Failed to get %s of id %s".formatted(namespace(), id));
+            throw InternalErrorException.with("Error observed from %s [resourceId:%s] [status:%s]".formatted(namespace(), id, res.getStatusCode().value()));
         };
     }
 
@@ -40,10 +41,15 @@ public interface HttpClient {
             return Optional.empty();
         } catch (ResourceAccessException ex) {
             final var cause = ExceptionUtils.getRootCause(ex);
+            if (cause instanceof HttpConnectTimeoutException) {
+                throw InternalErrorException.with("ConnectTimeout observed from %s [resourceId:%s]".formatted(namespace(), id), ex);
+            }
             if (cause instanceof HttpTimeoutException || cause instanceof TimeoutException) {
-                throw InternalErrorException.with("Timeout on get %s of id %s".formatted(namespace(), id));
+                throw InternalErrorException.with("Timeout observed from %s [resourceId:%s]".formatted(namespace(), id), ex);
             }
             throw ex;
+        } catch (Throwable t) {
+            throw InternalErrorException.with("Unhandled error observed from %s [resourceId:%s]".formatted(namespace(), id), t);
         }
     }
 }
