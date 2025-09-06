@@ -7,6 +7,7 @@ import com.tresende.catalog.domain.Fixture;
 import com.tresende.catalog.domain.exceptions.InternalErrorException;
 import com.tresende.catalog.infrastructure.category.models.CategoryDTO;
 import io.github.resilience4j.bulkhead.BulkheadFullException;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.http.MediaType;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static io.github.resilience4j.circuitbreaker.CircuitBreaker.State.OPEN;
 
 
 public class CategoryRestClientTest extends AbstractRestClientTest {
@@ -25,7 +27,7 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
     private CategoryRestClient target;
 
     @Test
-    public void givenACategory_whenReceive200fromServer_shouldBeOk() throws JsonProcessingException {
+    public void givenACategory_whenReceive200fromServer_shouldBeOk() {
         //given
         final var aulas = Fixture.Categories.aulas();
         final var responseBody = new CategoryDTO(
@@ -40,7 +42,7 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
 
         final var responseBodyJson = writeValueAsString(responseBody);
 
-        WireMock.stubFor(
+        stubFor(
                 WireMock.get("/api/categories/%s".formatted(aulas.id()))
                         .willReturn(aResponse()
                                 .withStatus(200)
@@ -66,10 +68,10 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
     public void givenACategory_whenReceive5xxfromServer_shouldReturnInternalError() {
         //given
         final var expectedId = Fixture.Categories.aulas().id();
-        final var expectedErrorMessage = "Failed to get Category of id %s".formatted(expectedId);
+        final var expectedErrorMessage = "Unhandled error observed from Category [resourceId:%s]".formatted(expectedId);
         final var responseBodyJson = writeValueAsString(Map.of("message", "Internal Server Error"));
 
-        WireMock.stubFor(
+        stubFor(
                 WireMock.get("/api/categories/%s".formatted(expectedId))
                         .willReturn(aResponse()
                                 .withStatus(500)
@@ -96,7 +98,7 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
         final var expectedId = Fixture.Categories.aulas().id();
         final var responseBodyJson = writeValueAsString(Map.of("message", "Not Found"));
 
-        WireMock.stubFor(
+        stubFor(
                 WireMock.get("/api/categories/%s".formatted(expectedId))
                         .willReturn(aResponse()
                                 .withStatus(404)
@@ -118,10 +120,10 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
     public void givenACategory_whenReceiveTimeoutFromServer_shouldReturnInternalError() {
         //given
         final var expectedId = Fixture.Categories.aulas().id();
-        final var expectedErrorMessage = "Timeout on get Category of id %s".formatted(expectedId);
+        final var expectedErrorMessage = "Timeout observed from Category [resourceId:%s]".formatted(expectedId);
         final var responseBodyJson = writeValueAsString(Map.of("message", "Internal Server Error"));
 
-        WireMock.stubFor(
+        stubFor(
                 WireMock.get("/api/categories/%s".formatted(expectedId))
                         .willReturn(aResponse()
                                 .withStatus(200)
@@ -159,5 +161,29 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
         Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
 
         releaseBulkheadPermission(CATEGORY);
+    }
+
+    @Test
+    public void givenServerError_whenIsMoreThenThreshold_shouldOpenTheCircuitBreaker() {
+        //given
+        final var expectedId = Fixture.Categories.aulas().id();
+        final var expectedErrorMessage = "Unhandled error observed from Category [resourceId:%s]".formatted(expectedId);
+        final var responseBodyJson = writeValueAsString(Map.of("message", "Internal Server Error"));
+
+        stubFor(
+                WireMock.get("/api/categories/%s".formatted(expectedId))
+                        .willReturn(aResponse()
+                                .withStatus(500)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(responseBodyJson))
+        );
+
+        // when
+        Assertions.assertThrows(InternalErrorException.class, () -> target.getById(expectedId));
+        Assertions.assertThrows(CallNotPermittedException.class, () -> target.getById(expectedId));
+
+        // then
+        assertCircuitBreakerState(CATEGORY, OPEN);
+        WireMock.verify(3, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
     }
 }
