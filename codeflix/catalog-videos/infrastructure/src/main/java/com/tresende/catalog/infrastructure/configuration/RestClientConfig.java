@@ -13,7 +13,7 @@ import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 class RestClientConfig {
 
     private static RestClient restClient(final RestClientProperties properties, final ObjectMapper objectMapper) {

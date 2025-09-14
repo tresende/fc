@@ -13,6 +13,10 @@ bootJar {
     destinationDirectory.set(file("${rootProject.buildDir}/libs"))
 }
 
+ext {
+    cache2k = "2.6.1.Final"
+}
+
 dependencies {
     // Project
     implementation(project(":domain"))
@@ -26,12 +30,18 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-undertow')
     implementation('org.springframework.boot:spring-boot-starter-graphql')
     implementation('org.springframework.boot:spring-boot-starter-security')
+    implementation('org.springframework.boot:spring-boot-starter-cache')
     implementation('org.springframework.boot:spring-boot-starter-oauth2-resource-server')
     implementation('org.springframework.boot:spring-boot-starter-data-elasticsearch')
     implementation("io.github.resilience4j:resilience4j-spring-boot3")
     implementation("io.github.resilience4j:resilience4j-retry")
     implementation("io.github.resilience4j:resilience4j-bulkhead")
     implementation("io.github.resilience4j:resilience4j-circuitbreaker")
+
+
+    implementation("org.cache2k:cache2k-core:$cache2k")
+    runtimeOnly("org.cache2k:cache2k-api:$cache2k")
+    implementation("org.cache2k:cache2k-spring:$cache2k")
 
     // Utility
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'

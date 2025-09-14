@@ -8,6 +8,10 @@ elasticsearch:
 keycloak:
   token-uri: /protocol/openid-connect/token
 
+cache:
+  type: cache2k
+  names: admin-categories
+
 kafka:
   auto-create-topics: false
   pool-timeout: 1_000
@@ -20,7 +24,6 @@ kafka:
       topics: adm_videos_mysql.adm_videos.categories
       group-id: catalogo-service
       max-attempts: 4
-
 
 server:
   port: 8080
@@ -45,6 +48,9 @@ logging:
 
 
 spring:
+  cache:
+    type: ${cache.type}
+    cache-names: ${cache.names}
   elasticsearch:
     uris: ${elasticsearch.uris}
     username: ${elasticsearch.username}

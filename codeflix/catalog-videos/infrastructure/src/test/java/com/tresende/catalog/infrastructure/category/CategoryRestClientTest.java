@@ -68,7 +68,7 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
     public void givenACategory_whenReceive5xxfromServer_shouldReturnInternalError() {
         //given
         final var expectedId = Fixture.Categories.aulas().id();
-        final var expectedErrorMessage = "Unhandled error observed from Category [resourceId:%s]".formatted(expectedId);
+        final var expectedErrorMessage = "Error observed from Category [resourceId:%s] [status:500]".formatted(expectedId);
         final var responseBodyJson = writeValueAsString(Map.of("message", "Internal Server Error"));
 
         stubFor(
@@ -185,5 +185,62 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
         // then
         assertCircuitBreakerState(CATEGORY, OPEN);
         WireMock.verify(3, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
+    }
+
+    @Test
+    public void givenCall_whenCbIsOpen_shouldReturnError() {
+        //given
+        transitionToOpenState(CATEGORY);
+        final var expectedId = Fixture.Categories.aulas().id();
+
+        Assertions.assertThrows(CallNotPermittedException.class, () -> target.getById(expectedId));
+
+        // then
+        assertCircuitBreakerState(CATEGORY, OPEN);
+        WireMock.verify(0, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
+    }
+
+    @Test
+    public void givenACategory_whenReceiveTwo_shouldReturnCachedValue() {
+        //given
+        final var aulas = Fixture.Categories.aulas();
+        final var responseBody = new CategoryDTO(
+                aulas.id(),
+                aulas.name(),
+                aulas.description(),
+                aulas.active(),
+                aulas.createdAt(),
+                aulas.updatedAt(),
+                aulas.deletedAt()
+        );
+
+        final var responseBodyJson = writeValueAsString(responseBody);
+
+        stubFor(
+                WireMock.get("/api/categories/%s".formatted(aulas.id()))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(responseBodyJson))
+        );
+
+        //when
+
+        target.getById(aulas.id()).get();
+        target.getById(aulas.id()).get();
+        final var actualCategory = target.getById(aulas.id()).get();
+
+        //then
+        Assertions.assertEquals(aulas.id(), actualCategory.id());
+        Assertions.assertEquals(aulas.name(), actualCategory.name());
+        Assertions.assertEquals(aulas.description(), actualCategory.description());
+        Assertions.assertEquals(aulas.active(), actualCategory.isActive());
+        Assertions.assertEquals(aulas.createdAt(), actualCategory.createdAt());
+        Assertions.assertEquals(aulas.updatedAt(), actualCategory.updatedAt());
+        Assertions.assertEquals(aulas.deletedAt(), actualCategory.deletedAt());
+
+        final var actualCachedValue = cache("admin-categories").get(aulas.id()).get();
+        Assertions.assertEquals(actualCategory, actualCachedValue);
+        verify(1, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(aulas.id()))));
     }
 }

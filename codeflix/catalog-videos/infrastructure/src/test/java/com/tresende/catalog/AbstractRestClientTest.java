@@ -13,6 +13,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchRepositoriesAutoConfiguration;
 import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -28,6 +30,8 @@ import org.springframework.test.context.ActiveProfiles;
 @AutoConfigureWireMock(port = 0)
 public class AbstractRestClientTest {
 
+    @Autowired
+    public CacheManager cacheManager;
 
     @Autowired
     public ObjectMapper objectMapper;
@@ -42,7 +46,23 @@ public class AbstractRestClientTest {
     void beforeEach() {
         WireMock.reset();
         WireMock.resetAllRequests();
+        resetAllCaches();
         resetFaultTolerance();
+    }
+
+    protected void resetAllCaches() {
+        cacheManager.getCacheNames().forEach(this::clearCache);
+    }
+
+    protected void clearCache(final String key) {
+        final var value = cache(key);
+        if (value != null) {
+            cache(key).clear();
+        }
+    }
+
+    protected Cache cache(final String name) {
+        return cacheManager.getCache(name);
     }
 
     protected void resetFaultTolerance() {
