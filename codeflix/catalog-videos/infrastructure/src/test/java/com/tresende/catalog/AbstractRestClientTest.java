@@ -8,6 +8,7 @@ import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchRepositoriesAutoConfiguration;
@@ -27,6 +28,7 @@ import org.springframework.test.context.ActiveProfiles;
         WebServerConfig.class,
         IntegrationTestConfiguration.class
 })
+@Tag("integrationTest")
 @AutoConfigureWireMock(port = 0)
 public class AbstractRestClientTest {
 

@@ -1,13 +1,12 @@
 package com.tresende.catalog.infrastructure.category;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.tresende.catalog.AbstractRestClientTest;
 import com.tresende.catalog.domain.Fixture;
 import com.tresende.catalog.domain.exceptions.InternalErrorException;
 import com.tresende.catalog.infrastructure.category.models.CategoryDTO;
 import io.github.resilience4j.bulkhead.BulkheadFullException;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +16,21 @@ import org.springframework.http.MediaType;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static io.github.resilience4j.circuitbreaker.CircuitBreaker.State.OPEN;
+import static com.tresende.catalog.infrastructure.category.CategoryRestGateway.CATEGORY;
 
 
 public class CategoryRestClientTest extends AbstractRestClientTest {
-    public static final String CATEGORY = CategoryRestClient.NAMESPACE;
 
     @Autowired
-    private CategoryRestClient target;
+    private CategoryRestGateway target;
 
+    // OK
     @Test
-    public void givenACategory_whenReceive200fromServer_shouldBeOk() {
-        //given
+    public void givenACategory_whenReceive200FromServer_shouldBeOk() {
+        // given
         final var aulas = Fixture.Categories.aulas();
-        final var responseBody = new CategoryDTO(
+
+        final var responseBody = writeValueAsString(new CategoryDTO(
                 aulas.id(),
                 aulas.name(),
                 aulas.description(),
@@ -38,209 +38,222 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
                 aulas.createdAt(),
                 aulas.updatedAt(),
                 aulas.deletedAt()
-        );
-
-        final var responseBodyJson = writeValueAsString(responseBody);
+        ));
 
         stubFor(
-                WireMock.get("/api/categories/%s".formatted(aulas.id()))
+                get(urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                .withBody(responseBodyJson))
+                                .withBody(responseBody)
+                        )
         );
 
-        //when
+        // when
+        final var actualCategory = target.categoryOfId(aulas.id()).get();
 
-        final var actualCategory = target.getById(aulas.id()).get();
-
-        //then
+        // then
         Assertions.assertEquals(aulas.id(), actualCategory.id());
         Assertions.assertEquals(aulas.name(), actualCategory.name());
         Assertions.assertEquals(aulas.description(), actualCategory.description());
-        Assertions.assertEquals(aulas.active(), actualCategory.isActive());
+        Assertions.assertEquals(aulas.active(), actualCategory.active());
         Assertions.assertEquals(aulas.createdAt(), actualCategory.createdAt());
         Assertions.assertEquals(aulas.updatedAt(), actualCategory.updatedAt());
         Assertions.assertEquals(aulas.deletedAt(), actualCategory.deletedAt());
+
+        verify(1, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(aulas.id()))));
     }
 
     @Test
-    public void givenACategory_whenReceive5xxfromServer_shouldReturnInternalError() {
-        //given
-        final var expectedId = Fixture.Categories.aulas().id();
-        final var expectedErrorMessage = "Error observed from Category [resourceId:%s] [status:500]".formatted(expectedId);
-        final var responseBodyJson = writeValueAsString(Map.of("message", "Internal Server Error"));
+    public void givenACategory_whenReceiveTwoCalls_shouldReturnCachedValue() {
+        // given
+        final var aulas = Fixture.Categories.aulas();
+
+        final var responseBody = writeValueAsString(new CategoryDTO(
+                aulas.id(),
+                aulas.name(),
+                aulas.description(),
+                aulas.active(),
+                aulas.createdAt(),
+                aulas.updatedAt(),
+                aulas.deletedAt()
+        ));
 
         stubFor(
-                WireMock.get("/api/categories/%s".formatted(expectedId))
+                get(urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(responseBody)
+                        )
+        );
+
+        // when
+        target.categoryOfId(aulas.id()).get();
+        target.categoryOfId(aulas.id()).get();
+        final var actualCategory = target.categoryOfId(aulas.id()).get();
+
+        // then
+        Assertions.assertEquals(aulas.id(), actualCategory.id());
+        Assertions.assertEquals(aulas.name(), actualCategory.name());
+        Assertions.assertEquals(aulas.description(), actualCategory.description());
+        Assertions.assertEquals(aulas.active(), actualCategory.active());
+        Assertions.assertEquals(aulas.createdAt(), actualCategory.createdAt());
+        Assertions.assertEquals(aulas.updatedAt(), actualCategory.updatedAt());
+        Assertions.assertEquals(aulas.deletedAt(), actualCategory.deletedAt());
+
+        final var actualCachedValue = cache("admin-categories").get(aulas.id());
+        Assertions.assertEquals(actualCategory, actualCachedValue.get());
+
+        verify(1, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(aulas.id()))));
+    }
+
+    // 5XX
+    @Test
+    public void givenACategory_whenReceive5xxFromServer_shouldReturnInternalError() {
+        // given
+        final var expectedId = "456";
+        final var expectedErrorMessage = "Error observed from categories [resourceId:%s] [status:500]".formatted(expectedId);
+
+        final var responseBody = writeValueAsString(Map.of("message", "Internal Server Error"));
+
+        stubFor(
+                get(urlPathEqualTo("/api/categories/%s".formatted(expectedId)))
                         .willReturn(aResponse()
                                 .withStatus(500)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                .withBody(responseBodyJson))
+                                .withBody(responseBody)
+                        )
         );
 
-        //when
+        // when
+        final var actualEx = Assertions.assertThrows(InternalErrorException.class, () -> target.categoryOfId(expectedId));
 
-        final var actualException = Assertions.assertThrows(
-                InternalErrorException.class,
-                () -> target.getById(expectedId)
-        );
+        // then
+        Assertions.assertEquals(expectedErrorMessage, actualEx.getMessage());
 
-        //then
-        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
-        WireMock.verify(2, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
+        verify(2, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
     }
 
-    //404
+    // 404
     @Test
-    public void givenACategory_whenReceive404fromServer_shouldReturnInternalError() throws JsonProcessingException {
-        //given
-        final var expectedId = Fixture.Categories.aulas().id();
-        final var responseBodyJson = writeValueAsString(Map.of("message", "Not Found"));
+    public void givenACategory_whenReceive404NotFoundFromServer_shouldReturnEmpty() {
+        // given
+        final var expectedId = "123";
+        final var responseBody = writeValueAsString(Map.of("message", "Not found"));
 
         stubFor(
-                WireMock.get("/api/categories/%s".formatted(expectedId))
+                get(urlPathEqualTo("/api/categories/%s".formatted(expectedId)))
                         .willReturn(aResponse()
                                 .withStatus(404)
-                                .withHeader("Content-Type", "application/json")
-                                .withBody(responseBodyJson))
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(responseBody)
+                        )
         );
 
-        //when
+        // when
+        final var actualCategory = target.categoryOfId(expectedId);
 
-        final var actualCategory = target.getById(expectedId);
-
-        //then
+        // then
         Assertions.assertTrue(actualCategory.isEmpty());
-        WireMock.verify(1, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
+
+        verify(1, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
     }
 
-
+    // Timeout
     @Test
-    public void givenACategory_whenReceiveTimeoutFromServer_shouldReturnInternalError() {
-        //given
-        final var expectedId = Fixture.Categories.aulas().id();
-        final var expectedErrorMessage = "Timeout observed from Category [resourceId:%s]".formatted(expectedId);
-        final var responseBodyJson = writeValueAsString(Map.of("message", "Internal Server Error"));
+    public void givenACategory_whenReceiveTimeout_shouldReturnInternalError() {
+        // given
+        final var aulas = Fixture.Categories.aulas();
+        final var expectedErrorMessage = "Timeout observed from categories [resourceId:%s]".formatted(aulas.id());
+
+        final var responseBody = writeValueAsString(new CategoryDTO(
+                aulas.id(),
+                aulas.name(),
+                aulas.description(),
+                aulas.active(),
+                aulas.createdAt(),
+                aulas.updatedAt(),
+                aulas.deletedAt()
+        ));
 
         stubFor(
-                WireMock.get("/api/categories/%s".formatted(expectedId))
+                get(urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withFixedDelay(600)
-                                .withBody(responseBodyJson))
+                                .withBody(responseBody)
+                        )
         );
 
-        //when
+        // when
+        final var actualEx = Assertions.assertThrows(InternalErrorException.class, () -> target.categoryOfId(aulas.id()));
 
-        final var actualException = Assertions.assertThrows(
-                InternalErrorException.class,
-                () -> target.getById(expectedId)
-        );
+        // then
+        Assertions.assertEquals(expectedErrorMessage, actualEx.getMessage());
 
-        //then
-        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
-
-        WireMock.verify(2, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
+        verify(2, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(aulas.id()))));
     }
 
     @Test
-    public void givenACategory_whenBulkheadIsfull_shouldReturnError() {
-        //given
-        final var expectedErrorMessage = "Bulkhead 'Category' is full and does not permit further calls";
+    public void givenACategory_whenBulkheadIsFull_shouldReturnError() {
+        // given
+        final var expectedErrorMessage = "Bulkhead 'categories' is full and does not permit further calls";
+
         acquireBulkheadPermission(CATEGORY);
 
-        //when
-        final var actualException = Assertions.assertThrows(
-                BulkheadFullException.class,
-                () -> target.getById("123")
-        );
+        // when
+        final var actualEx = Assertions.assertThrows(BulkheadFullException.class, () -> target.categoryOfId("123"));
 
-        //then
-        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
+        // then
+        Assertions.assertEquals(expectedErrorMessage, actualEx.getMessage());
 
         releaseBulkheadPermission(CATEGORY);
     }
 
     @Test
-    public void givenServerError_whenIsMoreThenThreshold_shouldOpenTheCircuitBreaker() {
-        //given
-        final var expectedId = Fixture.Categories.aulas().id();
-        final var expectedErrorMessage = "Unhandled error observed from Category [resourceId:%s]".formatted(expectedId);
-        final var responseBodyJson = writeValueAsString(Map.of("message", "Internal Server Error"));
+    public void givenCall_whenCBIsOpen_shouldReturnError() {
+        // given
+        transitionToOpenState(CATEGORY);
+        final var expectedId = "123";
+        final var expectedErrorMessage = "CircuitBreaker 'categories' is OPEN and does not permit further calls";
+
+        // when
+        final var actualEx = Assertions.assertThrows(CallNotPermittedException.class, () -> this.target.categoryOfId(expectedId));
+
+        // then
+        assertCircuitBreakerState(CATEGORY, CircuitBreaker.State.OPEN);
+        Assertions.assertEquals(expectedErrorMessage, actualEx.getMessage());
+
+        verify(0, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
+    }
+
+    @Test
+    public void givenServerError_whenIsMoreThanThreshold_shouldOpenCircuitBreaker() {
+        // given
+        final var expectedId = "123";
+        final var expectedErrorMessage = "CircuitBreaker 'categories' is OPEN and does not permit further calls";
+
+        final var responseBody = writeValueAsString(Map.of("message", "Internal Server Error"));
 
         stubFor(
-                WireMock.get("/api/categories/%s".formatted(expectedId))
+                get(urlPathEqualTo("/api/categories/%s".formatted(expectedId)))
                         .willReturn(aResponse()
                                 .withStatus(500)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                .withBody(responseBodyJson))
+                                .withBody(responseBody)
+                        )
         );
 
         // when
-        Assertions.assertThrows(InternalErrorException.class, () -> target.getById(expectedId));
-        Assertions.assertThrows(CallNotPermittedException.class, () -> target.getById(expectedId));
+        Assertions.assertThrows(InternalErrorException.class, () -> this.target.categoryOfId(expectedId));
+        final var actualEx = Assertions.assertThrows(CallNotPermittedException.class, () -> this.target.categoryOfId(expectedId));
 
         // then
-        assertCircuitBreakerState(CATEGORY, OPEN);
-        WireMock.verify(3, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
-    }
+        Assertions.assertEquals(expectedErrorMessage, actualEx.getMessage());
 
-    @Test
-    public void givenCall_whenCbIsOpen_shouldReturnError() {
-        //given
-        transitionToOpenState(CATEGORY);
-        final var expectedId = Fixture.Categories.aulas().id();
-
-        Assertions.assertThrows(CallNotPermittedException.class, () -> target.getById(expectedId));
-
-        // then
-        assertCircuitBreakerState(CATEGORY, OPEN);
-        WireMock.verify(0, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
-    }
-
-    @Test
-    public void givenACategory_whenReceiveTwo_shouldReturnCachedValue() {
-        //given
-        final var aulas = Fixture.Categories.aulas();
-        final var responseBody = new CategoryDTO(
-                aulas.id(),
-                aulas.name(),
-                aulas.description(),
-                aulas.active(),
-                aulas.createdAt(),
-                aulas.updatedAt(),
-                aulas.deletedAt()
-        );
-
-        final var responseBodyJson = writeValueAsString(responseBody);
-
-        stubFor(
-                WireMock.get("/api/categories/%s".formatted(aulas.id()))
-                        .willReturn(aResponse()
-                                .withStatus(200)
-                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                .withBody(responseBodyJson))
-        );
-
-        //when
-
-        target.getById(aulas.id()).get();
-        target.getById(aulas.id()).get();
-        final var actualCategory = target.getById(aulas.id()).get();
-
-        //then
-        Assertions.assertEquals(aulas.id(), actualCategory.id());
-        Assertions.assertEquals(aulas.name(), actualCategory.name());
-        Assertions.assertEquals(aulas.description(), actualCategory.description());
-        Assertions.assertEquals(aulas.active(), actualCategory.isActive());
-        Assertions.assertEquals(aulas.createdAt(), actualCategory.createdAt());
-        Assertions.assertEquals(aulas.updatedAt(), actualCategory.updatedAt());
-        Assertions.assertEquals(aulas.deletedAt(), actualCategory.deletedAt());
-
-        final var actualCachedValue = cache("admin-categories").get(aulas.id()).get();
-        Assertions.assertEquals(actualCategory, actualCachedValue);
-        verify(1, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(aulas.id()))));
+        verify(3, getRequestedFor(urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
     }
 }
+

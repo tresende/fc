@@ -1,5 +1,6 @@
 package com.tresende.catalog.infrastructure.category;
 
+import com.tresende.catalog.domain.category.Category;
 import com.tresende.catalog.infrastructure.category.models.CategoryDTO;
 import com.tresende.catalog.infrastructure.utils.HttpClient;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
@@ -14,12 +15,12 @@ import java.util.Optional;
 
 @Component
 @CacheConfig(cacheNames = "admin-categories")
-public class CategoryRestClient implements HttpClient {
+public class CategoryRestGateway implements CategoryGateway, HttpClient {
 
-    public static final String NAMESPACE = "Category";
+    public static final String CATEGORY = "categories";
     private final RestClient restClient;
 
-    public CategoryRestClient(
+    public CategoryRestGateway(
             final RestClient restClient
     ) {
         this.restClient = restClient;
@@ -27,10 +28,10 @@ public class CategoryRestClient implements HttpClient {
 
 
     @Cacheable(key = "#categoryId")
-    @CircuitBreaker(name = NAMESPACE)
-    @Bulkhead(name = NAMESPACE)
-    @Retry(name = NAMESPACE)
-    public Optional<CategoryDTO> getById(final String categoryId) {
+    @CircuitBreaker(name = CATEGORY)
+    @Bulkhead(name = CATEGORY)
+    @Retry(name = CATEGORY)
+    public Optional<Category> categoryOfId(final String categoryId) {
         return doGet(categoryId, () ->
                 restClient
                         .get()
@@ -39,11 +40,11 @@ public class CategoryRestClient implements HttpClient {
                         .onStatus(is5xx, a5xxHandler(categoryId))
                         .onStatus(isNotFound, notFoundErrorHandler(categoryId))
                         .body(CategoryDTO.class)
-        );
+        ).map(CategoryDTO::toCategory);
     }
 
     @Override
     public String namespace() {
-        return NAMESPACE;
+        return CATEGORY;
     }
 }
