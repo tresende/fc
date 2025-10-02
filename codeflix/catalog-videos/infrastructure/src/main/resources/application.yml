@@ -11,6 +11,8 @@ keycloak:
 cache:
   type: cache2k
   names: admin-categories
+  ttl: 60 # in seconds
+  max-entries: 200
 
 kafka:
   auto-create-topics: false
