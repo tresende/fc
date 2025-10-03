@@ -77,6 +77,9 @@ rest-client:
   categories:
     base-url: "${rest-client.base-url}/api/categories"
     read-timeout: 1_000
+  keycloak:
+    base-url: "${keycloak.host}/realms/${keycloak.realm}"
+    read-timeout: 1_000
 
 
 resilience4j:

@@ -182,7 +182,7 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                .withFixedDelay(600)
+                                .withFixedDelay(Integer.valueOf(600))
                                 .withBody(responseBody)
                         )
         );
