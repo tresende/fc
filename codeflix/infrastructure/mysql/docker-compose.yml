@@ -1,0 +1,28 @@
+
+
+name: codeflix_mysql
+
+services:
+  mysql:
+    container_name: codeflix_adm_videos_mysql
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_ROOT_HOST: '%'
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - 3306:3306
+    volumes:
+      - codeflix_mysql01:/var/lib/mysql
+    networks:
+      - codeflix_mysql
+    profiles: ["mysql", "all"]
+
+networks:
+  codeflix_mysql:
+    external: true
+
+volumes:
+  codeflix_mysql01:
+    external: true

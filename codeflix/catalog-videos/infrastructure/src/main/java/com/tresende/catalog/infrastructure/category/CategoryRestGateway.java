@@ -3,6 +3,7 @@ package com.tresende.catalog.infrastructure.category;
 import com.tresende.catalog.domain.category.Category;
 import com.tresende.catalog.infrastructure.authentication.GetClientCredentials;
 import com.tresende.catalog.infrastructure.category.models.CategoryDTO;
+import com.tresende.catalog.infrastructure.configuration.annotations.Categories;
 import com.tresende.catalog.infrastructure.utils.HttpClient;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -25,10 +26,10 @@ public class CategoryRestGateway implements CategoryGateway, HttpClient {
     private final GetClientCredentials getClientCredentials;
 
     public CategoryRestGateway(
-            final RestClient restClient,
+            @Categories final RestClient categoryHttpClient,
             final GetClientCredentials getClientCredentials
     ) {
-        this.restClient = Objects.requireNonNull(restClient);
+        this.restClient = Objects.requireNonNull(categoryHttpClient);
         this.getClientCredentials = Objects.requireNonNull(getClientCredentials);
     }
 

@@ -1,6 +1,8 @@
 package com.tresende.catalog.infrastructure.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tresende.catalog.infrastructure.configuration.annotations.Categories;
+import com.tresende.catalog.infrastructure.configuration.annotations.Keycloak;
 import com.tresende.catalog.infrastructure.configuration.properties.RestClientProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -39,12 +41,27 @@ class RestClientConfig {
 
     @Bean
     @ConfigurationProperties(prefix = "rest-client.categories")
+    @Categories
     public RestClientProperties categoryRestClientProperties() {
         return new RestClientProperties();
     }
 
     @Bean
-    public RestClient categoryHttpClient(final RestClientProperties properties, final ObjectMapper objectMapper) {
+    @ConfigurationProperties(prefix = "rest-client.keycloak")
+    @Keycloak
+    public RestClientProperties keycloackRestClientProperties() {
+        return new RestClientProperties();
+    }
+
+    @Bean
+    @Categories
+    public RestClient categoryHttpClient(@Categories final RestClientProperties properties, final ObjectMapper objectMapper) {
+        return restClient(properties, objectMapper);
+    }
+
+    @Bean
+    @Keycloak
+    public RestClient keycloakHttpClient(@Keycloak final RestClientProperties properties, final ObjectMapper objectMapper) {
         return restClient(properties, objectMapper);
     }
 }

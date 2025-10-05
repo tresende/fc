@@ -25,6 +25,7 @@ public class ClientCredentialsManager implements GetClientCredentials, RefreshCl
     public ClientCredentialsManager(
             final AuthenticationGateway authenticationGateway,
             final KeycloakProperties keycloakProperties) {
+        
         this.authenticationGateway = Objects.requireNonNull(authenticationGateway);
         this.keycloakProperties = Objects.requireNonNull(keycloakProperties);
     }

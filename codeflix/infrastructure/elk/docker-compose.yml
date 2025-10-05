@@ -1,0 +1,75 @@
+
+
+name: codeflix_elk
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
+    container_name: codeflix_elk_es01
+    volumes:
+      - codeflix_es01:/usr/share/elasticsearch/data
+    environment:
+      - "discovery.type=single-node"
+      - "bootstrap.memory_lock=true"
+      - "cluster.name=codeflix"
+      - "node.name=es01"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+    networks:
+      - codeflix_elastic
+    profiles: ["elastic", "elk", "all"]
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.9
+    container_name: codeflix_elk_kibana
+    ports:
+      - '5601:5601'
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - codeflix_elastic
+    profiles: ["elk", "all"]
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.9
+    container_name: codeflix_elk_logstash
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "25826:25826"
+      - "5044:5044"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - codeflix_elastic
+    profiles: ["elk", "all"]
+
+  filebeat:
+    container_name: codeflix_elk_filebeat
+    image: docker.elastic.co/beats/filebeat:7.17.9
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro           # Docker logs
+      - /var/run/docker.sock:/var/run/docker.sock:ro                       # Additional information about containers
+      - ./filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro # Configuration file
+      - codeflix_filebeat01:/usr/share/filebeat/data:rw                    # Persistence data
+    user: root                                                             # Allow access to log files and docker.sock
+    networks:
+      - codeflix_elastic
+    command:
+      - "-e"
+      - "--strict.perms=false"
+    profiles: ["elk", "all"]
+
+networks:
+  codeflix_elastic:
+    external: true
+
+volumes:
+  codeflix_es01:
+    external: true
+  codeflix_filebeat01:
+    external: true

@@ -1,0 +1,19 @@
+{
+  "name": "admin-mysql-cdc",
+  "config": {
+    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+    "database.hostname": "mysql",
+    "database.port": "3306",
+    "database.user": "debezium",
+    "database.password": "debezium",
+    "database.server.id": "10002",
+    "database.include.list": "adm_videos",
+    "table.include.list": "adm_videos.categories,adm_videos.cast_members,adm_videos.genres,adm_videos.videos",
+    "database.history.kafka.bootstrap.servers": "kafka:9092",
+    "database.history.kafka.topic": "adm_videos.dbhistory",
+    "include.schema.changes": "false",
+    "topic.prefix": "adm_videos",
+    "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",
+    "schema.history.internal.kafka.topic": "schemahistory.adm_videos"
+  }
+}

@@ -1,0 +1,31 @@
+
+
+name: codeflix_admin
+
+services:
+  admin:
+    container_name: codeflix_adm_videos_app
+    image: deploydesexta/fc3-admin-catalogo-de-videos-java:master-13
+    env_file:
+      - .env.local
+    ports:
+      - 8091:8080
+    networks:
+      - codeflix_admin_catalogo
+      - codeflix_rabbitmq
+      - codeflix_keycloak
+      - codeflix_mysql
+    labels:
+      filebeat_collector: true
+    profiles: ["admin", "all"]
+
+networks:
+  codeflix_adm_videos_network:
+  codeflix_mysql:
+    external: true
+  codeflix_admin_catalogo:
+    external: true
+  codeflix_keycloak:
+    external: true
+  codeflix_rabbitmq:
+    external: true

@@ -1,0 +1,33 @@
+
+
+name: codeflix_catalogo
+
+services:
+  catalogo:
+    container_name: codeflix_catalogo_videos_app
+    image: deploydesexta/fc3-catalogo-de-videos-java:main-32
+    env_file:
+      - .env.local
+    ports:
+      - 8081:8081
+    networks:
+      - codeflix_catalogo
+      - codeflix_admin_catalogo
+      - codeflix_keycloak
+      - codeflix_kafka
+      - codeflix_elastic
+    labels:
+      filebeat_collector: true
+    profiles: ["catalogo", "all"]
+
+networks:
+  codeflix_catalogo:
+    external: true
+  codeflix_admin_catalogo:
+    external: true
+  codeflix_keycloak:
+    external: true
+  codeflix_kafka:
+    external: true
+  codeflix_elastic:
+    external: true

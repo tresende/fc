@@ -1,0 +1,29 @@
+
+
+name: codeflix_subscription
+
+services:
+  subscription:
+    container_name: codeflix_subscription_app
+    image: deploydesexta/fc3-subscription-service-java:master-13
+    env_file:
+      - .env.local
+    ports:
+      - 8082:8080
+    networks:
+      - codeflix_keycloak
+      - codeflix_kafka
+      - codeflix_mysql
+    labels:
+      filebeat_collector: true
+    profiles: ["subscription", "all"]
+
+networks:
+  codeflix_mysql:
+    external: true
+  codeflix_admin_catalogo:
+    external: true
+  codeflix_keycloak:
+    external: true
+  codeflix_kafka:
+    external: true
