@@ -25,7 +25,7 @@ public class ClientCredentialsManager implements GetClientCredentials, RefreshCl
     public ClientCredentialsManager(
             final AuthenticationGateway authenticationGateway,
             final KeycloakProperties keycloakProperties) {
-        
+
         this.authenticationGateway = Objects.requireNonNull(authenticationGateway);
         this.keycloakProperties = Objects.requireNonNull(keycloakProperties);
     }
@@ -49,8 +49,8 @@ public class ClientCredentialsManager implements GetClientCredentials, RefreshCl
 
     private AuthenticationResult refreshToken() {
         try {
-            return this.authenticationGateway.login(
-                    new ClientCredentialsInput(clientId(), clientSecret())
+            return this.authenticationGateway.refresh(
+                    new AuthenticationGateway.RefreshTokenInput(clientId(), clientSecret(), credentials.refreshToken)
             );
         } catch (RuntimeException e) {
             return login();
