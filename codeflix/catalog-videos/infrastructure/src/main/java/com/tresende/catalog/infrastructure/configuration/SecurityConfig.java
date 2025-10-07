@@ -1,9 +1,12 @@
 package com.tresende.catalog.infrastructure.configuration;
 
 import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
+import com.tresende.catalog.infrastructure.authentication.RefreshClientCredentials;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -33,6 +36,16 @@ public class SecurityConfig {
     private static final String ROLE_CATEGORIES = "CATALOG_CATEGORIES";
     private static final String ROLE_GENRES = "CATALOG_GENRES";
     private static final String ROLE_VIDEOS = "CATALOG_VIDEOS";
+
+    @Bean
+    @Profile("!test-integration && !test-e2e")
+    ApplicationListener<ContextRefreshedEvent> refreshClientCredentials(
+            final RefreshClientCredentials refreshClientCredentials
+    ) {
+        return it -> {
+            refreshClientCredentials.refresh();
+        };
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {

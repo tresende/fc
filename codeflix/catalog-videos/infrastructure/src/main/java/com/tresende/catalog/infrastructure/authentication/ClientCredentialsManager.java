@@ -38,7 +38,7 @@ public class ClientCredentialsManager implements GetClientCredentials, RefreshCl
     @Override
     public void refresh() {
         final var result = this.credentials == null ? login() : refreshToken();
-        UPDATER.set(this, new ClientCredentials(result.accessToken(), result.refreshToken(), clientId()));
+        UPDATER.set(this, new ClientCredentials(clientId(), result.accessToken(), result.refreshToken()));
     }
 
     private AuthenticationResult login() {
