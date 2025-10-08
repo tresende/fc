@@ -1,9 +1,13 @@
 package com.tresende.catalog.domain;
 
+import com.tresende.catalog.domain.castmember.CastMember;
+import com.tresende.catalog.domain.castmember.CastMemberType;
 import com.tresende.catalog.domain.category.Category;
 import com.tresende.catalog.domain.utils.IdUtils;
 import com.tresende.catalog.domain.utils.InstantUtils;
 import net.datafaker.Faker;
+
+import java.util.UUID;
 
 public final class Fixture {
 
@@ -73,6 +77,28 @@ public final class Fixture {
                     InstantUtils.now(),
                     null
             );
+        }
+    }
+
+    public static final class CastMembers {
+
+        private static final CastMember WESLEY =
+                CastMember.with(UUID.randomUUID().toString(), "Wesley FullCycle", CastMemberType.ACTOR, InstantUtils.now(), InstantUtils.now());
+
+
+        private static final CastMember GABRIEL =
+                CastMember.with(UUID.randomUUID().toString(), "Gabriel FullCycle", CastMemberType.ACTOR, InstantUtils.now(), InstantUtils.now());
+
+        public static CastMemberType type() {
+            return FAKER.options().option(CastMemberType.values());
+        }
+
+        public static CastMember wesley() {
+            return CastMember.with(WESLEY);
+        }
+
+        public static CastMember gabriel() {
+            return CastMember.with(GABRIEL);
         }
     }
 }
