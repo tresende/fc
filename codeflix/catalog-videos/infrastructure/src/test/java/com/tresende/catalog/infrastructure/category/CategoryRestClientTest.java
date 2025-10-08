@@ -3,6 +3,7 @@ package com.tresende.catalog.infrastructure.category;
 import com.tresende.catalog.AbstractRestClientTest;
 import com.tresende.catalog.domain.Fixture;
 import com.tresende.catalog.domain.exceptions.InternalErrorException;
+import com.tresende.catalog.infrastructure.authentication.ClientCredentialsManager;
 import com.tresende.catalog.infrastructure.category.models.CategoryDTO;
 import io.github.resilience4j.bulkhead.BulkheadFullException;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
@@ -12,11 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.tresende.catalog.infrastructure.category.CategoryRestGateway.CATEGORY;
+import static org.mockito.Mockito.doReturn;
 
 
 public class CategoryRestClientTest extends AbstractRestClientTest {
@@ -24,11 +27,17 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
     @Autowired
     private CategoryRestGateway target;
 
+    @MockitoSpyBean
+    private ClientCredentialsManager credentialsManager;
+
     // OK
     @Test
     public void givenACategory_whenReceive200FromServer_shouldBeOk() {
         // given
         final var aulas = Fixture.Categories.aulas();
+
+        final var expectedToken = "access-123";
+        doReturn(expectedToken).when(credentialsManager).retrieve();
 
         final var responseBody = writeValueAsString(new CategoryDTO(
                 aulas.id(),
@@ -79,6 +88,9 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
                 aulas.deletedAt()
         ));
 
+        final var expectedToken = "access-123";
+        doReturn(expectedToken).when(credentialsManager).retrieve();
+
         stubFor(
                 get(urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
                         .willReturn(aResponse()
@@ -117,6 +129,9 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
 
         final var responseBody = writeValueAsString(Map.of("message", "Internal Server Error"));
 
+        final var expectedToken = "access-123";
+        doReturn(expectedToken).when(credentialsManager).retrieve();
+
         stubFor(
                 get(urlPathEqualTo("/api/categories/%s".formatted(expectedId)))
                         .willReturn(aResponse()
@@ -141,6 +156,9 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
         // given
         final var expectedId = "123";
         final var responseBody = writeValueAsString(Map.of("message", "Not found"));
+
+        final var expectedToken = "access-123";
+        doReturn(expectedToken).when(credentialsManager).retrieve();
 
         stubFor(
                 get(urlPathEqualTo("/api/categories/%s".formatted(expectedId)))
@@ -176,6 +194,9 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
                 aulas.updatedAt(),
                 aulas.deletedAt()
         ));
+
+        final var expectedToken = "access-123";
+        doReturn(expectedToken).when(credentialsManager).retrieve();
 
         stubFor(
                 get(urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
@@ -236,6 +257,9 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
         final var expectedErrorMessage = "CircuitBreaker 'categories' is OPEN and does not permit further calls";
 
         final var responseBody = writeValueAsString(Map.of("message", "Internal Server Error"));
+
+        final var expectedToken = "access-123";
+        doReturn(expectedToken).when(credentialsManager).retrieve();
 
         stubFor(
                 get(urlPathEqualTo("/api/categories/%s".formatted(expectedId)))
