@@ -31,6 +31,10 @@ public class ListCastMemberUseCaseTest extends UseCaseTest {
                 Fixture.CastMembers.wesley()
         );
 
+        final var expectedItems = members.stream()
+                .map(ListCastMemberOutput::from)
+                .toList();
+
         final var expectedPage = 0;
         final var expectedPerPage = 10;
         final var expectedTerms = "Algo";
@@ -55,8 +59,8 @@ public class ListCastMemberUseCaseTest extends UseCaseTest {
         Assertions.assertEquals(expectedPerPage, actualOutput.meta().perPage());
         Assertions.assertEquals(expectedItemsCount, actualOutput.meta().total());
         Assertions.assertTrue(
-                members.size() == actualOutput.data().size() &&
-                        members.containsAll(actualOutput.data())
+                expectedItems.size() == actualOutput.data().size() &&
+                        expectedItems.containsAll(actualOutput.data())
         );
     }
 }

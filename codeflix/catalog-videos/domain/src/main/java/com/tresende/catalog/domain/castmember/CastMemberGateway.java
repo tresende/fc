@@ -8,7 +8,7 @@ public interface CastMemberGateway {
 
     CastMember save(CastMember aMember);
 
-    void deleteBy(String anId);
+    void deleteById(String anId);
 
     Optional<CastMember> findById(String anId);
 
