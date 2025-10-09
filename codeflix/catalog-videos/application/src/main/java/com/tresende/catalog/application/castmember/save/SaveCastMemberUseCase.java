@@ -9,11 +9,11 @@ import com.tresende.catalog.domain.validation.handler.Notification;
 
 import java.util.Objects;
 
-class SaveCastMemberUseCase extends UseCase<CastMember, CastMember> {
+public class SaveCastMemberUseCase extends UseCase<CastMember, CastMember> {
 
     private final CastMemberGateway castMemberGateway;
 
-    SaveCastMemberUseCase(final CastMemberGateway castMemberGateway) {
+    public SaveCastMemberUseCase(final CastMemberGateway castMemberGateway) {
         this.castMemberGateway = Objects.requireNonNull(castMemberGateway);
     }
 
