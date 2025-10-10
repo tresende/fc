@@ -7,17 +7,18 @@ import com.tresende.catalog.application.castmember.save.SaveCastMemberUseCase;
 import com.tresende.catalog.domain.Fixture;
 import com.tresende.catalog.domain.castmember.CastMember;
 import com.tresende.catalog.domain.castmember.CastMemberSearchQuery;
+import com.tresende.catalog.domain.castmember.CastMemberType;
 import com.tresende.catalog.domain.pagination.Pagination;
 import com.tresende.catalog.domain.utils.IdUtils;
 import com.tresende.catalog.domain.utils.InstantUtils;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -141,26 +142,21 @@ class CastMemberGraphQLControllerTest {
     }
 
     @Test
-    @Disabled("Disabled")
     public void givenCastMemberInputWhenCallsSaveCastMemberMutationShouldPersistAndReturn() {
         //given
         final var expectedId = IdUtils.uniqueId();
-        final var expectedName = "Aulas";
-        final var expectedDescription = "A melhor categoria";
-        final var expectedActive = false;
+        final var expectedName = "thiago";
+        final var expectedType = CastMemberType.ACTOR;
         final var expectedCreatedAt = InstantUtils.now();
         final var expectedUpdatedAt = InstantUtils.now();
-        final var expectedDeletedAt = InstantUtils.now();
 
         //when
         final var input = Map.of(
                 "id", expectedId,
                 "name", expectedName,
-                "description", expectedDescription,
-                "active", expectedActive,
+                "type", expectedType.name(),
                 "createdAt", expectedCreatedAt.toString(),
-                "updatedAt", expectedUpdatedAt.toString(),
-                "deletedAt", expectedDeletedAt.toString()
+                "updatedAt", expectedUpdatedAt.toString()
         );
 
         final var query = """
@@ -168,7 +164,9 @@ class CastMemberGraphQLControllerTest {
                     castMember: saveCastMember(input: $input) {
                         id
                         name
-                        description
+                        type
+                        createdAt
+                        updatedAt
                     }
                 }
                 """;
@@ -182,7 +180,10 @@ class CastMemberGraphQLControllerTest {
                 .execute()
                 .path("castMember.id").entity(String.class).isEqualTo(expectedId)
                 .path("castMember.name").entity(String.class).isEqualTo(expectedName)
-                .path("castMember.description").entity(String.class).isEqualTo(expectedDescription);
+                .path("castMember.type").entity(CastMemberType.class).isEqualTo(expectedType)
+                .path("castMember.createdAt").entity(Instant.class).isEqualTo(expectedCreatedAt)
+                .path("castMember.updatedAt").entity(Instant.class).isEqualTo(expectedUpdatedAt)
+        ;
 
         //then
 
@@ -192,10 +193,8 @@ class CastMemberGraphQLControllerTest {
         final var actualCastMember = capturer.getValue();
         Assertions.assertEquals(expectedId, actualCastMember.id());
         Assertions.assertEquals(expectedName, actualCastMember.name());
-//        Assertions.assertEquals(expectedDescription, actualCastMember.description());
-//        Assertions.assertEquals(expectedActive, actualCastMember.active());
-//        Assertions.assertEquals(expectedCreatedAt, actualCastMember.createdAt());
-//        Assertions.assertEquals(expectedUpdatedAt, actualCastMember.updatedAt());
-//        Assertions.assertEquals(expectedDeletedAt, actualCastMember.deletedAt());
+        Assertions.assertEquals(expectedType, actualCastMember.type());
+        Assertions.assertEquals(expectedCreatedAt, actualCastMember.createdAt());
+        Assertions.assertEquals(expectedUpdatedAt, actualCastMember.updatedAt());
     }
 }
