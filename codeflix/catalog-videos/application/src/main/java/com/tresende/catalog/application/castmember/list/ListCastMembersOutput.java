@@ -6,20 +6,20 @@ import com.tresende.catalog.domain.castmember.CastMemberType;
 
 import java.time.Instant;
 
-public record ListCastMemberOutput(
+public record ListCastMembersOutput(
         String id,
         String name,
         CastMemberType type,
         Instant createdAt,
         Instant updatedAt
 ) {
-    public static ListCastMemberOutput from(final CastMember aCastMember) {
-        return new ListCastMemberOutput(
-                aCastMember.id(),
-                aCastMember.name(),
-                aCastMember.type(),
-                aCastMember.createdAt(),
-                aCastMember.updatedAt()
+    public static ListCastMembersOutput from(final CastMember castMember) {
+        return new ListCastMembersOutput(
+                castMember.id(),
+                castMember.name(),
+                castMember.type(),
+                castMember.createdAt(),
+                castMember.updatedAt()
         );
     }
 }

@@ -7,7 +7,7 @@ import com.tresende.catalog.domain.pagination.Pagination;
 
 import java.util.Objects;
 
-public class ListCastMemberUseCase extends UseCase<CastMemberSearchQuery, Pagination<ListCastMemberOutput>> {
+public class ListCastMemberUseCase extends UseCase<CastMemberSearchQuery, Pagination<ListCastMembersOutput>> {
 
     private final CastMemberGateway castMemberGateway;
 
@@ -16,7 +16,7 @@ public class ListCastMemberUseCase extends UseCase<CastMemberSearchQuery, Pagina
     }
 
     @Override
-    public Pagination<ListCastMemberOutput> execute(final CastMemberSearchQuery aQuery) {
-        return castMemberGateway.findAll(aQuery).map(ListCastMemberOutput::from);
+    public Pagination<ListCastMembersOutput> execute(final CastMemberSearchQuery aQuery) {
+        return castMemberGateway.findAll(aQuery).map(ListCastMembersOutput::from);
     }
 }
