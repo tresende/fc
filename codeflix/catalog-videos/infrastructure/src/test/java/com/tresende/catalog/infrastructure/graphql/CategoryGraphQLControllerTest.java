@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.graphql.test.tester.GraphQlTester;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.List;
 import java.util.Map;
@@ -26,10 +26,10 @@ import static org.mockito.Mockito.*;
 
 @GraphQLControllerTest(controllers = CategoryGraphQLController.class)
 class CategoryGraphQLControllerTest {
-    @MockBean
+    @MockitoBean
     private ListCategoryUseCase listCategoryUseCase;
 
-    @MockBean
+    @MockitoBean
     private SaveCategoryUseCase saveCategoryUseCase;
 
     @Autowired

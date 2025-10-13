@@ -32,7 +32,7 @@ public class ListCastMemberUseCaseTest extends UseCaseTest {
         );
 
         final var expectedItems = members.stream()
-                .map(ListCastMemberOutput::from)
+                .map(ListCastMembersOutput::from)
                 .toList();
 
         final var expectedPage = 0;
