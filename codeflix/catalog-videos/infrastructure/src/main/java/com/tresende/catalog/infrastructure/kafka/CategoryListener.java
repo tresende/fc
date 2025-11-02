@@ -7,7 +7,6 @@ import com.tresende.catalog.infrastructure.category.CategoryGateway;
 import com.tresende.catalog.infrastructure.category.models.CategoryEvent;
 import com.tresende.catalog.infrastructure.configuration.json.Json;
 import com.tresende.catalog.infrastructure.kafka.models.connect.MessageValue;
-import com.tresende.catalog.infrastructure.kafka.models.connect.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.DltHandler;
@@ -60,7 +59,7 @@ public class CategoryListener {
             throw new RuntimeException("Teste exception");
         }
 
-        if (Operation.isDelete(op)) {
+        if (op.isDelete()) {
             deleteCategoryUseCase.execute(messagePayload.before().id());
         } else {
             categoryGateway.categoryOfId(messagePayload.before().id())

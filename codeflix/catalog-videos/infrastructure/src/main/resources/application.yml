@@ -26,6 +26,13 @@ kafka:
       topics: adm_videos_mysql.adm_videos.categories
       group-id: catalogo-service
       max-attempts: 4
+    cast-members:
+      auto-offset-reset: earliest
+      concurrency: 1
+      id: kafka-listener-cast-members
+      topics: adm_videos_mysql.adm_videos.cast_members
+      group-id: catalogo-service
+      max-attempts: 4
 
 server:
   port: 8080

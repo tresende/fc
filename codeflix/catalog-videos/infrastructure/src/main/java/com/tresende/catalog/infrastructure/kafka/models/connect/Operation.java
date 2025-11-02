@@ -28,6 +28,10 @@ public enum Operation {
         return op == DELETE;
     }
 
+    public boolean isDelete() {
+        return this == DELETE;
+    }
+
     @JsonValue
     public String op() {
         return op;
