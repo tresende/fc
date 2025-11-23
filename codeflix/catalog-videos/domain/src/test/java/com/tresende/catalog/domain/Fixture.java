@@ -3,11 +3,14 @@ package com.tresende.catalog.domain;
 import com.tresende.catalog.domain.castmember.CastMember;
 import com.tresende.catalog.domain.castmember.CastMemberType;
 import com.tresende.catalog.domain.category.Category;
+import com.tresende.catalog.domain.genre.Genre;
 import com.tresende.catalog.domain.utils.IdUtils;
-import com.tresende.catalog.domain.utils.InstantUtils;
 import net.datafaker.Faker;
 
+import java.util.Collections;
 import java.util.UUID;
+
+import static com.tresende.catalog.domain.utils.InstantUtils.now;
 
 public final class Fixture {
 
@@ -49,8 +52,8 @@ public final class Fixture {
                     "Aulas",
                     "Conteúdo Gravado",
                     true,
-                    InstantUtils.now(),
-                    InstantUtils.now(),
+                    now(),
+                    now(),
                     null
             );
         }
@@ -61,9 +64,9 @@ public final class Fixture {
                     "Talks",
                     "Conteúdo Gravado",
                     false,
-                    InstantUtils.now(),
-                    InstantUtils.now(),
-                    InstantUtils.now()
+                    now(),
+                    now(),
+                    now()
             );
         }
 
@@ -73,8 +76,8 @@ public final class Fixture {
                     "Lives",
                     "Conteúdo ao vivo",
                     true,
-                    InstantUtils.now(),
-                    InstantUtils.now(),
+                    now(),
+                    now(),
                     null
             );
         }
@@ -87,16 +90,26 @@ public final class Fixture {
         }
 
         public static CastMember wesley() {
-            return CastMember.with(UUID.randomUUID().toString(), "Wesley FullCycle", CastMemberType.ACTOR, InstantUtils.now(), InstantUtils.now());
+            return CastMember.with(UUID.randomUUID().toString(), "Wesley FullCycle", CastMemberType.ACTOR, now(), now());
         }
 
         public static CastMember leonan() {
-            return CastMember.with(UUID.randomUUID().toString(), "Leonan FullCycle", CastMemberType.DIRECTOR, InstantUtils.now(), InstantUtils.now());
+            return CastMember.with(UUID.randomUUID().toString(), "Leonan FullCycle", CastMemberType.DIRECTOR, now(), now());
         }
 
 
         public static CastMember gabriel() {
-            return CastMember.with(UUID.randomUUID().toString(), "Gabriel FullCycle", CastMemberType.ACTOR, InstantUtils.now(), InstantUtils.now());
+            return CastMember.with(UUID.randomUUID().toString(), "Gabriel FullCycle", CastMemberType.ACTOR, now(), now());
+        }
+    }
+
+    public static final class Genres {
+        public static Genre tech() {
+            return Genre.with(IdUtils.uniqueId(), "Technology", true, Collections.emptySet(), now(), now(), now());
+        }
+
+        public static Genre business() {
+            return Genre.with(IdUtils.uniqueId(), "Business", true, Collections.emptySet(), now(), now(), now());
         }
     }
 }
