@@ -34,7 +34,7 @@ public class ListGenreUseCaseTest extends UseCaseTest {
         );
 
         final var expectedItems = genres.stream()
-                .map(ListGenreOutput::from)
+                .map(ListGenreUseCase.Output::from)
                 .toList();
 
         final var expectedPage = 0;
