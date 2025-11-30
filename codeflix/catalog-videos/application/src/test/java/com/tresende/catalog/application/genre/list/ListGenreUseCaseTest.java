@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -42,9 +43,10 @@ public class ListGenreUseCaseTest extends UseCaseTest {
         final var expectedSort = "name";
         final var expectedDirection = "asc";
         final var expectedItemsCount = 2;
+        final var expectedCategories = Set.of("c1");
 
         final var aQuery =
-                new GenreSearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+                new GenreSearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection, expectedCategories);
 
         final var pagination =
                 new Pagination<>(expectedPage, expectedPerPage, genres.size(), genres);
