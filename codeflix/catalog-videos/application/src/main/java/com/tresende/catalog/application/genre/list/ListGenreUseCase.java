@@ -6,6 +6,7 @@ import com.tresende.catalog.domain.genre.GenreGateway;
 import com.tresende.catalog.domain.genre.GenreSearchQuery;
 import com.tresende.catalog.domain.pagination.Pagination;
 
+import java.time.Instant;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,10 +27,20 @@ public class ListGenreUseCase extends UseCase<GenreSearchQuery, Pagination<ListG
     public record Output(
             String id,
             String name,
-            Set<String> categories
+            Set<String> categories,
+            Instant createdAt,
+            Instant updatedAt,
+            Instant deletedAt
     ) {
         public static Output from(Genre aGenre) {
-            return new Output(aGenre.id(), aGenre.name(), aGenre.categories());
+            return new Output(
+                    aGenre.id(),
+                    aGenre.name(),
+                    aGenre.categories(),
+                    aGenre.createdAt(),
+                    aGenre.updatedAt(),
+                    aGenre.deletedAt()
+            );
         }
     }
 }
