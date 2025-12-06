@@ -7,6 +7,7 @@ import com.tresende.catalog.domain.Fixture;
 import com.tresende.catalog.domain.genre.GenreSearchQuery;
 import com.tresende.catalog.domain.pagination.Pagination;
 import com.tresende.catalog.domain.utils.IdUtils;
+import com.tresende.catalog.domain.utils.InstantUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -194,5 +195,54 @@ class GenreGraphQLControllerTest {
         Assertions.assertEquals(expectedDates, actualGenre.createdAt());
         Assertions.assertEquals(expectedDates, actualGenre.updatedAt());
         Assertions.assertEquals(expectedDates, actualGenre.deletedAt());
+    }
+
+    @Test
+    public void givenActiveGenreInputWithoutDeletedAt_whenCallsSaveGenreMutation_shouldPersistAndReturn() {
+        // given
+        final var expectedId = IdUtils.uniqueId();
+        final var expectedName = "Business";
+        final var expectedIsActive = true;
+        final var expectedCategories = Set.of("c1", "c2");
+        final var expectedDates = InstantUtils.now();
+
+        final var input = Map.of(
+                "id", expectedId,
+                "name", expectedName,
+                "active", expectedIsActive,
+                "categories", expectedCategories,
+                "createdAt", expectedDates.toString(),
+                "updatedAt", expectedDates.toString()
+        );
+
+        final var query = """
+                mutation SaveGenre($input: GenreInput!) {
+                    genre: saveGenre(input: $input) {
+                        id
+                    }
+                }
+                """;
+
+        doReturn(new SaveGenreUseCase.Output(expectedId)).when(saveGenreUseCase).execute(any());
+
+        // when
+        graphql.document(query)
+                .variable("input", input)
+                .execute()
+                .path("genre.id").entity(String.class).isEqualTo(expectedId);
+
+        // then
+        final var capturer = ArgumentCaptor.forClass(SaveGenreUseCase.Input.class);
+
+        verify(this.saveGenreUseCase, times(1)).execute(capturer.capture());
+
+        final var actualGenre = capturer.getValue();
+        Assertions.assertEquals(expectedId, actualGenre.id());
+        Assertions.assertEquals(expectedName, actualGenre.name());
+        Assertions.assertEquals(expectedIsActive, actualGenre.isActive());
+        Assertions.assertEquals(expectedCategories, actualGenre.categories());
+        Assertions.assertEquals(expectedDates, actualGenre.createdAt());
+        Assertions.assertEquals(expectedDates, actualGenre.updatedAt());
+        Assertions.assertNull(actualGenre.deletedAt());
     }
 }
