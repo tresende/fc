@@ -7,7 +7,8 @@ import com.tresende.catalog.domain.genre.Genre;
 import com.tresende.catalog.domain.utils.IdUtils;
 import net.datafaker.Faker;
 
-import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import static com.tresende.catalog.domain.utils.InstantUtils.now;
@@ -105,11 +106,15 @@ public final class Fixture {
 
     public static final class Genres {
         public static Genre tech() {
-            return Genre.with(IdUtils.uniqueId(), "Technology", true, Collections.emptySet(), now(), now(), now());
+            return Genre.with(IdUtils.uniqueId(), "Technology", true, Set.of("c456"), now(), now(), null);
         }
 
         public static Genre business() {
-            return Genre.with(IdUtils.uniqueId(), "Business", true, Collections.emptySet(), now(), now(), now());
+            return Genre.with(IdUtils.uniqueId(), "Business", true, new HashSet<>(), now(), now(), now());
+        }
+
+        public static Genre marketing() {
+            return Genre.with(IdUtils.uniqueId(), "Marketing", true, Set.of("c123"), now(), now(), null);
         }
     }
 }

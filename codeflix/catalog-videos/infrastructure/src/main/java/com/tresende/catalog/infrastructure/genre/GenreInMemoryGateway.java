@@ -4,12 +4,11 @@ import com.tresende.catalog.domain.genre.Genre;
 import com.tresende.catalog.domain.genre.GenreGateway;
 import com.tresende.catalog.domain.genre.GenreSearchQuery;
 import com.tresende.catalog.domain.pagination.Pagination;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Optional;
 
-@Component
+//@Component
 public class GenreInMemoryGateway implements GenreGateway {
 
     private final Map<String, Genre> db;
