@@ -22,7 +22,7 @@ import static com.tresende.catalog.infrastructure.category.CategoryRestGateway.C
 import static org.mockito.Mockito.doReturn;
 
 
-public class CategoryRestClientTest extends AbstractRestClientTest {
+public class CategoryRestGatewayTest extends AbstractRestClientTest {
 
     @Autowired
     private CategoryRestGateway target;

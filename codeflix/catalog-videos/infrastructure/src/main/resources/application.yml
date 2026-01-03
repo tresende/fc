@@ -10,7 +10,7 @@ keycloak:
 
 cache:
   type: cache2k
-  names: admin-categories
+  names: admin-categories,admin-genres
   ttl: 60 # in seconds
   max-entries: 200
 
@@ -84,6 +84,9 @@ rest-client:
   categories:
     base-url: "${rest-client.base-url}/api/categories"
     read-timeout: 1_000
+  genres:
+    base-url: "${rest-client.base-url}/api/genres"
+    read-timeout: 1_000
   keycloak:
     base-url: "${keycloak.host}/realms/${keycloak.realm}"
     read-timeout: 1_000
@@ -114,6 +117,11 @@ resilience4j:
           - java.net.http.HttpTimeoutException
           - java.util.concurrent.TimeoutException
           - java.io.IOException
+    instances:
+      categories:
+        base-config: default
+      genres:
+        base-config: default
   retry:
     configs:
       default:
@@ -134,6 +142,8 @@ resilience4j:
     instances:
       categories:
         base-config: default
+      genres:
+        base-config: default
   bulkhead:
     configs:
       default:
@@ -141,4 +151,6 @@ resilience4j:
         max-wait-duration: 100
     instances:
       categories:
+        base-config: default
+      genres:
         base-config: default

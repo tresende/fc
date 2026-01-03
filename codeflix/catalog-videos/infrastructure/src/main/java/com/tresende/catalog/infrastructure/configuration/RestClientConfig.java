@@ -2,6 +2,7 @@ package com.tresende.catalog.infrastructure.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tresende.catalog.infrastructure.configuration.annotations.Categories;
+import com.tresende.catalog.infrastructure.configuration.annotations.Genres;
 import com.tresende.catalog.infrastructure.configuration.annotations.Keycloak;
 import com.tresende.catalog.infrastructure.configuration.properties.RestClientProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -47,6 +48,13 @@ class RestClientConfig {
     }
 
     @Bean
+    @ConfigurationProperties(prefix = "rest-client.genres")
+    @Genres
+    public RestClientProperties genreRestClientProperties() {
+        return new RestClientProperties();
+    }
+
+    @Bean
     @ConfigurationProperties(prefix = "rest-client.keycloak")
     @Keycloak
     public RestClientProperties keycloackRestClientProperties() {
@@ -56,6 +64,12 @@ class RestClientConfig {
     @Bean
     @Categories
     public RestClient categoryHttpClient(@Categories final RestClientProperties properties, final ObjectMapper objectMapper) {
+        return restClient(properties, objectMapper);
+    }
+
+    @Bean
+    @Genres
+    public RestClient genreHttpClient(@Genres final RestClientProperties properties, final ObjectMapper objectMapper) {
         return restClient(properties, objectMapper);
     }
 
