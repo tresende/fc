@@ -8,8 +8,8 @@ import java.util.Set;
 public record GenreDTO(
         String id,
         String name,
-        Boolean active,
-        Set<String> categories,
+        Boolean isActive,
+        Set<String> categoriesId,
         Instant createdAt,
         Instant updatedAt,
         Instant deletedAt

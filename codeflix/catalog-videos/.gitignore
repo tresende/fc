@@ -46,3 +46,4 @@ bin/
 .docker/
 sandbox/.docker/
 /sandbox/app/.env.local
+/.claude/settings.local.json

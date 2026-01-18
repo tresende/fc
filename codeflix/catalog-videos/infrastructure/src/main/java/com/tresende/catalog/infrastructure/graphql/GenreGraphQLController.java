@@ -42,8 +42,8 @@ public class GenreGraphQLController {
         return this.saveGenreUseCase.execute(new SaveGenreUseCase.Input(
                 input.id(),
                 input.name(),
-                input.active() != null ? input.active() : true,
-                input.categories() != null ? input.categories() : Set.of(),
+                input.isActive() != null ? input.isActive() : true,
+                input.categoriesId() != null ? input.categoriesId() : Set.of(),
                 input.createdAt(),
                 input.updatedAt(),
                 input.deletedAt()
