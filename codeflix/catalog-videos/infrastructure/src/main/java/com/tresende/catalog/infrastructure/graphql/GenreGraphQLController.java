@@ -2,8 +2,7 @@ package com.tresende.catalog.infrastructure.graphql;
 
 import com.tresende.catalog.application.genre.list.ListGenreUseCase;
 import com.tresende.catalog.application.genre.save.SaveGenreUseCase;
-import com.tresende.catalog.domain.genre.GenreSearchQuery;
-import com.tresende.catalog.infrastructure.genre.models.GenreDTO;
+import com.tresende.catalog.infrastructure.genre.models.GqlGenreInput;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -33,20 +32,15 @@ public class GenreGraphQLController {
             @Argument final String direction,
             @Argument final Set<String> categories
     ) {
-        final var aQuery = new GenreSearchQuery(page, perPage, search, sort, direction, categories);
-        return listGenreUseCase.execute(aQuery).data();
+        final var input = new ListGenreUseCase.Input(page, perPage, search, sort, direction, categories);
+        return listGenreUseCase.execute(input).data();
     }
 
     @MutationMapping
-    public SaveGenreUseCase.Output saveGenre(@Argument final GenreDTO input) {
-        return this.saveGenreUseCase.execute(new SaveGenreUseCase.Input(
-                input.id(),
-                input.name(),
-                input.isActive() != null ? input.isActive() : true,
-                input.categoriesId() != null ? input.categoriesId() : Set.of(),
-                input.createdAt(),
-                input.updatedAt(),
-                input.deletedAt()
-        ));
+    public SaveGenreUseCase.Output saveGenre(@Argument(name = "input") final GqlGenreInput arg) {
+        final var input =
+                new SaveGenreUseCase.Input(arg.id(), arg.name(), arg.active(), arg.categories(), arg.createdAt(), arg.updatedAt(), arg.deletedAt());
+
+        return this.saveGenreUseCase.execute(input);
     }
 }

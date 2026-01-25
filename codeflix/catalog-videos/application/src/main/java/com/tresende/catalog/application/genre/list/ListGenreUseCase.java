@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.Set;
 
-public class ListGenreUseCase extends UseCase<GenreSearchQuery, Pagination<ListGenreUseCase.Output>> {
+public class ListGenreUseCase extends UseCase<ListGenreUseCase.Input, Pagination<ListGenreUseCase.Output>> {
 
     private final GenreGateway genreGateway;
 
@@ -19,27 +19,43 @@ public class ListGenreUseCase extends UseCase<GenreSearchQuery, Pagination<ListG
     }
 
     @Override
-    public Pagination<Output> execute(final GenreSearchQuery aQuery) {
-        return genreGateway.findAll(aQuery).map(Output::from);
+    public Pagination<Output> execute(final ListGenreUseCase.Input input) {
+        final var aQuery = new GenreSearchQuery(
+                input.page(),
+                input.perPage(),
+                input.terms(),
+                input.sort(),
+                input.direction(),
+                input.categories()
+        );
+
+        return this.genreGateway.findAll(aQuery)
+                .map(Output::from);
+    }
+
+    public record Input(
+            int page,
+            int perPage,
+            String terms,
+            String sort,
+            String direction,
+            Set<String> categories
+    ) {
 
     }
 
-    public record Output(
-            String id,
-            String name,
-            Set<String> categories,
-            Instant createdAt,
-            Instant updatedAt,
-            Instant deletedAt
-    ) {
-        public static Output from(Genre aGenre) {
+    public record Output(String id, String name, boolean active, Set<String> categories, Instant createdAt,
+                         Instant updatedAt, Instant deletedAt) {
+
+        public static Output from(Genre genre) {
             return new Output(
-                    aGenre.id(),
-                    aGenre.name(),
-                    aGenre.categories(),
-                    aGenre.createdAt(),
-                    aGenre.updatedAt(),
-                    aGenre.deletedAt()
+                    genre.id(),
+                    genre.name(),
+                    genre.active(),
+                    genre.categories(),
+                    genre.createdAt(),
+                    genre.updatedAt(),
+                    genre.deletedAt()
             );
         }
     }

@@ -1,4 +1,4 @@
-package com.tresende.catalog.infrastructure.category.models;
+package com.tresende.catalog.infrastructure.genre.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

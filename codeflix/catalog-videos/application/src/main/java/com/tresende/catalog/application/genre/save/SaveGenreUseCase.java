@@ -27,7 +27,7 @@ public class SaveGenreUseCase extends UseCase<SaveGenreUseCase.Input, SaveGenreU
         final var aGenre = Genre.with(
                 input.id,
                 input.name,
-                input.isActive,
+                input.active,
                 input.categories,
                 input.createdAt,
                 input.updatedAt,
@@ -39,7 +39,7 @@ public class SaveGenreUseCase extends UseCase<SaveGenreUseCase.Input, SaveGenreU
     public record Input(
             String id,
             String name,
-            boolean isActive,
+            boolean active,
             Set<String> categories,
             Instant createdAt,
             Instant updatedAt,

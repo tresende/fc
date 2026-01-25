@@ -4,14 +4,13 @@ extend type Query {
         page: Int = 0,
         perPage: Int = 10,
         sort: String = "name",
-        direction: String = "asc"
-        categories: [String] = []
+        direction: String = "asc",
+        categories: [String] = [],
     ): [Genre]!
 }
 
 extend type Mutation {
-
-    saveGenre(input: GenreInput!): Genre!
+    saveGenre(input: GenreInput!): NewGenre!
 }
 
 """ A Genre """
@@ -22,7 +21,12 @@ type Genre {
     categories: [String]!
     createdAt: String!
     updatedAt: String!
-    deletedAt: String!
+    deletedAt: String
+}
+
+""" A Genre """
+type NewGenre {
+    id: ID!
 }
 
 """ A input to persist a Genre """
