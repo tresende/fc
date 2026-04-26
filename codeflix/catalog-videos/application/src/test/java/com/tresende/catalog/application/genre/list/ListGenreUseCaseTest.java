@@ -4,7 +4,6 @@ package com.tresende.catalog.application.genre.list;
 import com.tresende.catalog.application.UseCaseTest;
 import com.tresende.catalog.domain.Fixture;
 import com.tresende.catalog.domain.genre.GenreGateway;
-import com.tresende.catalog.domain.genre.GenreSearchQuery;
 import com.tresende.catalog.domain.pagination.Pagination;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -46,7 +45,7 @@ public class ListGenreUseCaseTest extends UseCaseTest {
         final var expectedCategories = Set.of("c1");
 
         final var aQuery =
-                new GenreSearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection, expectedCategories);
+                new ListGenreUseCase.Input(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection, expectedCategories);
 
         final var pagination =
                 new Pagination<>(expectedPage, expectedPerPage, genres.size(), genres);
