@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.time.Year;
 import java.util.Set;
 
+
 public class Video {
 
     private final String id;
@@ -57,6 +58,7 @@ public class Video {
         this.duration = duration;
         this.rating = Rating.of(rating).orElse(null);
         this.opened = opened;
+        this.published = published;
         this.createdAt = createdAt != null ? Instant.parse(createdAt) : null;
         this.updatedAt = updatedAt != null ? Instant.parse(updatedAt) : null;
         this.video = video;
@@ -68,7 +70,7 @@ public class Video {
         this.genres = genres != null ? genres : Set.of();
         this.castMembers = castMembers != null ? castMembers : Set.of();
 
-        this.validate(new ThrowsValidationHandler());
+        validate(new ThrowsValidationHandler());
 
         if (video == null || video.isBlank()) {
             this.published = false;
@@ -87,10 +89,6 @@ public class Video {
         }
 
         if (thumbnailHalf == null || thumbnailHalf.isBlank()) {
-            this.published = false;
-        }
-
-        if (video == null || video.isBlank()) {
             this.published = false;
         }
     }
@@ -158,6 +156,32 @@ public class Video {
                 video.castMembers(),
                 video.genres()
         );
+    }
+
+    public void validate(final ValidationHandler handler) {
+        if (id == null || id.isBlank()) {
+            handler.append(new Error("'id' should not be empty"));
+        }
+
+        if (title == null || title.isBlank()) {
+            handler.append(new Error("'title' should not be empty"));
+        }
+
+        if (launchedAt == null) {
+            handler.append(new Error("'launchedAt' should not be empty"));
+        }
+
+        if (rating == null) {
+            handler.append(new Error("'rating' should not be empty"));
+        }
+
+        if (createdAt == null) {
+            handler.append(new Error("'createdAt' should not be empty"));
+        }
+
+        if (updatedAt == null) {
+            handler.append(new Error("'updatedAt' should not be empty"));
+        }
     }
 
     public String id() {
@@ -231,24 +255,5 @@ public class Video {
     public Set<String> castMembers() {
         return castMembers;
     }
-
-
-    public void validate(final ValidationHandler handler) {
-        if (id == null || id.isEmpty()) {
-            handler.append(new Error("'id' should not be empty"));
-        }
-
-        if (title == null || title.isEmpty()) {
-            handler.append(new Error("'title' should not be empty"));
-        }
-
-        if (launchedAt == null) {
-            handler.append(new Error("'launchedAt' should not be empty"));
-        }
-
-        if (rating == null) {
-            handler.append(new Error("'rating' should not be empty"));
-        }
-
-    }
 }
+
